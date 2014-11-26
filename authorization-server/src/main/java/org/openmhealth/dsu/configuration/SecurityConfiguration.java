@@ -22,10 +22,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 
 /**
@@ -51,12 +53,37 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean(name = "authenticationManager")
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-
         return super.authenticationManagerBean();
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/**/*.css", "/**/*.png", "/**/*.gif", "/**/*.jpg");
+    }
+
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.formLogin()
+             // redirect all unauthenticated request to /signin.html
+                .loginPage("/signin.html")
+             .and()
+             // permit unauthenticated access to favicon, signin page and auth pages for different social services
+             .authorizeRequests()
+                .antMatchers("/favicon.ico", "/signin.html", "/auth/**").permitAll()
+                .antMatchers("/oauth/**").permitAll()
+                .antMatchers("/**").authenticated()
+             // enable cookie
+              .and()
+                .rememberMe()
+              // apply Spring Social config that add Spring Social to be an AuthenticationProvider
+              .and()
+                .apply(new SpringSocialConfigurer())
+              .and()
+              // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
+              .csrf().disable();
+
     }
 }
