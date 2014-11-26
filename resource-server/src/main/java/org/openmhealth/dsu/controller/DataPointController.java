@@ -130,7 +130,7 @@ public class DataPointController {
 
     public String getEndUserId(Authentication authentication) {
 
-        return ((EndUserUserDetails) authentication.getPrincipal()).getUsername();
+        return authentication.getName();
     }
 
     /**
