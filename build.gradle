@@ -23,6 +23,9 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {
+            url "http://repo.opensourceagility.com/releases"
+        }
     }
 }
 
@@ -79,9 +82,17 @@ configure([
         compile("org.springframework.boot:spring-boot-starter-web") {
             exclude module: "spring-boot-starter-tomcat"
         }
+        // for oauth
         compile 'org.springframework.security.oauth:spring-security-oauth2'
         compile 'org.springframework:spring-web'
         compile 'org.springframework:spring-webmvc'
+        // for social sign-in
+        compile 'org.springframework.social:spring-social-core'
+        compile 'org.springframework.social:spring-social-web'
+        compile 'org.springframework.social:spring-social-security'
+        // for google social sign-in
+        compile 'org.springframework.social:spring-social-google:1.0.0.RELEASE'
+
 
         // you can comment out any dependencies you know you don't need after this point
         compile 'org.mongodb:mongo-java-driver'
