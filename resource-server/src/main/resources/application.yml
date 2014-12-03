@@ -17,26 +17,28 @@
 # FIXME revise this if mixing data stores
 dataStore: mongo
 
+
 server:
-  port: 8083
+  port: 10003
 
 spring:
   application:
     name: Open mHealth DSU resource server
   data:
     mongodb:
-      host: omh-mongo
+      host: localhost
       database: omh
       #port: 27017
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://omh-postgres:5432/omh
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/omh
+    username: omh
+    password: omh
 
 http:
   mappers:
     jsonPrettyPrint: true
+
 
 logging:
   level:

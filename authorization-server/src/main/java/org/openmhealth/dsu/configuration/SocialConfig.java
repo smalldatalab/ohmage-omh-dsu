@@ -15,6 +15,8 @@
  */
 package org.openmhealth.dsu.configuration;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmhealth.dsu.domain.EndUserRegistrationData;
 import org.openmhealth.dsu.service.EndUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,18 @@ import org.springframework.social.config.annotation.EnableSocial;
 import org.springframework.social.config.annotation.SocialConfigurer;
 import org.springframework.social.connect.*;
 import org.springframework.social.connect.mem.InMemoryUsersConnectionRepository;
+import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 import org.springframework.social.connect.web.ConnectController;
+import org.springframework.social.google.api.Google;
+import org.springframework.social.google.api.impl.GoogleTemplate;
+import org.springframework.social.google.connect.GoogleAdapter;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
+import org.springframework.social.google.connect.GoogleOAuth2Template;
+import org.springframework.social.google.connect.GoogleServiceProvider;
+import org.springframework.social.oauth1.AbstractOAuth1ServiceProvider;
+import org.springframework.social.oauth2.*;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
+import org.springframework.util.MultiValueMap;
 
 /**
  * Spring Social Configuration.
@@ -40,19 +51,80 @@ import org.springframework.social.security.AuthenticationNameUserIdSource;
 public class SocialConfig implements SocialConfigurer {
     @Autowired
     EndUserService endUserService;
+    @Autowired
+    Environment environment;
 
+    protected final Log logger = LogFactory.getLog(getClass());
+
+    String getCustomRedirectUri(){
+        if(environment.getProperty("application.url")!=null){
+            return environment.getProperty("application.url") + "auth/google";
+        }
+        return null;
+    }
+    class CustomGoogleOAuthTemplate extends  GoogleOAuth2Template{
+
+        public CustomGoogleOAuthTemplate(String clientId, String clientSecret) {
+            super(clientId, clientSecret);
+        }
+        @Override
+        public String buildAuthorizeUrl(GrantType grantType, OAuth2Parameters parameters) {
+            if(parameters.getScope().equals("")){
+                // the scope that allow access to the user's email address and other profile
+                parameters.setScope(environment.getProperty("google.scope"));
+            }
+
+            // if the application.url is given, set the redirect_url as it to let a DSU behind
+            // a proxy to work
+            if(getCustomRedirectUri() != null){
+                parameters.setRedirectUri(getCustomRedirectUri());
+            }
+            return super.buildAuthorizeUrl(grantType, parameters);
+        }
+        @Override
+        public AccessGrant exchangeForAccess(String authorizationCode, String redirectUri, MultiValueMap<String, String> additionalParameters) {
+            // Allow mobile apps to direct send authorization code to /auth/google. e.g. /auth/google?code=fromApp_{code}
+            // such auth code is prefixed by "fromApp_" and so is distinguishable from the code redirected from Google
+            if(authorizationCode.startsWith("fromApp_")){
+                authorizationCode = authorizationCode.substring("fromApp_".length());
+                // Google requires a special redirect_url to be used with the mobile auth code
+                redirectUri = "urn:ietf:wg:oauth:2.0:oob";
+            } // if the application.url is given, set the redirect_url as it to let a DSU behind
+             // a proxy to work
+            else if(getCustomRedirectUri() != null){
+                redirectUri = getCustomRedirectUri();
+            }
+            logger.info(String.format("code: %s, redirect_uri: %s", authorizationCode, redirectUri));
+            return super.exchangeForAccess(authorizationCode, redirectUri, additionalParameters);
+        }
+    }
+
+    class CustomGoogleOAuth2ServiceProvider extends  AbstractOAuth2ServiceProvider<Google>{
+        public CustomGoogleOAuth2ServiceProvider(String clientId, String clientSecret) {
+            super(new CustomGoogleOAuthTemplate(clientId, clientSecret));
+        }
+        @Override
+        public Google getApi(String accessToken) {
+            return new GoogleTemplate(accessToken);
+        }
+    }
     /**
      * Register google social service connection. More connections (Facebook, Twitter, etc)
-     * can be made here too.
+     * can be added here too.
      * @param config
      * @param environment
      */
     @Override
     public void addConnectionFactories(ConnectionFactoryConfigurer config, Environment environment) {
-        config.addConnectionFactory(
-                new GoogleConnectionFactory(
-                        environment.getProperty("google.clientId"),
-                        environment.getProperty("google.clientSecret")));
+
+        OAuth2ConnectionFactory<Google> google =
+                new OAuth2ConnectionFactory<Google>("google",
+                    new CustomGoogleOAuth2ServiceProvider(
+                            environment.getProperty("google.clientId"),
+                            environment.getProperty("google.clientSecret")
+                    ),
+                    new GoogleAdapter());
+        config.addConnectionFactory(google);
     }
 
 
@@ -104,7 +176,12 @@ public class SocialConfig implements SocialConfigurer {
     @Bean
     public ConnectController connectController(
             ConnectionFactoryLocator connectionFactoryLocator,
-            ConnectionRepository connectionRepository) {
-        return new ConnectController(connectionFactoryLocator, connectionRepository);
+            ConnectionRepository connectionRepository) throws Exception {
+        ConnectController connectController =
+                new ConnectController(connectionFactoryLocator, connectionRepository);
+        // specify application root url so that redirect_url sent to providers will be correct
+        connectController.afterPropertiesSet();
+        connectController.setApplicationUrl(environment.getProperty("application.url"));
+        return connectController;
     }
 }

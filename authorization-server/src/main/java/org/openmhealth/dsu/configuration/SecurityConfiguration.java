@@ -17,6 +17,7 @@
 package org.openmhealth.dsu.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.social.google.api.Google;
+import org.springframework.social.google.security.GoogleAuthenticationService;
+import org.springframework.social.security.SocialAuthenticationServiceLocator;
+import org.springframework.social.security.SocialAuthenticationServiceRegistry;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 
@@ -56,23 +61,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/**/*.css", "/**/*.png", "/**/*.gif", "/**/*.jpg");
+                .antMatchers("/**/*.css", "/**/*.png", "/**/*.gif", "/**/*.jpg",
+                        // allow check_token endpoint to be accessed by all
+                        "/oauth/check_token");
     }
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
-             // redirect all unauthenticated request to /signin.html
-                .loginPage("/signin.html")
+             // redirect all unauthenticated request to google sign-in
+                .loginPage("/auth/google")
              .and()
              // permit unauthenticated access to favicon, signin page and auth pages for different social services
              .authorizeRequests()
-                .antMatchers("/favicon.ico", "/signin.html", "/auth/**").permitAll()
+                .antMatchers("/favicon.ico", "/auth/**", "/google-signin**").permitAll()
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/**").authenticated()
              // enable cookie
