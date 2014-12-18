@@ -32,13 +32,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This controller is used to facilitate the sign-in process using the One-Time Auth Code obtained from
+ * This controller is used to facilitate the sign-in process using One-Time Auth Code obtained from
  * Google Server-Side API Access.
  * (See: https://developers.google.com/+/mobile/ios/sign-in#enable_server-side_api_access_for_your_app)
- * An app invoke this controller with the One-Time Auth Code and its DSU client id and secret.
- * The controller will do the following:
+ * A mobile app invoke this controller with the One-Time Auth Code and its DSU client id and secret in the Authorization header.
+ * The controller will then perform the following operations:
  * 1) Sign-in DSU with the One-Time Auth Code.
- * 2) Obtain authorization code from DSU. This auth code is associated with the given client id's default scopes.
+ * 2) Obtain DSU authorization code. This auth code is associated with the requesting client's and its default scopes.
  * 3) Exchange the code for the access token and return it to the app.
  * @author Andy Hsieh
  */
@@ -68,7 +68,7 @@ public class GoogleAuthSignIn {
                 || !res.getFirstHeader("Location").getValue().equals(rootUrl)) {
             // failed to sign in with the code
             Map<String, String> response = new HashMap<>();
-            response.put("reason", String.format("Failed to sign-in. The given Google One-Time Auth might be invalid.", code));
+            response.put("reason", "Failed to sign-in. The given Google One-Time Auth might be invalid.");
             return  new ResponseEntity<>(new ObjectMapper().writeValueAsString(response),
                                          HttpStatus.BAD_REQUEST);
         }
@@ -101,7 +101,7 @@ public class GoogleAuthSignIn {
         res.getEntity().getContent().close();
 
 
-        // ** Step 4. Send POST request to /oauth/token to exchange the auth code for the access token
+        // ** Step 3. Send POST request to /oauth/token to exchange the auth code for the access token
         List<NameValuePair> data = new ArrayList<>(2);
         data.add(new BasicNameValuePair("grant_type", "authorization_code"));
         data.add(new BasicNameValuePair("code", dsuAuthCode));

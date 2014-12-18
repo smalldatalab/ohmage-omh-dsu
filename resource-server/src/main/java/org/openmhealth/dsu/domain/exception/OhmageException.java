@@ -1,6 +1,5 @@
 package org.openmhealth.dsu.domain.exception;
 
-import uk.org.lidalia.slf4jext.Level;
 
 /**
  * <p>
@@ -35,15 +34,5 @@ public abstract class OhmageException extends RuntimeException {
 	public OhmageException(final String reason, final Throwable cause) {
 		super(reason, cause);
 	}
-	
-	/**
-	 * Returns the logging level for this exception. By default, this is
-	 * {@link Level#INFO}, however sub-exceptions that are more severe should
-	 * override this method and increase this. It should never be decreased.
-	 * 
-	 * @return The logging level when reporting this exception.
-	 */
-	public Level getLevel() {
-		return Level.INFO;
-	}
+
 }

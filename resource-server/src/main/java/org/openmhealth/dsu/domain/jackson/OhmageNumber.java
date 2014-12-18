@@ -3,7 +3,7 @@ package org.openmhealth.dsu.domain.jackson;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import org.ohmage.domain.survey.condition.terminal.Numeric;
+import org.openmhealth.dsu.domain.survey.condition.terminal.Numeric;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

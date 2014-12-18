@@ -7,7 +7,6 @@ import org.openmhealth.dsu.domain.survey.prompt.ImagePrompt;
 import org.openmhealth.dsu.domain.survey.prompt.NumberMultiChoicePrompt;
 import org.openmhealth.dsu.domain.survey.prompt.NumberPrompt;
 import org.openmhealth.dsu.domain.survey.prompt.NumberSingleChoicePrompt;
-import org.openmhealth.dsu.domain.survey.prompt.RemoteActivityPrompt;
 import org.openmhealth.dsu.domain.survey.prompt.StringMultiChoicePrompt;
 import org.openmhealth.dsu.domain.survey.prompt.StringSingleChoicePrompt;
 import org.openmhealth.dsu.domain.survey.prompt.TextPrompt;
@@ -53,9 +52,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(
         value = NumberPrompt.class,
         name = NumberPrompt.SURVEY_ITEM_TYPE),
-    @JsonSubTypes.Type(
-        value = RemoteActivityPrompt.class,
-        name = RemoteActivityPrompt.SURVEY_ITEM_TYPE),
+
     @JsonSubTypes.Type(
         value = NumberSingleChoicePrompt.class,
         name = NumberSingleChoicePrompt.SURVEY_ITEM_TYPE),

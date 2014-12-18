@@ -8,6 +8,8 @@ import org.openmhealth.dsu.domain.exception.InvalidArgumentException;
 import org.openmhealth.dsu.domain.survey.SurveyItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Transient;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,29 +38,31 @@ public class Condition {
     /**
      * The root of the sentence tree.
      */
+    @Transient
     @JsonIgnore
     private final Fragment root;
 
     /**
      * Creates a new condition.
      *
-     * @param input
+     * @param sentence
      *        The condition string that needs to be parsed.
      *
      * @throws InvalidArgumentException
      *         The input is null or not a valid condition.
      */
-    public Condition(final String input) throws InvalidArgumentException {
-        this(input, 0);
+    @PersistenceConstructor
+    public Condition(final String sentence) throws InvalidArgumentException {
+        this(sentence, 0);
 
         // Verify that the parenthesis match.
         if(
-            StringUtils.countOccurrencesOf(input, "(") !=
-            StringUtils.countOccurrencesOf(input,  ")")) {
+            StringUtils.countOccurrencesOf(sentence, "(") !=
+            StringUtils.countOccurrencesOf(sentence,  ")")) {
 
             throw
                 new InvalidArgumentException(
-                    "Parenthetical missmatch: " + input);
+                    "Parenthetical missmatch: " + sentence);
         }
         LOGGER.debug("Condition created, evaluating to {}", root);
     }
@@ -240,6 +244,7 @@ public class Condition {
     public boolean evaluate(final Map<String, Object> responses) {
        return root.evaluate(responses);
     }
+
 
     @Override
     public String toString() {

@@ -33,9 +33,6 @@ public class Message extends SurveyItem {
     /**
      * Creates a new message object.
      *
-     * @param displayType
-     *        The display type to use to visualize the prompt.
-     *
      * @param surveyItemId
      *        The survey-unique identifier for this message.
      *

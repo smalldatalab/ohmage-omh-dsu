@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.joda.time.DateTime;
-import org.ohmage.domain.ISOW3CDateTimeFormat;
+import org.openmhealth.dsu.domain.ISOW3CDateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;

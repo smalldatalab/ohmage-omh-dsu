@@ -13,13 +13,17 @@ import name.jenkins.paul.john.concordia.Concordia;
 import name.jenkins.paul.john.concordia.exception.ConcordiaException;
 import name.jenkins.paul.john.concordia.schema.ObjectSchema;
 
-import org.ohmage.domain.MetaData;
-import org.ohmage.domain.Schema;
+import org.openmhealth.dsu.domain.MetaData;
+import org.openmhealth.dsu.domain.Schema;
 import org.openmhealth.dsu.domain.exception.InvalidArgumentException;
 import org.openmhealth.dsu.domain.survey.condition.Condition;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.openmhealth.schema.domain.SchemaId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * <p>
@@ -29,90 +33,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author John Jenkins
  */
 public class Survey extends Schema {
-    /**
-     * <p>
-     * A builder for a {@link org.openmhealth.dsu.domain.survey.Survey}.
-     * </p>
-     *
-     * @author John Jenkins
-     */
-    public static class Builder extends Schema.Builder {
-        /**
-         * The list of survey items.
-         */
-        protected List<SurveyItem> surveyItems;
-
-        /**
-         * Creates a new Survey builder object.
-         *
-         * @param version
-         *        The version of this schema.
-         *
-         * @param name
-         *        The name of this schema.
-         *
-         * @param description
-         *        The description of this schema.
-         *
-         * @param iconId
-         *        The media ID for the icon image.
-         *
-         * @param omhVisible
-         *        Whether or not this schema is visible to the Open mHealth
-         *        APIs.
-         *
-         * @param surveyItems
-         *        The survey items that define this survey.
-         */
-        @JsonCreator
-        public Builder(
-            @JsonProperty(JSON_KEY_VERSION) final long version,
-            @JsonProperty(JSON_KEY_NAME) final String name,
-            @JsonProperty(JSON_KEY_DESCRIPTION) final String description,
-            @JsonProperty(JSON_KEY_SURVEY_ITEMS)
-                final List<SurveyItem> surveyItems) {
-
-            super(version, name, description, iconId, omhVisible);
-
-            this.surveyItems = surveyItems;
-        }
-
-        /**
-         * Creates a new builder based on an existing Survey object.
-         *
-         * @param survey
-         *        The existing Survey object on which this Builder should be
-         *        based.
-         */
-        public Builder(final Survey survey) {
-            super(survey);
-
-            surveyItems = survey.surveyItems;
-        }
-
-        /**
-         * Creates a new Survey object from the state of this builder.
-         *
-         * @throws InvalidArgumentException
-         *         The state of this builder is insufficient to build a new
-         *         {@link org.openmhealth.dsu.domain.survey.Survey} object.
-         */
-        @Override
-        public Survey build() throws InvalidArgumentException {
-            return
-                new Survey(
-                    (schemaId == null) ? getRandomId() : schemaId,
-                    version,
-                    name,
-                    description,
-                    owner,
-                    iconId,
-                    omhVisible,
-                    surveyItems,
-                    internalReadVersion,
-                    internalWriteVersion);
-        }
-    }
 
     /**
      * The JSON key for the list of survey items.
@@ -125,102 +45,20 @@ public class Survey extends Schema {
     @JsonProperty(JSON_KEY_SURVEY_ITEMS)
     private final List<SurveyItem> surveyItems;
 
+
+
     /**
-     * Creates a new Survey object.
+     * Builds the Survey object.
      *
-     * @param version
-     *        The version of this survey.
+     * @param schemaId
+     *        The unique identifier for this object.
+     *
      *
      * @param name
      *        The name of this survey.
      *
      * @param description
      *        The description of this survey.
-     *
-     * @param owner
-     *        The owner of this survey.
-     *
-     * @param iconId
-     *        The media ID for the icon image.
-     *
-     * @param omhVisible
-     *        Whether or not this schema is visible to the Open mHealth APIs.
-     *
-     * @param surveyItems
-     *        The ordered list of survey items that compose this survey.
-     *
-     * @throws InvalidArgumentException
-     *         A parameter is invalid.
-     */
-    public Survey(
-        final long version,
-        final String name,
-        final String description,
-        final String owner,
-        final String iconId,
-        final boolean omhVisible,
-        final List<SurveyItem> surveyItems)
-        throws InvalidArgumentException {
-
-        this(
-            getRandomId(),
-            version,
-            name,
-            description,
-            owner,
-            iconId,
-            omhVisible,
-            surveyItems,
-            null);
-
-        // Validate the conditions within the survey items.
-        Map<String, SurveyItem> previousItems =
-            new HashMap<String, SurveyItem>();
-        for(SurveyItem surveyItem : surveyItems) {
-            // Get the condition.
-            Condition condition = surveyItem.getCondition();
-
-            // If a condition was given, validate that it is valid.
-            if(condition != null) {
-                condition.validate(previousItems);
-            }
-
-            // Add the current survey item to the map of validated survey
-            // items.
-            previousItems.put(surveyItem.getSurveyItemId(), surveyItem);
-        }
-    }
-
-    /**
-     * Rebuild an existing Survey object.
-     *
-     * @param id
-     *        The unique identifier for this object. If null, a default value
-     *        is given.
-     *
-     * @param version
-     *        The version of this survey.
-     *
-     * @param name
-     *        The name of this survey.
-     *
-     * @param description
-     *        The description of this survey.
-     *
-     * @param owner
-     *        The owner of this survey.
-     *
-     * @param iconId
-     *        The media ID for the icon image.
-     *
-     * @param omhVisible
-     *        Whether or not this schema is visible to the Open mHealth APIs.
-     *
-     * @param surveyItems
-     *        The ordered list of survey items that compose this survey.
-     *
-     * @param internalVersion
-     *        The internal version of this survey.
      *
      * @throws IllegalArgumentException
      *         The ID is invalid.
@@ -229,96 +67,19 @@ public class Survey extends Schema {
      *         A parameter is invalid.
      */
     @JsonCreator
+    @PersistenceConstructor
     protected Survey(
-        @JsonProperty(JSON_KEY_ID) final String id,
-        @JsonProperty(JSON_KEY_VERSION) final long version,
-        @JsonProperty(JSON_KEY_NAME) final String name,
-        @JsonProperty(JSON_KEY_DESCRIPTION) final String description,
-        @JsonProperty(JSON_KEY_OWNER) final String owner,
-        @JsonProperty(JSON_KEY_ICON_ID) final String iconId,
-        @JsonProperty(JSON_KEY_OMH_VISIBLE) final Boolean omhVisible,
-        @JsonProperty(JSON_KEY_SURVEY_ITEMS)
-            final List<SurveyItem> surveyItems,
-        @JsonProperty(JSON_KEY_INTERNAL_VERSION) final Long internalVersion)
-        throws IllegalArgumentException, InvalidArgumentException {
-
-        this(
-            id,
-            version,
-            name,
-            description,
-            owner,
-            iconId,
-            omhVisible,
-            surveyItems,
-            internalVersion,
-            internalVersion);
-    }
-
-    /**
-     * Builds the Survey object.
-     *
-     * @param id
-     *        The unique identifier for this object.
-     *
-     * @param version
-     *        The version of this survey.
-     *
-     * @param name
-     *        The name of this survey.
-     *
-     * @param description
-     *        The description of this survey.
-     *
-     * @param owner
-     *        The owner of this survey.
-     *
-     * @param iconId
-     *        The media ID for the icon image.
-     *
-     * @param omhVisible
-     *        Whether or not this schema is visible to the Open mHealth APIs.
-     *
-     * @param surveyItems
-     *        The ordered list of survey items that compose this survey.
-     *
-     * @param internalReadVersion
-     *        The internal version of this survey when it was read from the
-     *        database.
-     *
-     * @param internalWriteVersion
-     *        The new internal version of this survey when it will be written
-     *        back to the database.
-     *
-     * @throws IllegalArgumentException
-     *         The ID is invalid.
-     *
-     * @throws InvalidArgumentException
-     *         A parameter is invalid.
-     */
-    private Survey(
-        final String id,
-        final long version,
-        final String name,
-        final String description,
-        final String owner,
-        final String iconId,
-        final Boolean omhVisible,
-        final List<SurveyItem> surveyItems,
-        final Long internalReadVersion,
-        final Long internalWriteVersion)
-        throws IllegalArgumentException, InvalidArgumentException {
+            @JsonProperty(JSON_KEY_ID) SchemaId schemaId,
+            @JsonProperty(JSON_KEY_NAME) final String name,
+            @JsonProperty(JSON_KEY_DESCRIPTION) final String description,
+            @JsonProperty(JSON_KEY_SURVEY_ITEMS)
+            final List<SurveyItem> surveyItems)
+            throws IllegalArgumentException, InvalidArgumentException {
 
         super(
-            id,
-            version,
+            schemaId,
             name,
-            description,
-            owner,
-            iconId,
-            omhVisible,
-            internalReadVersion,
-            internalWriteVersion);
+            description);
 
         if(surveyItems == null) {
             throw
@@ -455,7 +216,7 @@ public class Survey extends Schema {
             rootSchema = new ObjectSchema(
                 getDescription(),
                 false,
-                getId(),
+                getSchemaId().toString(),
                 fields);
         }
         catch(ConcordiaException e) {
@@ -473,4 +234,5 @@ public class Survey extends Schema {
                     e);
         }
     }
+
 }
