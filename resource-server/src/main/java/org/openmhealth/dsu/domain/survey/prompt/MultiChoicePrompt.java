@@ -95,7 +95,7 @@ public abstract class MultiChoicePrompt<ChoiceType>
         @JsonProperty(JSON_KEY_DEFAULT_RESPONSE)
             final Set<? extends ChoiceType> defaultResponse,
         @JsonProperty(JSON_KEY_CHOICES)
-            final List<? extends Choice<? extends ChoiceType>> choices,
+            final List<? extends Choice<? extends ChoiceType>> choiceList,
         @JsonProperty(JSON_KEY_MIN_CHOICES) final Integer minChoices,
         @JsonProperty(JSON_KEY_MAX_CHOICES) final Integer maxChoices)
         throws InvalidArgumentException {
@@ -108,7 +108,7 @@ public abstract class MultiChoicePrompt<ChoiceType>
             displayLabel,
             skippable,
             defaultResponse,
-            choices);
+                choiceList);
 
         if(defaultResponse != null) {
             for(ChoiceType defaultResponseValue : defaultResponse) {

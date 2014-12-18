@@ -5,7 +5,7 @@ import java.util.Map;
 import name.jenkins.paul.john.concordia.schema.Schema;
 import name.jenkins.paul.john.concordia.schema.StringSchema;
 
-import org.ohmage.domain.ISOW3CDateTimeFormat;
+import org.openmhealth.dsu.domain.ISOW3CDateTimeFormat;
 import org.openmhealth.dsu.domain.exception.InvalidArgumentException;
 import org.openmhealth.dsu.domain.survey.Media;
 import org.openmhealth.dsu.domain.survey.condition.Condition;

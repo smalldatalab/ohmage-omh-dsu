@@ -62,7 +62,7 @@ public abstract class SingleChoicePrompt<ChoiceType>
         @JsonProperty(JSON_KEY_DEFAULT_RESPONSE)
             final ChoiceType defaultResponse,
         @JsonProperty(JSON_KEY_CHOICES)
-            final List<? extends Choice<? extends ChoiceType>> choices)
+            final List<? extends Choice<? extends ChoiceType>> choiceList)
         throws InvalidArgumentException {
 
         super(
@@ -73,7 +73,7 @@ public abstract class SingleChoicePrompt<ChoiceType>
             displayLabel,
             skippable,
             defaultResponse,
-            choices);
+                choiceList);
 
         if((defaultResponse != null) && (getChoice(defaultResponse) == null)) {
             throw

@@ -11,6 +11,7 @@ import org.openmhealth.dsu.domain.survey.condition.Condition;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.Transient;
 
 /**
  * <p>
@@ -115,6 +116,7 @@ public abstract class ChoicePrompt<ChoiceType, ResponseType>
      * (de)serialization.
      */
     @JsonIgnore
+    @Transient
     private final Map<ChoiceType, Choice<? extends ChoiceType>> choices;
 
     /**

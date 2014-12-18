@@ -10,6 +10,7 @@ import org.openmhealth.dsu.domain.survey.condition.Condition;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 /**
  * <p>
@@ -52,13 +53,14 @@ public class StringSingleChoicePrompt extends SingleChoicePrompt<String> {
      *        The default response for this prompt or null if a default is not
      *        allowed.
      *
-     * @param choices
+     * @param choice_list
      *        The list of choices.
      *
      * @throws InvalidArgumentException
      *         A parameter was invalid.
      */
     @JsonCreator
+    @PersistenceConstructor
     public StringSingleChoicePrompt(
         @JsonProperty(JSON_KEY_SURVEY_ITEM_ID) final String surveyItemId,
         @JsonProperty(JSON_KEY_CONDITION) final Condition condition,
@@ -68,7 +70,7 @@ public class StringSingleChoicePrompt extends SingleChoicePrompt<String> {
         @JsonProperty(JSON_KEY_SKIPPABLE) final boolean skippable,
         @JsonProperty(JSON_KEY_DEFAULT_RESPONSE) final String defaultResponse,
         @JsonProperty(JSON_KEY_CHOICES)
-            final List<? extends Choice<? extends String>> choices)
+            final List<? extends Choice<? extends String>> choiceList)
         throws InvalidArgumentException {
 
         super(
@@ -79,7 +81,7 @@ public class StringSingleChoicePrompt extends SingleChoicePrompt<String> {
             displayLabel,
             skippable,
             defaultResponse,
-            choices);
+                choiceList);
 
         if(!
             (

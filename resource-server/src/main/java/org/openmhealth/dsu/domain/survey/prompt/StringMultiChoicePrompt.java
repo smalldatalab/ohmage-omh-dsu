@@ -78,7 +78,7 @@ public class StringMultiChoicePrompt extends MultiChoicePrompt<String> {
         @JsonProperty(JSON_KEY_DEFAULT_RESPONSE)
             final Set<? extends String> defaultResponse,
         @JsonProperty(JSON_KEY_CHOICES)
-            final List<? extends Choice<? extends String>> choices,
+            final List<? extends Choice<? extends String>> choiceList,
         @JsonProperty(JSON_KEY_MIN_CHOICES) final Integer minChoices,
         @JsonProperty(JSON_KEY_MAX_CHOICES) final Integer maxChoices)
         throws InvalidArgumentException {
@@ -91,7 +91,7 @@ public class StringMultiChoicePrompt extends MultiChoicePrompt<String> {
             displayLabel,
             skippable,
             defaultResponse,
-            choices,
+                choiceList,
             minChoices,
             maxChoices);
     }

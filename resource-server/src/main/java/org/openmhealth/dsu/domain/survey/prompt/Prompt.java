@@ -2,6 +2,7 @@ package org.openmhealth.dsu.domain.survey.prompt;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.openmhealth.dsu.domain.exception.InvalidArgumentException;
 import org.openmhealth.dsu.domain.survey.Media;
 import org.openmhealth.dsu.domain.survey.NoResponse;
@@ -65,6 +66,15 @@ public abstract class Prompt<ResponseType>
          */
         TEXTBOX;
 
+        /**
+         * Make enum deserialization case-insensitive
+         * @param name
+         * @return
+         */
+        @JsonCreator
+        public static DisplayType newInstance(String name) {
+            return DisplayType.valueOf(name.toUpperCase());
+        }
         /**
          * Creates the user-friendly variant of the display type.
          */

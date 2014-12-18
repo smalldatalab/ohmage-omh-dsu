@@ -68,7 +68,7 @@ public class NumberSingleChoicePrompt extends SingleChoicePrompt<Number> {
         @JsonProperty(JSON_KEY_SKIPPABLE) final boolean skippable,
         @JsonProperty(JSON_KEY_DEFAULT_RESPONSE) final Number defaultResponse,
         @JsonProperty(JSON_KEY_CHOICES)
-            final List<? extends Choice<? extends Number>> choices)
+            final List<? extends Choice<? extends Number>> choiceList)
         throws InvalidArgumentException {
 
         super(
@@ -79,7 +79,7 @@ public class NumberSingleChoicePrompt extends SingleChoicePrompt<Number> {
             displayLabel,
             skippable,
             defaultResponse,
-            choices);
+                choiceList);
 
         if(!
             (
