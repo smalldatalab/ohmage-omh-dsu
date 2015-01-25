@@ -20,7 +20,7 @@ import javax.validation.Valid;
  *
  * @author Emerson Farrugia
  */
-@Controller
+@ApiController
 public class SurveyController {
 
     @Autowired
