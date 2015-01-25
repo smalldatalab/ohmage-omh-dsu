@@ -1,26 +1,19 @@
 package org.openmhealth.dsu.configuration;
 
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
-import org.codehaus.jackson.map.DeserializationConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-
-import static com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer.OFFSET_DATE_TIME;
 
 /**
  * The only purpose of this configuration is to make Jackson Deserialization obey the offset given in the datatime string.
