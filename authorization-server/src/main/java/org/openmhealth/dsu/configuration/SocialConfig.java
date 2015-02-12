@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
 import org.springframework.social.config.annotation.EnableSocial;
@@ -44,7 +45,7 @@ import org.springframework.util.MultiValueMap;
 
 /**
  * Spring Social Configuration.
- * @author Keith Donald
+ * @author Andy Hsieh
  */
 @Configuration
 @EnableSocial
@@ -144,7 +145,7 @@ public class SocialConfig implements SocialConfigurer {
             if(!endUserService.doesUserExist(username)){
                 EndUserRegistrationData newUser = new EndUserRegistrationData();
                 newUser.setUsername(username);
-                newUser.setPassword("");
+                newUser.setPassword(new RandomValueStringGenerator(50).generate());
                 newUser.setEmailAddress(connection.fetchUserProfile().getEmail());
                 endUserService.registerUser(newUser);
 
@@ -179,7 +180,7 @@ public class SocialConfig implements SocialConfigurer {
             ConnectionRepository connectionRepository) throws Exception {
         ConnectController connectController =
                 new ConnectController(connectionFactoryLocator, connectionRepository);
-        // specify application root url so that redirect_url sent to providers will be correct
+        // specify application root url so that redirect_url sent to providers will be the correct one
         connectController.afterPropertiesSet();
         connectController.setApplicationUrl(environment.getProperty("application.url"));
         return connectController;
