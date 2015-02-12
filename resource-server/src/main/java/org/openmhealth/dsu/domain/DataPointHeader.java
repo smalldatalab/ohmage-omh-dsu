@@ -16,6 +16,8 @@
 
 package org.openmhealth.dsu.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.openmhealth.schema.domain.SchemaId;
 
 import java.time.OffsetDateTime;
@@ -36,6 +38,7 @@ public class DataPointHeader {
     private SchemaId schemaId;
     private OffsetDateTime creationDateTime;
     private DataPointAcquisitionProvenance acquisitionProvenance;
+    private Long creationDateTimeEpochMilli;
 
     /**
      * @param id the identifier of the data point
@@ -51,7 +54,11 @@ public class DataPointHeader {
      * @param schemaId the identifier of the schema the data point conforms to
      * @param creationDateTime the creation time of this data point
      */
-    public DataPointHeader(String id, SchemaId schemaId, OffsetDateTime creationDateTime) {
+    @JsonCreator
+    public DataPointHeader(@JsonProperty("id") String id,
+                           @JsonProperty("schema_id") SchemaId schemaId,
+                           @JsonProperty("creation_date_time")
+                           OffsetDateTime creationDateTime) {
 
         checkNotNull(id);
         checkArgument(!id.isEmpty());
@@ -61,6 +68,7 @@ public class DataPointHeader {
         this.id = id;
         this.schemaId = schemaId;
         this.creationDateTime = creationDateTime;
+        this.creationDateTimeEpochMilli = creationDateTime.toInstant().toEpochMilli();
     }
 
     /**
@@ -82,6 +90,7 @@ public class DataPointHeader {
         return creationDateTime;
     }
 
+    public Long getCreationDateTimeEpochMilli(){return creationDateTimeEpochMilli;}
     /**
      * @return the acquisition provenance of the data point
      */

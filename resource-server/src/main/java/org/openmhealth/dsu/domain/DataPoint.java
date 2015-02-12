@@ -19,6 +19,7 @@ package org.openmhealth.dsu.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.Id;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -32,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Emerson Farrugia
  */
 public class DataPoint {
-
+    @Id
     private String id; // duplicated from header to make MongoDB happy
     private String userId;
     private DataPointHeader header;
