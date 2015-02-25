@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.openmhealth.schema.domain.SchemaId;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -36,8 +38,15 @@ public class DataPointHeader {
 
     private String id;
     private SchemaId schemaId;
-    private OffsetDateTime creationDateTime;
     private DataPointAcquisitionProvenance acquisitionProvenance;
+    private List<DataPointMedia> media;
+
+
+    // the datetime with timezone information preserved
+    private OffsetDateTime creationDateTime;
+
+    // the creationDateTime in millis after epoch in UTC.
+    // This field is to sort data points in chronological order disregarding timezone.
     private Long creationDateTimeEpochMilli;
 
     /**
@@ -58,7 +67,8 @@ public class DataPointHeader {
     public DataPointHeader(@JsonProperty("id") String id,
                            @JsonProperty("schema_id") SchemaId schemaId,
                            @JsonProperty("creation_date_time")
-                           OffsetDateTime creationDateTime) {
+                           OffsetDateTime creationDateTime)
+     {
 
         checkNotNull(id);
         checkArgument(!id.isEmpty());
@@ -69,6 +79,7 @@ public class DataPointHeader {
         this.schemaId = schemaId;
         this.creationDateTime = creationDateTime;
         this.creationDateTimeEpochMilli = creationDateTime.toInstant().toEpochMilli();
+        this.media = new ArrayList<DataPointMedia>();
     }
 
     /**
@@ -136,5 +147,13 @@ public class DataPointHeader {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    public List<DataPointMedia> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<DataPointMedia> media) {
+        this.media = media;
     }
 }
