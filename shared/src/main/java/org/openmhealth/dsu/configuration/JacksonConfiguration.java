@@ -23,10 +23,13 @@ import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 
@@ -49,6 +52,10 @@ public class JacksonConfiguration {
         // serialise keys in snake_case
         objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy());
 
+        // preserve original time zone in the data
+        objectMapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+
+
         return objectMapper;
     }
 
@@ -62,7 +69,13 @@ public class JacksonConfiguration {
 
         return module;
     }
-
+    @Bean
+    public SimpleModule offsetDateTimeModule(){
+        return
+                new SimpleModule("OffsetDateTime")
+                        .addDeserializer(OffsetDateTime.class, InstantDeserializer.OFFSET_DATE_TIME)
+                        .addSerializer(OffsetDateTime.class, InstantSerializer.OFFSET_DATE_TIME);
+    }
     /**
      * @author Gili Tzabari
      * @see <a href="https://github.com/FasterXML/jackson-databind/issues/494">related issue</a>
