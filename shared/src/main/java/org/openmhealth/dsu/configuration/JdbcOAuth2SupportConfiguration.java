@@ -17,8 +17,11 @@
 package org.openmhealth.dsu.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -36,8 +39,13 @@ import javax.sql.DataSource;
 @Configuration
 public class JdbcOAuth2SupportConfiguration {
 
-    @Autowired
-    private DataSource dataSource;
+    @Bean
+    @Primary
+    @ConfigurationProperties(prefix="spring.datasource")
+    public DataSource dataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
 
     /**
      * @return the store used to persist OAuth2 access and refresh tokens
@@ -45,7 +53,7 @@ public class JdbcOAuth2SupportConfiguration {
     @Bean
     public TokenStore tokenStore() {
 
-        return new JdbcTokenStore(dataSource);
+        return new JdbcTokenStore(dataSource());
     }
 
     /**
@@ -54,6 +62,6 @@ public class JdbcOAuth2SupportConfiguration {
     @Bean
     public ClientDetailsService clientDetailsService() {
 
-        return new JdbcClientDetailsService(dataSource);
+        return new JdbcClientDetailsService(dataSource());
     }
 }

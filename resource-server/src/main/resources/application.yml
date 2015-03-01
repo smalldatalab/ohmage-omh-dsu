@@ -35,6 +35,18 @@ spring:
     username: omh
     password: omh
 
+admindashboard:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/admindashboard
+    username: omh
+    password: omh
+
+
+multipart:
+  maxFileSize: 20MB
+  maxRequestSize: 20MB
+
 http:
   mappers:
     jsonPrettyPrint: true
