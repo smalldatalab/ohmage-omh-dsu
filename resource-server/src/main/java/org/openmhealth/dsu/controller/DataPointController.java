@@ -175,7 +175,7 @@ public class DataPointController {
     }
 
     /**
-     * Reads media of a data point.
+     * Reads media data of a data point.
      *
      * @param id the identifier of the data point
      * @param mId the desired media id
@@ -196,7 +196,6 @@ public class DataPointController {
         GridFSDBFile gridFsFile = gridFsOperations.findOne(query);
 
         if(gridFsFile != null){
-            log.info("Return " + gridFsFile.getContentType() + mId);
             HttpHeaders respHeaders = new HttpHeaders();
             respHeaders.setContentType(MediaType.parseMediaType(gridFsFile.getContentType()));
             respHeaders.setContentLength(gridFsFile.getLength());
@@ -224,10 +223,8 @@ public class DataPointController {
         if (dataPointService.exists(dataPoint.getId())) {
             return new ResponseEntity<>(CONFLICT);
         }
-
-        String endUserId = getEndUserId(authentication);
-
         // set the owner of the data point to be the user associated with the access token
+        String endUserId = getEndUserId(authentication);
         dataPoint.setUserId(endUserId);
 
 
@@ -246,7 +243,7 @@ public class DataPointController {
         return new ResponseEntity<>(CREATED);
     }
     /**
-     * Writes a data point.
+     * Writes a data point without media data.
      *
      * @param dataPoint the data point to write
      */
@@ -259,9 +256,9 @@ public class DataPointController {
 
 
     /**
-     * Writes a data point with multiparts.
+     * Writes a data point with media data as multi-parts.
      *
-     * @param mediaParts the media multiparts
+     * @param mediaParts the media multi-parts
      * @param dataPointStr  data point string in JSON format
      *
      */
