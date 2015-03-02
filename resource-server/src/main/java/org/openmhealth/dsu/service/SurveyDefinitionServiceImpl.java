@@ -21,7 +21,7 @@ import java.util.List;
  * Query survey definition from the Admin Dashboard database.
  * Created by changun on 2/26/15.
  */
-//@Service
+@Service
 public class SurveyDefinitionServiceImpl implements SurveyDefinitionService {
 
     private static final Logger log = LoggerFactory.getLogger(SurveyDefinitionServiceImpl.class);
@@ -39,7 +39,7 @@ public class SurveyDefinitionServiceImpl implements SurveyDefinitionService {
         "       INNER JOIN study_participants " +
         "               ON study_participants.study_id = study_surveys.study_id " +
         "       INNER JOIN users " +
-        "               ON users.id = study_surveys.study_id " +
+        "               ON users.id = study_participants.user_id " +
         "WHERE  gmail = ? " +
         "UNION " +
         "SELECT definition " +

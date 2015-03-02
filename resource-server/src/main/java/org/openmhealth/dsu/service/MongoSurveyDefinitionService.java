@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * Query survey definitions from the MongoDb survey collection. No user segregation is supported.
  * Created by changun on 3/1/15.
  */
-@Service
+//@Service
 public class MongoSurveyDefinitionService implements SurveyDefinitionService  {
     @Autowired
     MongoSurveyDefinitionRepository repo;
