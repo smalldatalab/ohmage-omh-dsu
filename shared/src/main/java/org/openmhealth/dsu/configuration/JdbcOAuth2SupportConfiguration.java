@@ -21,11 +21,16 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 import javax.sql.DataSource;
 
@@ -33,11 +38,16 @@ import javax.sql.DataSource;
 /**
  * A configuration of OAuth2 support objects backed by a relational database. The DDL files to create the corresponding
  * database schemas are available in the resources directory at the root of the project.
- *
  * @author Emerson Farrugia
+ *
+ * Add JDBCTokenServiceTx.xml that make the token services to use the strongest isolation to avoid generaing duplicated tokens.
+ * @see <a href="http://google.com">http://forum.spring.io/forum/spring-projects/security/oauth/121685-jdbctokenstore-sometimes-stores-too-many-access-tokens</a>
+ * @author Cheng-Kang Hsieh
  */
 @Configuration
-public class JdbcOAuth2SupportConfiguration {
+@EnableTransactionManagement
+@ImportResource("classpath:/JDBCTokenServiceTx.xml")
+public class JdbcOAuth2SupportConfiguration implements TransactionManagementConfigurer {
 
     @Bean
     @Primary
@@ -63,5 +73,13 @@ public class JdbcOAuth2SupportConfiguration {
     public ClientDetailsService clientDetailsService() {
 
         return new JdbcClientDetailsService(dataSource());
+    }
+    @Bean
+    public PlatformTransactionManager txManager() {
+        return new DataSourceTransactionManager(dataSource());
+    }
+    @Override
+    public PlatformTransactionManager annotationDrivenTransactionManager() {
+        return txManager();
     }
 }
