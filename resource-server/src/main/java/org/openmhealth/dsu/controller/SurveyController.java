@@ -37,6 +37,12 @@ public class SurveyController {
     } */
 
 
+    /**
+     * Return the surveys that are accessible to this users.
+     * @param auth User authentication.
+     * @return A list of surveys.
+     * @throws SQLException
+     */
     @RequestMapping(value="/surveys", method= RequestMethod.GET)
     @ResponseBody
     public Iterable<Survey> get(Authentication auth) throws SQLException {

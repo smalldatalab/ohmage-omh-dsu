@@ -6,6 +6,7 @@ import org.openmhealth.dsu.domain.ohmage.survey.Survey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.*;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Query survey definition from the Admin Dashboard database.
+ * Query survey definitions from the Admin Dashboard database.
  * Created by changun on 2/26/15.
  */
 @Service
@@ -31,30 +32,33 @@ public class SurveyDefinitionServiceImpl implements SurveyDefinitionService {
     @Autowired
     ObjectMapper objectMapper;
 
+
     final static String querySurveysByUserEmail =
-        "SELECT definition " +
-        "FROM   surveys " +
-        "       INNER JOIN study_surveys " +
-        "               ON survey_id = surveys.id " +
-        "       INNER JOIN study_participants " +
-        "               ON study_participants.study_id = study_surveys.study_id " +
-        "       INNER JOIN users " +
-        "               ON users.id = study_participants.user_id " +
-        "WHERE  gmail = ? " +
-        "UNION " +
-        "SELECT definition " +
-        "FROM   surveys " +
-        "WHERE  public = true; ";
+            "SELECT definition " +
+                    "FROM   surveys " +
+                    "       INNER JOIN s_surveys " +
+                    "               ON survey_id = surveys.id " +
+                    "       INNER JOIN study_participants " +
+                    "               ON study_participants.study_id = s_surveys.study_id " +
+                    "       INNER JOIN users " +
+                    "               ON users.id = study_participants.user_id " +
+                    "WHERE  gmail = ? " +
+                    "UNION " +
+                    "SELECT definition " +
+                    "FROM   surveys " +
+                    "WHERE  public_to_all_users = true; ";
     @Override
     public Iterable<Survey> findAllAvailableToUser(EndUser user) throws SQLException {
-         log.info(user.toString());
+        log.info(user.getEmailAddress().toString());
 
         JdbcTemplate select = new JdbcTemplate(dataSource);
-         String[] args = {user.getEmailAddress().toString()};
+        String[] args = {user.getEmailAddress().get().getAddress()};
 
-         List<Survey> surveys = new ArrayList<>(select.query(querySurveysByUserEmail, args, new JsonToSurveyExtractor()));
-        surveys.removeIf(survey -> survey == null)                           ;
-         return surveys;
+        List<Survey> surveys;
+        surveys = new ArrayList<>(select.query(querySurveysByUserEmail, args, new JsonToSurveyExtractor()));
+
+        surveys.removeIf(survey -> survey == null);
+        return surveys;
 
     }
     private class JsonToSurveyExtractor implements RowMapper<Survey>{

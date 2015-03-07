@@ -13,5 +13,11 @@ import java.sql.SQLException;
  */
 
 public interface SurveyDefinitionService {
+    /**
+     * Find the surveys that should be visible to the given user.
+     * @param user
+     * @return A list of surveys should display to this user.
+     * @throws SQLException
+     */
     Iterable<Survey> findAllAvailableToUser(EndUser user) throws SQLException;
 }
