@@ -18,20 +18,29 @@ package org.openmhealth.dsu.service;
 
 import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.dsu.domain.EndUserRegistrationData;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.google.api.Google;
 
 import java.util.Optional;
 
 
 /**
- * A service that manages user accounts.
+ * A service that manages user accounts, supporting both plain-text username or social connection.
  *
  * @author Emerson Farrugia
+ * @author Cheng-Kang Hsieh
+ *
+ *
  */
 public interface EndUserService {
 
     boolean doesUserExist(String username);
+    boolean doesUserExist(Connection<?> socialConnection);
 
     void registerUser(EndUserRegistrationData registrationData);
+    void registerUser(Connection<?> socialConnection);
+
 
     Optional<EndUser> findUser(String username);
+    Optional<EndUser> findUser(Connection<?> socialConnection);
 }

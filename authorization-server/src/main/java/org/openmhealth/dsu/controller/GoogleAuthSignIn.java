@@ -19,33 +19,75 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.util.JSONPObject;
+import org.openmhealth.dsu.domain.EndUserRegistrationData;
+import org.openmhealth.dsu.service.EndUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.token.TokenService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
+import org.springframework.security.oauth2.provider.*;
+import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.support.OAuth2Connection;
+import org.springframework.social.google.api.Google;
+import org.springframework.social.google.api.impl.GoogleTemplate;
+import org.springframework.social.google.api.plus.Person;
+import org.springframework.social.google.config.GoogleApiHelper;
+import org.springframework.social.google.connect.GoogleConnectionFactory;
+import org.springframework.social.google.security.GoogleAuthenticationService;
+import org.springframework.social.oauth2.AccessGrant;
+import org.springframework.social.security.SocialAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.openmhealth.dsu.configuration.OAuth2Properties.END_USER_ROLE;
 
 /**
- * This controller is used to facilitate the sign-in process using One-Time Auth Code obtained from
- * Google Server-Side API Access.
- * (See: https://developers.google.com/+/mobile/ios/sign-in#enable_server-side_api_access_for_your_app)
- * A mobile app invoke this controller with the One-Time Auth Code and its DSU client id and secret in the Authorization header.
- * The controller will then perform the following operations:
- * 1) Sign-in DSU with the One-Time Auth Code.
- * 2) Obtain DSU authorization code. This auth code is associated with the requesting client's and its default scopes.
- * 3) Exchange the code for the access token and return it to the app.
- * @author Andy Hsieh
+ * Endpoints to facilitate Google Sign-In
  */
 @Controller
 public class GoogleAuthSignIn {
     private @Value("${application.url}") String rootUrl;
+    @Autowired
+    ClientDetailsService clientService;
+    @Autowired
+    AuthorizationServerTokenServices tokenService;
+    @Autowired
+    EndUserService endUserService;
 
+    static class InvalidGoogleAccessTokenException extends RuntimeException{}
+
+    private GoogleConnectionFactory googleConnFactory = new GoogleConnectionFactory("", "");
+
+
+    /**
+     * This endpoint is used to facilitate the sign-in process using One-Time Auth Code obtained from
+     * Google Server-Side API Access.
+     * (See: https://developers.google.com/+/mobile/ios/sign-in#enable_server-side_api_access_for_your_app)
+     * A mobile app invoke this controller with the One-Time Auth Code and its DSU client id and secret in the Authorization header.
+     * The controller will then perform the following operations:
+     * 1) Sign-in DSU in behalf of the user with the One-Time Auth Code.
+     * 2) Obtain DSU authorization code. This auth code is associated with the requesting oauth client's  (determined by the given client id and secret)
+     *    and its default scopes.
+     * 3) Exchange the code for the access token and return to the app.
+     * @author Andy Hsieh
+     */
     @RequestMapping(value="/google-signin", method= RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public ResponseEntity<String> GoogleAuthSignin(@RequestParam String code,
@@ -116,4 +158,72 @@ public class GoogleAuthSignIn {
 
 
     }
+
+    /**
+     * This endpoint is used to facilitate the sign-in process using google access token.
+     * The controller will then perform the following operations:
+     * 1) Use the google access token to get user's profile
+     * 2) Create the user if it does not exist
+     * 3) Generate a DSU access token for the client
+     */
+    @RequestMapping(value="/google-signin", method= RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<OAuth2AccessToken>
+        googleAccessTokenSignIn
+            (@RequestParam String client_id,
+             @RequestParam String client_secret,
+             @RequestParam String google_access_token){
+
+        // Make use the client id/secret are correct
+        // Throw NoSuchClientException
+        ClientDetails client = clientService.loadClientByClientId(client_id);
+        if(!client.getClientSecret().equals(client_secret)){
+            throw new NoSuchClientException("");
+        }
+        OAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientService);
+        // Get google connection using the access token
+        // Throw org.springframework.web.client.HttpClientErrorException: 401 Unauthorized
+        Connection<Google> conn;
+        try {
+            conn = googleConnFactory.createConnection(new AccessGrant(google_access_token));
+        }catch (HttpClientErrorException ex){
+              if(ex.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
+                  throw new InvalidGoogleAccessTokenException();
+              }else{
+                  throw ex;
+              }
+        }
+        if(!endUserService.doesUserExist(conn)){
+            endUserService.registerUser(conn);
+        }
+        String username = endUserService.findUser(conn).get().getUsername();
+        HashMap<String, String> authorizationParameters = new HashMap<String, String>();
+        authorizationParameters.put("username", username);
+        authorizationParameters.put("client_id", client_id);
+        AuthorizationRequest authorizationRequest = requestFactory.createAuthorizationRequest(authorizationParameters);
+
+
+
+        Authentication authToken = new UsernamePasswordAuthenticationToken(username, "", Collections.singleton(new SimpleGrantedAuthority(END_USER_ROLE)));
+        OAuth2Authentication authenticationRequest = new OAuth2Authentication(requestFactory.createOAuth2Request(authorizationRequest), authToken);
+        OAuth2AccessToken accessToken = tokenService.createAccessToken(authenticationRequest);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cache-Control", "no-store");
+        headers.set("Pragma", "no-cache");
+
+        return new ResponseEntity<OAuth2AccessToken>(accessToken, headers, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(NoSuchClientException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody String handleNoSuchClientException(NoSuchClientException ex) {
+        return "client id/secret is invalid";
+
+    }
+    @ExceptionHandler(InvalidGoogleAccessTokenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody String handleNoSuchClientException(InvalidGoogleAccessTokenException ex) {
+        return "google access token is invalid";
+
+    }
+
 }

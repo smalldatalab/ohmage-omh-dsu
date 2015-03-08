@@ -23,6 +23,8 @@ import org.openmhealth.dsu.repository.EndUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
+import org.springframework.social.connect.Connection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,11 +45,22 @@ public class EndUserServiceImpl implements EndUserService {
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    private String socialConnectionToUsername(Connection<?> socialConnection){
+        return socialConnection.getKey().toString();
+    }
+
     @Override
     @Transactional(readOnly = true)
     public boolean doesUserExist(String username) {
 
         return endUserRepository.findOne(username).isPresent();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean doesUserExist(Connection<?> socialConnection) {
+
+        return endUserRepository.findOne(socialConnectionToUsername(socialConnection)).isPresent();
     }
 
     @Override
@@ -76,9 +89,24 @@ public class EndUserServiceImpl implements EndUserService {
     }
 
     @Override
+    public void registerUser(Connection<?> socialConnection) {
+        EndUserRegistrationData newUser = new EndUserRegistrationData();
+        newUser.setUsername(socialConnectionToUsername(socialConnection));
+        // use random password
+        newUser.setPassword(new RandomValueStringGenerator(50).generate());
+        newUser.setEmailAddress(socialConnection.fetchUserProfile().getEmail());
+        this.registerUser(newUser);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Optional<EndUser> findUser(String username) {
 
         return endUserRepository.findOne(username);
+    }
+
+    @Override
+    public Optional<EndUser> findUser(Connection<?> socialConnection) {
+        return endUserRepository.findOne(socialConnectionToUsername(socialConnection));
     }
 }

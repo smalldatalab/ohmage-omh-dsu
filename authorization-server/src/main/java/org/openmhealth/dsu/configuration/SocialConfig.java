@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmhealth.dsu.domain.EndUserRegistrationData;
 import org.openmhealth.dsu.service.EndUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -54,12 +55,14 @@ public class SocialConfig implements SocialConfigurer {
     EndUserService endUserService;
     @Autowired
     Environment environment;
+    private @Value("${application.url}") String rootUrl;
+    private @Value("${google.scope}") String googleScope;
 
     protected final Log logger = LogFactory.getLog(getClass());
 
     String getCustomRedirectUri(){
-        if(environment.getProperty("application.url")!=null){
-            return environment.getProperty("application.url") + "auth/google";
+        if(rootUrl != null){
+            return rootUrl + "auth/google";
         }
         return null;
     }
@@ -72,11 +75,11 @@ public class SocialConfig implements SocialConfigurer {
         public String buildAuthorizeUrl(GrantType grantType, OAuth2Parameters parameters) {
             if(parameters.getScope().equals("")){
                 // the scope that allow access to the user's email address and other profile
-                parameters.setScope(environment.getProperty("google.scope"));
+                parameters.setScope(googleScope);
             }
 
-            // if the application.url is given, set the redirect_url as it to let a DSU behind
-            // a proxy to work
+            // if the application.url is given, set the redirect_url to it to let a DSU behind
+            // a proxy work
             if(getCustomRedirectUri() != null){
                 parameters.setRedirectUri(getCustomRedirectUri());
             }
@@ -141,16 +144,10 @@ public class SocialConfig implements SocialConfigurer {
     private class ImplicitEndUserSignUp implements ConnectionSignUp{
         @Override
         public String execute(Connection<?> connection) {
-            String username = connection.getKey().toString();
-            if(!endUserService.doesUserExist(username)){
-                EndUserRegistrationData newUser = new EndUserRegistrationData();
-                newUser.setUsername(username);
-                newUser.setPassword(new RandomValueStringGenerator(50).generate());
-                newUser.setEmailAddress(connection.fetchUserProfile().getEmail());
-                endUserService.registerUser(newUser);
-
+            if(!endUserService.doesUserExist(connection)){
+                endUserService.registerUser(connection);
             }
-            return  username;
+            return  endUserService.findUser(connection).get().getUsername();
         }
     }
 
