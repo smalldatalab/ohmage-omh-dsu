@@ -60,6 +60,7 @@ import static org.openmhealth.dsu.configuration.OAuth2Properties.END_USER_ROLE;
 
 /**
  * Endpoints to facilitate Google Sign-In
+ * @author Cheng-Kang Hsieh
  */
 @Controller
 public class GoogleAuthSignIn {
@@ -173,7 +174,7 @@ public class GoogleAuthSignIn {
              @RequestParam String client_secret,
              @RequestParam String google_access_token){
 
-        // Make use the client id/secret are correct
+        // Make sure the client id/secret are correct
         // Throw NoSuchClientException
         ClientDetails client = clientService.loadClientByClientId(client_id);
         if(!client.getClientSecret().equals(client_secret)){
@@ -200,7 +201,7 @@ public class GoogleAuthSignIn {
         authorizationParameters.put("username", username);
         authorizationParameters.put("client_id", client_id);
         AuthorizationRequest authorizationRequest = requestFactory.createAuthorizationRequest(authorizationParameters);
-
+        authorizationRequest.setApproved(true);
 
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(username, "", Collections.singleton(new SimpleGrantedAuthority(END_USER_ROLE)));
