@@ -9,46 +9,27 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.config.ConnectionConfig;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.map.util.JSONPObject;
-import org.openmhealth.dsu.domain.EndUserRegistrationData;
 import org.openmhealth.dsu.service.EndUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.token.TokenService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.support.OAuth2Connection;
-import org.springframework.social.google.api.Google;
-import org.springframework.social.google.api.impl.GoogleTemplate;
-import org.springframework.social.google.api.plus.Person;
-import org.springframework.social.google.config.GoogleApiHelper;
-import org.springframework.social.google.connect.GoogleConnectionFactory;
-import org.springframework.social.google.security.GoogleAuthenticationService;
+import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
-import org.springframework.social.security.SocialAuthenticationToken;
+import org.springframework.social.security.SocialAuthenticationServiceRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -72,9 +53,12 @@ public class GoogleAuthSignIn {
     @Autowired
     EndUserService endUserService;
 
-    static class InvalidGoogleAccessTokenException extends RuntimeException{}
+    static class InvalidSocialSigninAccessTokenException extends Exception{}
+    static class InsufficientScopeException extends Exception{}
 
-    private GoogleConnectionFactory googleConnFactory = new GoogleConnectionFactory("", "");
+    @Autowired
+    SocialAuthenticationServiceRegistry socialAuthService;
+
 
 
     /**
@@ -91,6 +75,7 @@ public class GoogleAuthSignIn {
      */
     @RequestMapping(value="/google-signin", method= RequestMethod.GET, produces = "application/json")
     @ResponseBody
+    @Deprecated
     public ResponseEntity<String> GoogleAuthSignin(@RequestParam String code,
                        @RequestParam String client_id,
                        @RequestHeader(value="Authorization") String clientBasicAuth
@@ -161,18 +146,20 @@ public class GoogleAuthSignIn {
     }
 
     /**
-     * This endpoint is used to facilitate the sign-in process using google access token.
-     * The controller will then perform the following operations:
-     * 1) Use the google access token to get user's profile
-     * 2) Create the user if it does not exist
-     * 3) Generate a DSU access token for the client
+     * This endpoint is used to facilitate the mobile sign-in process using the access token return
+     * by the social sign-in provider (e.g. google, facebook).
+     * The controller performs the following procedure:
+     * 1) Use the access token to get user's profile from the social sign-in provider
+     * 2) Create the user, where username is "providerId:providerUserId" (if it does not exist)
+     * 3) Generate a DSU access token for the requesting client
      */
-    @RequestMapping(value="/google-signin", method= RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value="/social-signin/{providerId}", method= RequestMethod.POST, produces = "application/json")
     public ResponseEntity<OAuth2AccessToken>
-        googleAccessTokenSignIn
-            (@RequestParam String client_id,
+        socialAccessTokenSignIn
+            (@PathVariable String providerId,
+             @RequestParam String client_id,
              @RequestParam String client_secret,
-             @RequestParam String google_access_token){
+             @RequestParam String access_token) throws InvalidSocialSigninAccessTokenException, InsufficientScopeException {
 
         // Make sure the client id/secret are correct
         // Throw NoSuchClientException
@@ -183,15 +170,19 @@ public class GoogleAuthSignIn {
         OAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientService);
         // Get google connection using the access token
         // Throw org.springframework.web.client.HttpClientErrorException: 401 Unauthorized
-        Connection<Google> conn;
+        Connection conn;
         try {
-            conn = googleConnFactory.createConnection(new AccessGrant(google_access_token));
+            OAuth2ConnectionFactory googleConnFactory = (OAuth2ConnectionFactory) socialAuthService.getConnectionFactory(providerId);
+            conn = googleConnFactory.createConnection(new AccessGrant(access_token));
         }catch (HttpClientErrorException ex){
               if(ex.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
-                  throw new InvalidGoogleAccessTokenException();
+                  throw new InvalidSocialSigninAccessTokenException();
               }else{
                   throw ex;
               }
+        }
+        if(conn.getKey().getProviderUserId() == null || conn.fetchUserProfile().getEmail() == null){
+            throw new InsufficientScopeException();
         }
         if(!endUserService.doesUserExist(conn)){
             endUserService.registerUser(conn);
@@ -214,17 +205,38 @@ public class GoogleAuthSignIn {
         return new ResponseEntity<OAuth2AccessToken>(accessToken, headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value="/google-signin", method= RequestMethod.POST, produces = "application/json")
+    @Deprecated
+    public ResponseEntity<OAuth2AccessToken>
+    googleAccessTokenSignIn
+            (@RequestParam String client_id,
+             @RequestParam String client_secret,
+             @RequestParam String google_access_token) throws InsufficientScopeException, InvalidSocialSigninAccessTokenException {
+        return socialAccessTokenSignIn("google", client_id, client_secret, google_access_token);
+    }
+
+
+
+
     @ExceptionHandler(NoSuchClientException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody String handleNoSuchClientException(NoSuchClientException ex) {
         return "client id/secret is invalid";
 
     }
-    @ExceptionHandler(InvalidGoogleAccessTokenException.class)
+    @ExceptionHandler(InvalidSocialSigninAccessTokenException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String handleNoSuchClientException(InvalidGoogleAccessTokenException ex) {
-        return "google access token is invalid";
+    public @ResponseBody String handleNoSuchClientException(InvalidSocialSigninAccessTokenException ex) {
+        return "the given social sign-in access token is invalid.";
 
     }
+    @ExceptionHandler(InsufficientScopeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody String handleInsufficientScopeException(InsufficientScopeException ex) {
+        return "the given social sign-in access token do not have sufficient scope to access " +
+                "the user's id and email address.";
+
+    }
+
 
 }

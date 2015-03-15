@@ -80,7 +80,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
              .and()
              // permit unauthenticated access to favicon, signin page and auth pages for different social services
              .authorizeRequests()
-                .antMatchers("/favicon.ico", "/auth/**", "/google-signin**").permitAll()
+                .antMatchers("/favicon.ico", "/auth/**", "/google-signin**", "/social-signin/**").permitAll()
                 .antMatchers("/oauth/token", "/oauth/token", "/oauth/check_token").permitAll()
                 .antMatchers("/**").authenticated()
              // enable cookie
