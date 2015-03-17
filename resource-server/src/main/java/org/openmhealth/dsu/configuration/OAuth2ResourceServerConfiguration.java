@@ -41,6 +41,8 @@ public class OAuth2ResourceServerConfiguration extends ResourceServerConfigurerA
     public void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
+                // validate-survey endpoint should be accessible by anyone
+                .antMatchers("/*/validate-survey**").permitAll()
                 .anyRequest().authenticated();
     }
 }
