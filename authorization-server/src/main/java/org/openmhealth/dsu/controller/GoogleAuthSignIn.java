@@ -71,7 +71,6 @@ public class GoogleAuthSignIn {
      * 2) Obtain DSU authorization code. This auth code is associated with the requesting oauth client's  (determined by the given client id and secret)
      *    and its default scopes.
      * 3) Exchange the code for the access token and return to the app.
-     * @author Andy Hsieh
      */
     @RequestMapping(value="/google-signin", method= RequestMethod.GET, produces = "application/json")
     @ResponseBody
@@ -141,8 +140,6 @@ public class GoogleAuthSignIn {
         res = client.execute(exchangeForToken);
         return  new ResponseEntity<>(EntityUtils.toString(res.getEntity()),
                 HttpStatus.valueOf(res.getStatusLine().getStatusCode()));
-
-
     }
 
     /**
