@@ -28,6 +28,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.security.GoogleAuthenticationService;
 import org.springframework.social.security.SocialAuthenticationServiceLocator;
@@ -70,14 +71,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         // allow check_token endpoint to be accessed by all
                         "/oauth/check_token");
     }
-
+    @Bean
+    public SavedRequestAwareAuthenticationSuccessHandler successHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        successHandler.setUseReferer(true);
+        return successHandler;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
              // redirect all unauthenticated request to google sign-in
                 .loginPage("/auth/google")
+                .successHandler(successHandler())
              .and()
+
              // permit unauthenticated access to favicon, signin page and auth pages for different social services
              .authorizeRequests()
                 .antMatchers("/favicon.ico", "/auth/**", "/google-signin**", "/social-signin/**").permitAll()
