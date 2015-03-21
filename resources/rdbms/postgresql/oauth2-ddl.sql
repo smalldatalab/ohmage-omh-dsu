@@ -2,7 +2,7 @@ CREATE DATABASE omh;
 \c omh
 
 CREATE TABLE oauth_access_token (
-  token_id          VARCHAR(256),
+  token_id          VARCHAR(256) PRIMARY KEY,
   token             BYTEA,
   authentication_id VARCHAR(256),
   user_name         VARCHAR(256),

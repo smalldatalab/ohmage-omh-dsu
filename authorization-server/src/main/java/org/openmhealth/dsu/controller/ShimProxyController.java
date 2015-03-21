@@ -13,11 +13,9 @@ import org.springframework.mobile.device.DeviceUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -58,9 +56,14 @@ public class ShimProxyController {
                 .pathSegment("de-authorize", shim)
                 .queryParam("username", auth.getName()).build().toUri();
     }
+    private String captalize (String s){
+        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    }
+
     @RequestMapping(value="/shims/authorize/{shim}", method= RequestMethod.GET)
-    @ResponseBody
-    public RedirectView authorize(Authentication auth, @PathVariable("shim") String shim, HttpServletRequest servletRequest) throws IOException {
+    public String authorize(Authentication auth, @PathVariable("shim") String shim,
+                            Model model,
+                            HttpServletRequest servletRequest) throws IOException {
 
 
 
@@ -86,9 +89,9 @@ public class ShimProxyController {
 
             }
             // redirect user to that url
-            RedirectView redirectView = new RedirectView();
-            redirectView.setUrl(redirectUrl);
-            return redirectView;
+            model.addAttribute("appName", captalize(shim));
+            model.addAttribute("url", redirectUrl);
+            return "connect";
         }else{
             throw new IOException("Shim returns invalid auth url" + redirectUrl);
         }
@@ -96,8 +99,16 @@ public class ShimProxyController {
 
 
     @RequestMapping(value="/shims/authorize/{shim}/callback", method= RequestMethod.GET)
-    @ResponseBody
-    public String callback(Authentication auth, @PathVariable("shim") String shim) {
-        return "You have connected your " + shim + ".";
+    public String callback(Authentication auth,
+                           @PathVariable("shim") String shim,
+                           @RequestParam(required = false) String error,
+                           Model model,
+                           HttpServletRequest servletRequest) throws IOException {
+        if(error == null) {
+            model.addAttribute("appName", captalize(shim));
+            return "connected";
+        }else{
+            return authorize(auth, shim, model, servletRequest);
+        }
     }
 }
