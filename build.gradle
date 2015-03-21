@@ -83,8 +83,7 @@ configure([
         compile("org.springframework.boot:spring-boot-starter-web") {
             exclude module: "spring-boot-starter-tomcat"
         }
-        // for template
-        compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+
         // for oauth
         compile 'org.springframework.security.oauth:spring-security-oauth2:2.0.6+'
         compile 'org.springframework:spring-web'

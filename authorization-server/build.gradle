@@ -1,1 +1,6 @@
 description = 'A simple OAuth2 authorisation server backed by a user data store.'
+
+dependencies {
+    // for template
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+}
