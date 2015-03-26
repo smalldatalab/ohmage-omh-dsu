@@ -19,6 +19,9 @@ dataStore: mongo
 
 application:
   url: https://lifestreams.smalldata.io/dsu/
+internalShimServer:
+  url: http://localhost:8083/
+
 server:
   port: 10002
 
@@ -36,13 +39,20 @@ spring:
     username: omh
     password: omh
 
+admindashboard:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/admindashboard
+    username: omh
+    password: omh
+
 http:
   mappers:
     jsonPrettyPrint: true
 
 google:
-  clientId: 48636836762-9p082qvhat6ojtgnhn4najkmkuolaieu.apps.googleusercontent.com
-  clientSecret: _flzl2k8JySJKnXsHxkQjqFv
+  clientId: 48636836762-mulldgpmet2r4s3f16s931ea9crcc64m.apps.googleusercontent.com
+  clientSecret: Gnn944Z3BAdZ9sImjx5p5GDi
   scope: email https://www.googleapis.com/auth/userinfo.profile
 
 logging:
