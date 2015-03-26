@@ -17,7 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -35,13 +38,6 @@ public class SurveyController {
     EndUserRepository endUserRepo;
     @Autowired
     private MappingJackson2HttpMessageConverter converter;
-
-
-    /*@RequestMapping(value="/surveys", method= RequestMethod.POST)
-    @ResponseBody
-    public Survey post(@RequestBody @Valid Survey s) {
-        return repo.save(s);
-    } */
 
 
     /**
@@ -69,15 +65,15 @@ public class SurveyController {
     }
     /**
      * A helper API that validates a survey schema, and return error messages if any errors exist.
-     * @param json survey schema in json.
      * @return parsed survey
      * @throws SurveySyntaxError
      */
-    @RequestMapping(value="/validate-survey", method=RequestMethod.POST)
+    @RequestMapping(value="/validate-survey", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String validate(@RequestParam String json) throws SurveySyntaxError {
+    public String validate(HttpServletRequest request) throws SurveySyntaxError {
         try {
-            converter.getObjectMapper().writeValueAsString(converter.getObjectMapper().readValue(json, Survey.class));
+            converter.getObjectMapper().writeValueAsString(
+                    converter.getObjectMapper().readValue(request.getInputStream(), Survey.class));
             return "Survey schema is valid";
         } catch (IOException e) {
             throw new SurveySyntaxError(e);
@@ -87,9 +83,20 @@ public class SurveyController {
 
     @ExceptionHandler(SurveySyntaxError.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String handleNoSuchClientException(SurveySyntaxError e) {
-        return e.getMessage();
+    public @ResponseBody String handleSurveySyntaxError(SurveySyntaxError e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
 
     }
+
+    /* Endpoint for users to create surveys.
+       It is disabled since we use admindahboard to manage the surveys.
+     */
+    /*@RequestMapping(value="/surveys", method= RequestMethod.POST)
+    @ResponseBody
+    public Survey post(@RequestBody @Valid Survey s) {
+        return repo.save(s);
+    } */
 }
 

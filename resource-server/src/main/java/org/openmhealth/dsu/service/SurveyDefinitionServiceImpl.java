@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Query survey definitions from the Admin Dashboard database.
+ * Disable it if the project does not use the admin dashboard.
  * Created by changun on 2/26/15.
  */
 @Service
@@ -49,8 +50,6 @@ public class SurveyDefinitionServiceImpl implements SurveyDefinitionService {
                     "WHERE  public_to_all_users = true; ";
     @Override
     public Iterable<Survey> findAllAvailableToUser(EndUser user) throws SQLException {
-        log.info(user.getEmailAddress().toString());
-
         JdbcTemplate select = new JdbcTemplate(dataSource);
         String[] args = {user.getEmailAddress().get().getAddress()};
 
@@ -66,9 +65,11 @@ public class SurveyDefinitionServiceImpl implements SurveyDefinitionService {
         @Override
         public Survey mapRow(ResultSet rs, int rowNum) throws SQLException {
             try {
-                return objectMapper.readValue(rs.getString("definition"), Survey.class);
+                Survey survey = objectMapper.readValue(rs.getString("definition"), Survey.class);
+                objectMapper.writeValueAsString(survey);
+                return survey;
             } catch (IOException e) {
-                  log.error("Failed to deserialize survey definition" + rs.getString("definition"), e);
+                  log.error("Failed to (de)serialize survey definition" + rs.getString("definition"), e);
             }
             return null;
         }
