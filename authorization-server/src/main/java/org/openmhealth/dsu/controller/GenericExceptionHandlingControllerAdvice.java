@@ -16,6 +16,7 @@
 
 package org.openmhealth.dsu.controller;
 
+import org.openmhealth.dsu.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,5 +61,13 @@ public class GenericExceptionHandlingControllerAdvice {
     public void handleException(Exception e, HttpServletRequest request) {
 
         log.warn("A {} request for '{}' failed.", request.getMethod(), request.getPathInfo(), e);
+    }
+
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public @ResponseBody
+    String handleResourceNotFoundException() {
+        return "The page you request does not exists";
     }
 }
