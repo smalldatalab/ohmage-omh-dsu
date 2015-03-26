@@ -60,6 +60,7 @@ public class ShimProxyController {
         return Character.toUpperCase(s.charAt(0)) + s.substring(1);
     }
 
+
     @RequestMapping(value="/shims/authorize/{shim}", method= RequestMethod.GET)
     public String authorize(Authentication auth, @PathVariable("shim") String shim,
                             Model model,
@@ -84,11 +85,12 @@ public class ShimProxyController {
 
         // check if it is a valid URL
         if (UrlUtils.isAbsoluteUrl(redirectUrl)) {
+            // if the page is viewed on a mobile phone, use phone-specific uri instead
+            // FIXME, this should be done at the shim server.
             if(DeviceUtils.getCurrentDevice(servletRequest).isMobile() && redirectUrl.startsWith("https://api.moves-app.com/oauth/v1/authorize")){
                 redirectUrl = redirectUrl.replace("https://api.moves-app.com/oauth/v1/authorize", "moves://app/authorize");
 
             }
-            // redirect user to that url
             model.addAttribute("appName", captalize(shim));
             model.addAttribute("url", redirectUrl);
             return "connect";
