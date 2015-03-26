@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 /**
+ * The configuration for accessing the database used by the admin dashboard.
+ * (usually a Postgres db)
+ * Only enable it when the admin dashboard is in use.
  * Created by changun on 2/26/15.
  */
 @Configuration

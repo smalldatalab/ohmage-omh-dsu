@@ -32,8 +32,11 @@ public class EndUser {
 
     private String username;
     private String passwordHash;
+    private String firstName;
+    private String lastName;
     private InternetAddress emailAddress;
     private OffsetDateTime registrationTimestamp;
+
 
     @Id
     public String getUsername() {
@@ -70,7 +73,21 @@ public class EndUser {
     public void setRegistrationTimestamp(OffsetDateTime registrationTimestamp) {
         this.registrationTimestamp = registrationTimestamp;
     }
+    public String getFirstName() {
+        return firstName;
+    }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
     @Override
     @SuppressWarnings("RedundantIfStatement")
     public boolean equals(Object object) {
@@ -103,4 +120,15 @@ public class EndUser {
     public int hashCode() {
         return username.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "EndUser{" +
+                "username='" + username + '\'' +
+                ", emailAddress=" + emailAddress +
+                ", registrationTimestamp=" + registrationTimestamp +
+                '}';
+    }
+
+
 }

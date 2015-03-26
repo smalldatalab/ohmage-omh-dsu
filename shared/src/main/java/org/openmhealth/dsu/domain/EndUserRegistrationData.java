@@ -18,8 +18,10 @@ package org.openmhealth.dsu.domain;
 
 import org.hibernate.validator.constraints.Email;
 
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Optional;
 
 
 /**
@@ -32,7 +34,8 @@ public class EndUserRegistrationData {
     private String username;
     private String password;
     private String emailAddress;
-
+    private String firstName;
+    private String lastName;
     @NotNull
     @Size(min = 1)
     public String getUsername() {
@@ -60,6 +63,21 @@ public class EndUserRegistrationData {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @SuppressWarnings("RedundantIfStatement")
@@ -97,4 +115,7 @@ public class EndUserRegistrationData {
 
         return result;
     }
+
+
+
 }
