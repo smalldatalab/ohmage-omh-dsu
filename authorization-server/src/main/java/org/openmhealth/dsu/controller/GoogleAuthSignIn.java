@@ -223,8 +223,9 @@ public class GoogleAuthSignIn {
     }
     @ExceptionHandler(InvalidSocialSigninAccessTokenException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String handleNoSuchClientException(InvalidSocialSigninAccessTokenException ex) {
-        return "the given social sign-in access token is invalid.";
+    public @ResponseBody String handleInvalidSocialSigninAccessTokenException(InvalidSocialSigninAccessTokenException ex) {
+        return "The given social sign-in access token is invalid. " +
+                "For Google Sign In, do remember to add the app into a Google Project and enable Google Plus Api";
 
     }
     @ExceptionHandler(InsufficientScopeException.class)
