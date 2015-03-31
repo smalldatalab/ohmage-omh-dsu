@@ -37,7 +37,7 @@ import java.util.Optional;
  * @author Emerson Farrugia
  */
 @Service
-public class EndUserUserDetailsServiceImpl implements UserDetailsService, SocialUserDetailsService{
+public class EndUserUserDetailsServiceImpl implements UserDetailsService, SocialUserDetailsService {
 
     @Autowired
     private EndUserService endUserService;

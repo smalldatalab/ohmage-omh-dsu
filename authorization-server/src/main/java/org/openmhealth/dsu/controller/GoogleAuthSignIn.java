@@ -41,11 +41,14 @@ import static org.openmhealth.dsu.configuration.OAuth2Properties.END_USER_ROLE;
 
 /**
  * Endpoints to facilitate Google Sign-In
+ *
  * @author Cheng-Kang Hsieh
  */
 @Controller
 public class GoogleAuthSignIn {
-    private @Value("${application.url}") String rootUrl;
+    private
+    @Value("${application.url}")
+    String rootUrl;
     @Autowired
     ClientDetailsService clientService;
     @Autowired
@@ -53,12 +56,14 @@ public class GoogleAuthSignIn {
     @Autowired
     EndUserService endUserService;
 
-    static class InvalidSocialSigninAccessTokenException extends Exception{}
-    static class InsufficientScopeException extends Exception{}
+    static class InvalidSocialSigninAccessTokenException extends Exception {
+    }
+
+    static class InsufficientScopeException extends Exception {
+    }
 
     @Autowired
     SocialAuthenticationServiceRegistry socialAuthService;
-
 
 
     /**
@@ -69,16 +74,16 @@ public class GoogleAuthSignIn {
      * The controller will then perform the following operations:
      * 1) Sign-in DSU in behalf of the user with the One-Time Auth Code.
      * 2) Obtain DSU authorization code. This auth code is associated with the requesting oauth client's  (determined by the given client id and secret)
-     *    and its default scopes.
+     * and its default scopes.
      * 3) Exchange the code for the access token and return to the app.
      */
-    @RequestMapping(value="/google-signin", method= RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/google-signin", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @Deprecated
     public ResponseEntity<String> GoogleAuthSignin(@RequestParam String code,
-                       @RequestParam String client_id,
-                       @RequestHeader(value="Authorization") String clientBasicAuth
-                       ) throws Exception{
+                                                   @RequestParam String client_id,
+                                                   @RequestHeader(value = "Authorization") String clientBasicAuth
+    ) throws Exception {
 
         // ** Step 1. Sign in using Google One-Time Auth Code
         RequestConfig requestConfig = RequestConfig.custom()
@@ -87,42 +92,42 @@ public class GoogleAuthSignIn {
         HttpClient client = HttpClients.custom()
                 .disableRedirectHandling()
                 .setDefaultRequestConfig(requestConfig).build();
-        HttpGet signin = new HttpGet(rootUrl + "/auth/google?code="+code);
+        HttpGet signin = new HttpGet(rootUrl + "/auth/google?code=" + code);
         HttpResponse res = client.execute(signin);
         // Check if sign-in succeeded
-        if (res.getFirstHeader("Set-Cookie")==null
+        if (res.getFirstHeader("Set-Cookie") == null
                 || res.getFirstHeader("Location") == null
                 || !res.getFirstHeader("Location").getValue().equals(rootUrl)) {
             // failed to sign in with the code
             Map<String, String> response = new HashMap<>();
             response.put("reason", "Failed to sign-in. The given Google One-Time Auth might be invalid.");
-            return  new ResponseEntity<>(new ObjectMapper().writeValueAsString(response),
-                                         HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ObjectMapper().writeValueAsString(response),
+                    HttpStatus.BAD_REQUEST);
         }
         res.getEntity().getContent().close();
 
 
         // ** Step 2. Send authorize request to DSU to obtain a DSU auth code **
-        HttpGet getAuthCode = new HttpGet(rootUrl+"/oauth/authorize?client_id="+ client_id + "&response_type=code");
+        HttpGet getAuthCode = new HttpGet(rootUrl + "/oauth/authorize?client_id=" + client_id + "&response_type=code");
         String dsuAuthCode = null;
         res = client.execute(getAuthCode);
-        if (res.getFirstHeader("Location") != null){
+        if (res.getFirstHeader("Location") != null) {
             // Extract the auth code from the redirect uri
             String locationUrl = res.getFirstHeader("Location").getValue();
             // parse the redirection uri and search for the "code" parameter
             List<NameValuePair> params = URLEncodedUtils.parse(new URI(locationUrl), "UTF-8");
 
             for (NameValuePair param : params) {
-                if(param.getName().equals("code")){
+                if (param.getName().equals("code")) {
                     dsuAuthCode = param.getValue();
                     break;
                 }
             }
         }
-        if (dsuAuthCode == null){
+        if (dsuAuthCode == null) {
             Map<String, String> response = new HashMap<>();
             response.put("reason", String.format("Failed to obtain an auth code from DSU. Check your client id."));
-            return  new ResponseEntity<>(new ObjectMapper().writeValueAsString(response),
+            return new ResponseEntity<>(new ObjectMapper().writeValueAsString(response),
                     HttpStatus.BAD_REQUEST);
         }
         res.getEntity().getContent().close();
@@ -138,7 +143,7 @@ public class GoogleAuthSignIn {
         exchangeForToken.setHeader(new BasicHeader("Authorization", clientBasicAuth));
         // return the results.
         res = client.execute(exchangeForToken);
-        return  new ResponseEntity<>(EntityUtils.toString(res.getEntity()),
+        return new ResponseEntity<>(EntityUtils.toString(res.getEntity()),
                 HttpStatus.valueOf(res.getStatusLine().getStatusCode()));
     }
 
@@ -150,18 +155,18 @@ public class GoogleAuthSignIn {
      * 2) Create the user, where username is "providerId:providerUserId" (if it does not exist)
      * 3) Generate a DSU access token for the requesting client
      */
-    @RequestMapping(value="/social-signin/{providerId}", method= RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/social-signin/{providerId}", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<OAuth2AccessToken>
-        socialAccessTokenSignIn
-            (@PathVariable String providerId,
-             @RequestParam String client_id,
-             @RequestParam String client_secret,
-             @RequestParam String access_token) throws InvalidSocialSigninAccessTokenException, InsufficientScopeException {
+    socialAccessTokenSignIn
+    (@PathVariable String providerId,
+     @RequestParam String client_id,
+     @RequestParam String client_secret,
+     @RequestParam String access_token) throws InvalidSocialSigninAccessTokenException, InsufficientScopeException {
 
         // Make sure the client id/secret are correct
         // Throw NoSuchClientException
         ClientDetails client = clientService.loadClientByClientId(client_id);
-        if(!client.getClientSecret().equals(client_secret)){
+        if (!client.getClientSecret().equals(client_secret)) {
             throw new NoSuchClientException("");
         }
         OAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientService);
@@ -171,17 +176,17 @@ public class GoogleAuthSignIn {
         try {
             OAuth2ConnectionFactory googleConnFactory = (OAuth2ConnectionFactory) socialAuthService.getConnectionFactory(providerId);
             conn = googleConnFactory.createConnection(new AccessGrant(access_token));
-        }catch (HttpClientErrorException ex){
-              if(ex.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
-                  throw new InvalidSocialSigninAccessTokenException();
-              }else{
-                  throw ex;
-              }
+        } catch (HttpClientErrorException ex) {
+            if (ex.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
+                throw new InvalidSocialSigninAccessTokenException();
+            } else {
+                throw ex;
+            }
         }
-        if(conn.getKey().getProviderUserId() == null || conn.fetchUserProfile().getEmail() == null){
+        if (conn.getKey().getProviderUserId() == null || conn.fetchUserProfile().getEmail() == null) {
             throw new InsufficientScopeException();
         }
-        if(!endUserService.doesUserExist(conn)){
+        if (!endUserService.doesUserExist(conn)) {
             endUserService.registerUser(conn);
         }
         String username = endUserService.findUser(conn).get().getUsername();
@@ -202,7 +207,7 @@ public class GoogleAuthSignIn {
         return new ResponseEntity<OAuth2AccessToken>(accessToken, headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/google-signin", method= RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/google-signin", method = RequestMethod.POST, produces = "application/json")
     @Deprecated
     public ResponseEntity<OAuth2AccessToken>
     googleAccessTokenSignIn
@@ -213,24 +218,30 @@ public class GoogleAuthSignIn {
     }
 
 
-
-
     @ExceptionHandler(NoSuchClientException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String handleNoSuchClientException(NoSuchClientException ex) {
+    public
+    @ResponseBody
+    String handleNoSuchClientException(NoSuchClientException ex) {
         return "client id/secret is invalid";
 
     }
+
     @ExceptionHandler(InvalidSocialSigninAccessTokenException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String handleInvalidSocialSigninAccessTokenException(InvalidSocialSigninAccessTokenException ex) {
+    public
+    @ResponseBody
+    String handleInvalidSocialSigninAccessTokenException(InvalidSocialSigninAccessTokenException ex) {
         return "The given social sign-in access token is invalid. " +
                 "For Google Sign In, do remember to add the app into a Google Project and enable Google Plus Api";
 
     }
+
     @ExceptionHandler(InsufficientScopeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String handleInsufficientScopeException(InsufficientScopeException ex) {
+    public
+    @ResponseBody
+    String handleInsufficientScopeException(InsufficientScopeException ex) {
         return "the given social sign-in access token do not have sufficient scope to access " +
                 "the user's id and email address.";
 

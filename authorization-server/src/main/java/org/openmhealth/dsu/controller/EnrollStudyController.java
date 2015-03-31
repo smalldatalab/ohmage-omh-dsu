@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Optional;
 
@@ -30,18 +32,18 @@ public class EnrollStudyController {
         Optional<EndUser> user = endUserRepo.findOne(auth.getName());
         Optional<Study> study = studyService.getStudyByName(studyName);
         boolean exist = user.isPresent() && study.isPresent();
-        if(exist){
-            if (!studyService.isUserInStudy(user.get(), study.get())) {
+        if (exist) {
+            if (!studyService.isUserEnrolled(user.get(), study.get())) {
                 model.addAttribute("study", study.get());
+                model.addAttribute("user", user.get());
                 return "enroll-study";
             } else {
                 // user already in the study. show "Enrolled!" page.
                 return enrollResult(auth, studyName, model);
             }
-        }else {
+        } else {
             throw new ResourceNotFoundException();
         }
-
 
     }
 
@@ -50,17 +52,19 @@ public class EnrollStudyController {
         Optional<EndUser> user = endUserRepo.findOne(auth.getName());
         Optional<Study> study = studyService.getStudyByName(studyName);
         if (user.isPresent() && study.isPresent()) {
-            studyService.enrollUserToStudy(user.get(), study.get());
+            studyService.enrollUser(user.get(), study.get());
             // check if enrollment succeeded
-            if(studyService.isUserInStudy(user.get(), study.get())){
+            if (studyService.isUserEnrolled(user.get(), study.get())) {
+                model.addAttribute("participantId", studyService.getParticipantId(user.get(), study.get()).get());
+                model.addAttribute("user", user.get());
                 model.addAttribute("study", study.get());
                 return "enroll-study-result";
-            }else{
+            } else {
                 // throw error
                 String msg = "Failed to add the " + user.get() + " to " + study.get();
                 throw new RuntimeException(msg);
             }
-        }else {
+        } else {
             throw new ResourceNotFoundException();
         }
     }

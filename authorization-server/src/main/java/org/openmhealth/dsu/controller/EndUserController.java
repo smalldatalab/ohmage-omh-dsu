@@ -17,34 +17,15 @@
 package org.openmhealth.dsu.controller;
 
 
-import org.openmhealth.dsu.domain.EndUser;
-import org.openmhealth.dsu.domain.EndUserRegistrationData;
-import org.openmhealth.dsu.service.EndUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.social.google.api.Google;
+import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.util.CookieGenerator;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import java.security.SecureRandom;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -54,9 +35,24 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  */
 @Controller
 public class EndUserController {
-    @RequestMapping(value="/", method= RequestMethod.GET)
+    @Autowired
+    ConnectionRepository connectionRepository;
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public String home() {
-          return "You have signed in.";
+        return "You have signed in.";
+    }
+
+    @RequestMapping(value = "/signin", method = RequestMethod.GET)
+    public String singout() throws ServletException {
+        return "signin";
+    }
+
+    @RequestMapping(value = "/signout", method = RequestMethod.GET)
+    @ResponseBody
+    public String singout(HttpServletRequest request) throws ServletException {
+        request.logout();
+        return "You have signed out.";
     }
 }

@@ -50,7 +50,7 @@ public class EndUserServiceImpl implements EndUserService {
 
     private static final Logger log = LoggerFactory.getLogger(EndUserServiceImpl.class);
 
-    private String socialConnectionToUsername(Connection<?> socialConnection){
+    private String socialConnectionToUsername(Connection<?> socialConnection) {
         return socialConnection.getKey().toString();
     }
 
@@ -85,8 +85,7 @@ public class EndUserServiceImpl implements EndUserService {
         if (registrationData.getEmailAddress() != null) {
             try {
                 endUser.setEmailAddress(new InternetAddress(registrationData.getEmailAddress()));
-            }
-            catch (AddressException e) {
+            } catch (AddressException e) {
                 throw new EndUserRegistrationException(registrationData, e);
             }
         }

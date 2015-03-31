@@ -50,7 +50,7 @@ public class GenericExceptionHandlingControllerAdvice {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handleMissingServletRequestParameterException(MissingServletRequestParameterException e,
-            HttpServletRequest request) {
+                                                              HttpServletRequest request) {
 
         log.debug("A {} request for '{}' failed because parameter '{}' is missing.",
                 request.getMethod(), request.getPathInfo(), e.getParameterName(), e);
@@ -66,7 +66,8 @@ public class GenericExceptionHandlingControllerAdvice {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public @ResponseBody
+    public
+    @ResponseBody
     String handleResourceNotFoundException() {
         return "The page you request does not exists";
     }
