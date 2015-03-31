@@ -12,12 +12,11 @@
             <div class="row">
                 <div class="col-sm-12">
                     <h2>
-                        Enrolled!
+                        Sign In
                     </h2>
-                    <h3>
-                        Your Participant ID is <strong><span class="bold" th:text="${participantId}"></span></strong>
-
-                    </h3>
+                    <a th:href="@{/auth/google}">
+                        <img th:src="@{/images/signin-with-google.png}" alt="Sign in with Google"/>
+                    </a>
                 </div>
                 <div class="col-sm-3 col-sm-offset-1 player-wrapper">
                 </div>

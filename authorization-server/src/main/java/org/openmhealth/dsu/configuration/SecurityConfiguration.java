@@ -17,7 +17,6 @@
 package org.openmhealth.dsu.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,10 +28,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.social.google.api.Google;
-import org.springframework.social.google.security.GoogleAuthenticationService;
-import org.springframework.social.security.SocialAuthenticationServiceLocator;
-import org.springframework.social.security.SocialAuthenticationServiceRegistry;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 
@@ -67,10 +62,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/**/*.css", "/**/*.png", "/**/*.gif", "/**/*.jpg",
+                .antMatchers("/**/*.css", "/**/*.png", "/**/*.gif", "/**/*.jpg", "/**/*..ttf",
                         // allow check_token endpoint to be accessed by all
                         "/oauth/check_token");
     }
+
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler successHandler() {
         SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
@@ -81,25 +77,34 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
-             // redirect all unauthenticated request to google sign-in
-                .loginPage("/auth/google")
+                // redirect all unauthenticated request to google sign-in
+                .loginPage("/signin")
                 .successHandler(successHandler())
-             .and()
+                .and()
 
-             // permit unauthenticated access to favicon, signin page and auth pages for different social services
-             .authorizeRequests()
-                .antMatchers("/favicon.ico", "/auth/**", "/google-signin**", "/social-signin/**").permitAll()
+                        // permit unauthenticated access to favicon, signin page and auth pages for different social services
+                .authorizeRequests()
+                .antMatchers(
+                        "/css/**",
+                        "/images/**",
+                        "/js/**",
+                        "/fonts/**",
+                        "/favicon.ico",
+                        "/signin",
+                        "/auth/**",
+                        "/google-signin**",
+                        "/social-signin/**").permitAll()
                 .antMatchers("/oauth/token", "/oauth/token", "/oauth/check_token").permitAll()
                 .antMatchers("/**").authenticated()
-             // enable cookie
-              .and()
+                // enable cookie
+                .and()
                 .rememberMe()
-              // apply Spring Social config that add Spring Social to be an AuthenticationProvider
-              .and()
+                        // apply Spring Social config that add Spring Social to be an AuthenticationProvider
+                .and()
                 .apply(new SpringSocialConfigurer())
-              .and()
-              // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
-              .csrf().disable();
+                .and()
+                        // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
+                .csrf().disable();
 
     }
 }

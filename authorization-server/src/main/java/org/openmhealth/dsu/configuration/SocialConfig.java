@@ -17,14 +17,12 @@ package org.openmhealth.dsu.configuration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmhealth.dsu.domain.EndUserRegistrationData;
 import org.openmhealth.dsu.service.EndUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
 import org.springframework.social.config.annotation.EnableSocial;
@@ -36,16 +34,17 @@ import org.springframework.social.connect.web.ConnectController;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.api.impl.GoogleTemplate;
 import org.springframework.social.google.connect.GoogleAdapter;
-import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.google.connect.GoogleOAuth2Template;
-import org.springframework.social.google.connect.GoogleServiceProvider;
-import org.springframework.social.oauth1.AbstractOAuth1ServiceProvider;
-import org.springframework.social.oauth2.*;
+import org.springframework.social.oauth2.AbstractOAuth2ServiceProvider;
+import org.springframework.social.oauth2.AccessGrant;
+import org.springframework.social.oauth2.GrantType;
+import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
 import org.springframework.util.MultiValueMap;
 
 /**
  * Spring Social Configuration.
+ *
  * @author Andy Hsieh
  */
 @Configuration
@@ -55,47 +54,56 @@ public class SocialConfig implements SocialConfigurer {
     EndUserService endUserService;
     @Autowired
     Environment environment;
-    private @Value("${application.url}") String rootUrl;
-    private @Value("${google.scope}") String googleScope;
+    private
+    @Value("${application.url}")
+    String rootUrl;
+    private
+    @Value("${google.scope}")
+    String googleScope;
 
     protected final Log logger = LogFactory.getLog(getClass());
 
-    String getCustomRedirectUri(){
-        if(rootUrl != null){
+    String getCustomRedirectUri() {
+        if (rootUrl != null) {
             return rootUrl + "auth/google";
         }
         return null;
     }
-    class CustomGoogleOAuthTemplate extends  GoogleOAuth2Template{
+
+    class CustomGoogleOAuthTemplate extends GoogleOAuth2Template {
 
         public CustomGoogleOAuthTemplate(String clientId, String clientSecret) {
             super(clientId, clientSecret);
         }
+
         @Override
         public String buildAuthorizeUrl(GrantType grantType, OAuth2Parameters parameters) {
-            if(parameters.getScope().equals("")){
+            // always prompt user for approval
+            parameters.set("approval_prompt", "force");
+            if (parameters.getScope().equals("")) {
                 // the scope that allow access to the user's email address and other profile
                 parameters.setScope(googleScope);
             }
 
             // if the application.url is given, set the redirect_url to it to let a DSU behind
             // a proxy work
-            if(getCustomRedirectUri() != null){
+            if (getCustomRedirectUri() != null) {
                 parameters.setRedirectUri(getCustomRedirectUri());
             }
             return super.buildAuthorizeUrl(grantType, parameters);
         }
+
         @Override
         public AccessGrant exchangeForAccess(String authorizationCode, String redirectUri, MultiValueMap<String, String> additionalParameters) {
-            // Allow mobile apps to direct send authorization code to /auth/google. e.g. /auth/google?code=fromApp_{code}
+            // DEPRECATED: Allow mobile apps to direct send authorization code to /auth/google. e.g. /auth/google?code=fromApp_{code}
             // such auth code is prefixed by "fromApp_" and so is distinguishable from the code redirected from Google
-            if(authorizationCode.startsWith("fromApp_")){
+            if (authorizationCode.startsWith("fromApp_")) {
                 authorizationCode = authorizationCode.substring("fromApp_".length());
                 // Google requires a special redirect_url to be used with the mobile auth code
                 redirectUri = "urn:ietf:wg:oauth:2.0:oob";
             } // if the application.url is given, set the redirect_url as it to let a DSU behind
-             // a proxy to work
-            else if(getCustomRedirectUri() != null){
+            // a proxy to work
+            else if (getCustomRedirectUri() != null) {
                 redirectUri = getCustomRedirectUri();
             }
             logger.info(String.format("code: %s, redirect_uri: %s", authorizationCode, redirectUri));
@@ -103,18 +111,21 @@ public class SocialConfig implements SocialConfigurer {
         }
     }
 
-    class CustomGoogleOAuth2ServiceProvider extends  AbstractOAuth2ServiceProvider<Google>{
+    class CustomGoogleOAuth2ServiceProvider extends AbstractOAuth2ServiceProvider<Google> {
         public CustomGoogleOAuth2ServiceProvider(String clientId, String clientSecret) {
             super(new CustomGoogleOAuthTemplate(clientId, clientSecret));
         }
+
         @Override
         public Google getApi(String accessToken) {
             return new GoogleTemplate(accessToken);
         }
     }
+
     /**
      * Register google social service connection. More connections (Facebook, Twitter, etc)
      * can be added here too.
+     *
      * @param config
      * @param environment
      */
@@ -123,11 +134,11 @@ public class SocialConfig implements SocialConfigurer {
 
         OAuth2ConnectionFactory<Google> google =
                 new OAuth2ConnectionFactory<Google>("google",
-                    new CustomGoogleOAuth2ServiceProvider(
-                            environment.getProperty("google.clientId"),
-                            environment.getProperty("google.clientSecret")
-                    ),
-                    new GoogleAdapter());
+                        new CustomGoogleOAuth2ServiceProvider(
+                                environment.getProperty("google.clientId"),
+                                environment.getProperty("google.clientSecret")
+                        ),
+                        new GoogleAdapter());
         config.addConnectionFactory(google);
     }
 
@@ -141,13 +152,13 @@ public class SocialConfig implements SocialConfigurer {
      * A social ConnectionSignUp implementation that automatically sign up any
      * users that have been connected with a social service (e.g. google)
      */
-    private class ImplicitEndUserSignUp implements ConnectionSignUp{
+    private class ImplicitEndUserSignUp implements ConnectionSignUp {
         @Override
         public String execute(Connection<?> connection) {
-            if(!endUserService.doesUserExist(connection)){
+            if (!endUserService.doesUserExist(connection)) {
                 endUserService.registerUser(connection);
             }
-            return  endUserService.findUser(connection).get().getUsername();
+            return endUserService.findUser(connection).get().getUsername();
         }
     }
 
@@ -155,6 +166,7 @@ public class SocialConfig implements SocialConfigurer {
      * Create an in-memory repository to store the connections with social services.
      * A signUp object is registered to implicitly sign up any users that have connected
      * with a social service.
+     *
      * @param connectionFactoryLocator
      * @return a in-memory users connection repository
      */
@@ -167,6 +179,7 @@ public class SocialConfig implements SocialConfigurer {
 
     /**
      * Controller that handler oauth flow with social services.
+     *
      * @param connectionFactoryLocator
      * @param connectionRepository
      * @return
