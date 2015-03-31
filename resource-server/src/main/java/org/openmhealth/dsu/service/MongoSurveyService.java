@@ -4,7 +4,6 @@ import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.dsu.domain.ohmage.survey.Survey;
 import org.openmhealth.dsu.repository.MongoSurveyDefinitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 
@@ -13,11 +12,11 @@ import java.sql.SQLException;
  * Created by changun on 3/1/15.
  */
 //@Service
-public class MongoSurveyDefinitionService implements SurveyDefinitionService  {
+public class MongoSurveyService implements SurveyService {
     @Autowired
     MongoSurveyDefinitionRepository repo;
     @Override
-    public Iterable<Survey> findAllAvailableToUser(EndUser user) throws SQLException {
+    public Iterable<Survey> findAllSurveysAvailableToUser(EndUser user) throws SQLException {
         return repo.findAll();
     }
 }

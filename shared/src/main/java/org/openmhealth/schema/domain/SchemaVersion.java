@@ -16,12 +16,12 @@
 
 package org.openmhealth.schema.domain;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 
 /**
@@ -42,9 +42,9 @@ public class SchemaVersion implements Comparable<SchemaVersion> {
 
     public SchemaVersion(String version) {
 
-        checkNotNull(version);
+        Preconditions.checkNotNull(version);
         Matcher matcher = VERSION_PATTERN.matcher(version);
-        checkArgument(matcher.matches());
+        Preconditions.checkArgument(matcher.matches());
 
         this.major = Integer.valueOf(matcher.group(1));
         this.minor = Integer.valueOf(matcher.group(2));
@@ -57,9 +57,9 @@ public class SchemaVersion implements Comparable<SchemaVersion> {
 
     public SchemaVersion(int major, int minor, String qualifier) {
 
-        checkArgument(major >= 0);
-        checkArgument(minor >= 0);
-        checkArgument(qualifier == null || QUALIFIER_PATTERN.matcher(qualifier).matches());
+        Preconditions.checkArgument(major >= 0);
+        Preconditions.checkArgument(minor >= 0);
+        Preconditions.checkArgument(qualifier == null || QUALIFIER_PATTERN.matcher(qualifier).matches());
 
         this.major = major;
         this.minor = minor;

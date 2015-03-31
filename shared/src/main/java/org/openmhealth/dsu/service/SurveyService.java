@@ -12,12 +12,12 @@ import java.sql.SQLException;
  * Created by changun on 12/17/14.
  */
 
-public interface SurveyDefinitionService {
+public interface SurveyService {
     /**
      * Find the surveys that should be visible to the given user.
      * @param user
      * @return A list of surveys should display to this user.
      * @throws SQLException
      */
-    Iterable<Survey> findAllAvailableToUser(EndUser user) throws SQLException;
+    Iterable<Survey> findAllSurveysAvailableToUser(EndUser user) throws SQLException;
 }

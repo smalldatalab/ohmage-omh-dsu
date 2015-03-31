@@ -24,12 +24,21 @@ public interface StudyService {
      * @param study the study object
      * @return if the user has already enrolled the study
      */
-    boolean isUserInStudy(EndUser user, Study study);
+    boolean isUserEnrolled(EndUser user, Study study);
+
+    /**
+     * Get the user's participant ID that is specific for this study.
+     * This id will help the study coordinator to identify the user in the study
+     * @param user  the EndUser object of the current user
+     * @param study the study object
+     * @return if the user has already enrolled the study
+     */
+    Optional<String> getParticipantId(EndUser user, Study study);
 
     /**
      * Enroll a user to a study, or do nothing if the user has already enrolled.
      * @param user  the EndUser object of the current user
      * @param study the study object
      */
-    void enrollUserToStudy(EndUser user, Study study);
+    void enrollUser(EndUser user, Study study);
 }

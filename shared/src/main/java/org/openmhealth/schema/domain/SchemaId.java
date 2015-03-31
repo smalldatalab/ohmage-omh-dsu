@@ -17,11 +17,10 @@
 package org.openmhealth.schema.domain;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.regex.Pattern.compile;
 
 
@@ -48,11 +47,11 @@ public class SchemaId implements Comparable<SchemaId> {
 
     public SchemaId(String namespace, String name, SchemaVersion version) {
 
-        checkNotNull(namespace);
-        checkArgument(isValidNamespace(namespace));
-        checkNotNull(name);
-        checkArgument(isValidName(name));
-        checkNotNull(version);
+        Preconditions.checkNotNull(namespace);
+        Preconditions.checkArgument(isValidNamespace(namespace));
+        Preconditions.checkNotNull(name);
+        Preconditions.checkArgument(isValidName(name));
+        Preconditions.checkNotNull(version);
 
         this.namespace = namespace;
         this.name = name;

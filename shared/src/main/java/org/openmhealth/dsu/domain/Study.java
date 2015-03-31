@@ -1,6 +1,7 @@
 package org.openmhealth.dsu.domain;
 
 /**
+ * A barebone model for a Study.
  * Created by Cheng-Kang Hsieh on 3/25/15.
  */
 public class Study {
@@ -24,7 +25,6 @@ public class Study {
         this.id = id;
         this.name = name;
     }
-
     @Override
     public String toString() {
         return "Study{" +

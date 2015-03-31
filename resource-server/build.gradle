@@ -1,14 +1,2 @@
 description = 'An OAuth2 resource server that manages data point resources.'
 
-
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-}
-
-dependencies {
-    compile 'com.github.fge:json-schema-validator:2.2.5'
-    compile name: 'Concordia-1.2.4'
-    testCompile 'com.jayway.jsonpath:json-path'
-}

@@ -4,21 +4,20 @@ package org.openmhealth.dsu.controller;
  * Created by changun on 12/17/14.
  */
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.dsu.domain.ohmage.survey.Survey;
 import org.openmhealth.dsu.repository.EndUserRepository;
-import org.openmhealth.dsu.service.SurveyDefinitionService;
+import org.openmhealth.dsu.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
@@ -33,7 +32,7 @@ import java.util.Optional;
 public class SurveyController {
 
     @Autowired
-    SurveyDefinitionService repo;
+    SurveyService repo;
     @Autowired
     EndUserRepository endUserRepo;
     @Autowired
@@ -51,7 +50,7 @@ public class SurveyController {
     public Iterable<Survey> get(Authentication auth) throws SQLException {
         Optional<EndUser> user = endUserRepo.findOne(auth.getName())   ;
         if(user.isPresent()){
-            return repo.findAllAvailableToUser(user.get());
+            return repo.findAllSurveysAvailableToUser(user.get());
         }
         else return null;
     }
@@ -64,16 +63,18 @@ public class SurveyController {
         }
     }
     /**
-     * A helper API that validates a survey schema, and return error messages if any errors exist.
+     * A helper endpoint that validates a survey schema, and return error messages if any errors exist in the schema.
      * @return parsed survey
      * @throws SurveySyntaxError
      */
     @RequestMapping(value="/validate-survey", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String validate(HttpServletRequest request) throws SurveySyntaxError {
+    public String validate(@RequestBody InputStream input) throws SurveySyntaxError {
         try {
+
             converter.getObjectMapper().writeValueAsString(
-                    converter.getObjectMapper().readValue(request.getInputStream(), Survey.class));
+                    converter.getObjectMapper().readValue(
+                            input, Survey.class));
             return "Survey schema is valid";
         } catch (IOException e) {
             throw new SurveySyntaxError(e);

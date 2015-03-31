@@ -1,4 +1,4 @@
-package org.openmhealth.dsu.configuration;
+package org.openmhealth.dsu.admindashboard;
 
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;

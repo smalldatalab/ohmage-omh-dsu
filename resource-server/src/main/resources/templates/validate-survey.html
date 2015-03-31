@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+</head>
+<body>
+
+
+<textarea id="code">
+    {
+    "schema_id": {
+    "namespace": "io.smalldata",
+    "name": "test",
+    "version": "1.0"
+    },
+    "survey_items": [
+    {
+    "survey_item_type": "message",
+    "survey_item_id": "myMessage",
+    "condition": null,
+    "text": "This is a sample message."
+    },
+    {
+    "survey_item_type": "audio_prompt",
+    "survey_item_id": "myAudio",
+    "condition": null,
+    "display_type": "recorder",
+    "text": "Record an audio sample.",
+    "display_label": "Audio",
+    "skippable": false,
+    "default_response": null,
+    "max_duration": null
+    },
+    {
+    "survey_item_type": "image_prompt",
+    "survey_item_id": "myImage",
+    "condition": null,
+    "display_type": "camera",
+    "text": "Take a picture.",
+    "display_label": "Image",
+    "skippable": false,
+    "default_response": null,
+    "max_dimension": null
+    },
+    {
+    "survey_item_type": "video_prompt",
+    "survey_item_id": "myVideo",
+    "condition": null,
+    "display_type": "camera",
+    "text": "Take a video.",
+    "display_label": "Video",
+    "skippable": false,
+    "default_response": null,
+    "max_duration": null
+    },
+    {
+    "survey_item_type": "number_prompt",
+    "survey_item_id": "myNumber",
+    "condition": null,
+    "display_type": "picker",
+    "text": "Choose a number.",
+    "display_label": "Number",
+    "skippable": false,
+    "default_response": null,
+    "min": null,
+    "max": null,
+    "whole_numbers_only": false
+    },
+    {
+    "survey_item_type": "remote_activity_prompt",
+    "survey_item_id": "myRemoteActivity",
+    "condition": null,
+    "display_type": "launcher",
+    "text": "Launch the remote activity.",
+    "display_label": "Remote Activity",
+    "skippable": false,
+    "default_response": null,
+    "uri": "http://www.google.com/",
+    "definition": {
+    "type": "object",
+    "optional": false,
+    "fields": []
+    },
+    "apps": []
+    },
+    {
+    "survey_item_type": "number_single_choice_prompt",
+    "survey_item_id": "myNumberSingleChoicePrompt",
+    "condition": null,
+    "display_type": "list",
+    "text": "Choose a number.",
+    "display_label": "Number Single Choice",
+    "skippable": false,
+    "default_response": null,
+    "choices": [
+    {
+    "text": "The text to show.",
+    "value": 1
+    }
+    ]
+    },
+    {
+    "survey_item_type": "string_single_choice_prompt",
+    "survey_item_id": "myStringSingleChoicePrompt",
+    "condition": null,
+    "display_type": "list",
+    "text": "Choose a string.",
+    "display_label": "String Single Choice",
+    "skippable": false,
+    "default_response": null,
+    "choices": [
+    {
+    "text": "The text to show.",
+    "value": "foo"
+    }
+    ]
+    },
+    {
+    "survey_item_type": "number_multi_choice_prompt",
+    "survey_item_id": "myNumberMultiChoicePrompt",
+    "condition": null,
+    "display_type": "list",
+    "text": "Choose multiple numbers.",
+    "display_label": "Number Multi Choice",
+    "skippable": false,
+    "default_response": null,
+    "choices": [
+    {
+    "text": "More text to show.",
+    "value": 2
+    },
+    {
+    "text": "The text to show.",
+    "value": 1
+    }
+    ],
+    "min_choices": null,
+    "max_choices": null
+    },
+    {
+    "survey_item_type": "string_multi_choice_prompt",
+    "survey_item_id": "myStringMultiChoicePrompt",
+    "condition": null,
+    "display_type": "list",
+    "text": "Choose multiple strings.",
+    "display_label": "String Multi Choice",
+    "skippable": false,
+    "default_response": null,
+    "choices": [
+    {
+    "text": "More text to show.",
+    "value": "bar"
+    },
+    {
+    "text": "The text to show.",
+    "value": "foo"
+    }
+    ],
+    "min_choices": null,
+    "max_choices": null
+    },
+    {
+    "survey_item_type": "text_prompt",
+    "survey_item_id": "myText",
+    "condition": null,
+    "display_type": "textbox",
+    "text": "Enter some text.",
+    "display_label": "Text",
+    "skippable": false,
+    "default_response": null,
+    "min": null,
+    "max": null
+    },
+    {
+    "survey_item_type": "timestamp_prompt",
+    "survey_item_id": "myTimestamp",
+    "condition": null,
+    "display_type": "picker",
+    "text": "Choose a date and time.",
+    "display_label": "Timestamp",
+    "skippable": false,
+    "default_response": null
+    }
+    ]
+    }
+</textarea>
+<button type="submit" class="btn btn-primary btn-lg">Validate</button>
+<div id="response">
+
+</div>
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/mode/javascript/javascript.min.js"></script>
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        mode:  "javascript"
+
+
+    }).setSize(500, 600);
+
+    jQuery["postJSON"] = function( url, data, callback ) {
+        // shift arguments if data argument was omitted
+        if ( jQuery.isFunction( data ) ) {
+            callback = data;
+            data = undefined;
+        }
+
+        return jQuery.ajax({
+            url: url,
+            type: "POST",
+            contentType:"application/json; charset=utf-8",
+            dataType: "json",
+            data: data,
+            success: callback
+        });
+    };
+
+    $("button").click($.postJSON("./validate-survey", editor.getValue(), function(ret){
+        $("#response").html(ret);
+    }))
+</script>
+
+</body>
+</html>
