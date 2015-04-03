@@ -44,8 +44,8 @@ admindashboard:
 
 
 multipart:
-  maxFileSize: 20MB
-  maxRequestSize: 20MB
+  maxFileSize: 50MB
+  maxRequestSize: 50MB
 
 http:
   mappers:
