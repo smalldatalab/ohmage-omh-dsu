@@ -62,9 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/**/*.css", "/**/*.png", "/**/*.gif", "/**/*.jpg", "/**/*..ttf",
-                        // allow check_token endpoint to be accessed by all
-                        "/oauth/check_token");
+                .antMatchers("/css/**", "/images/**", "/js/**", "/fonts/**", "/favicon.ico");
     }
 
     @Bean
@@ -85,16 +83,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         // permit unauthenticated access to favicon, signin page and auth pages for different social services
                 .authorizeRequests()
                 .antMatchers(
-                        "/css/**",
-                        "/images/**",
-                        "/js/**",
-                        "/fonts/**",
-                        "/favicon.ico",
                         "/signin",
                         "/auth/**",
                         "/google-signin**",
                         "/social-signin/**").permitAll()
-                .antMatchers("/oauth/token", "/oauth/token", "/oauth/check_token").permitAll()
+                .antMatchers("/oauth/token", "/oauth/check_token").permitAll()
+                .antMatchers("/internal/**").hasIpAddress("127.0.0.1")
                 .antMatchers("/**").authenticated()
                 // enable cookie
                 .and()
@@ -107,4 +101,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable();
 
     }
+
 }
