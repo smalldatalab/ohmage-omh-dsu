@@ -83,15 +83,18 @@ public class SurveyController {
     /**
      * A helper endpoint that validates a survey schema, and return error messages if any errors exist in the schema.
      * @return parsed survey
-     * @throws SurveySyntaxError
      */
     @RequestMapping(value="/surveys/validate-survey", method=RequestMethod.GET)
     public String validate() {
         return "validate-survey";
     }
 
-
-    public static String getRootCauseMessage(final Throwable th) {
+    /**
+     * Recursively get the root cause message of a Throwable.
+     * @param th Throwable
+     * @return the root cause message
+     */
+    private static String getRootCauseMessage(final Throwable th) {
         if(th.getCause() != null && th != th.getCause()){
             return getRootCauseMessage(th.getCause());
         }else{
