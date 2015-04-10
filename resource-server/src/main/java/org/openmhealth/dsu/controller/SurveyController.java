@@ -4,6 +4,7 @@ package org.openmhealth.dsu.controller;
  * Created by changun on 12/17/14.
  */
 
+import org.apache.http.util.ExceptionUtils;
 import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.dsu.domain.ohmage.survey.Survey;
 import org.openmhealth.dsu.repository.EndUserRepository;
@@ -17,9 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -67,14 +65,14 @@ public class SurveyController {
      * @return parsed survey
      * @throws SurveySyntaxError
      */
-    @RequestMapping(value="/validate-survey", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/surveys/validate-survey", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String validate(@RequestBody InputStream input) throws SurveySyntaxError {
+    public String validate(HttpServletRequest request) throws SurveySyntaxError {
         try {
 
             converter.getObjectMapper().writeValueAsString(
                     converter.getObjectMapper().readValue(
-                            input, Survey.class));
+                            request.getInputStream(), Survey.class));
             return "Survey schema is valid";
         } catch (IOException e) {
             throw new SurveySyntaxError(e);
@@ -82,13 +80,29 @@ public class SurveyController {
 
     }
 
+    /**
+     * A helper endpoint that validates a survey schema, and return error messages if any errors exist in the schema.
+     * @return parsed survey
+     * @throws SurveySyntaxError
+     */
+    @RequestMapping(value="/surveys/validate-survey", method=RequestMethod.GET)
+    public String validate() {
+        return "validate-survey";
+    }
+
+
+    public static String getRootCauseMessage(final Throwable th) {
+        if(th.getCause() != null && th != th.getCause()){
+            return getRootCauseMessage(th.getCause());
+        }else{
+            return th.getMessage();
+        }
+
+    }
     @ExceptionHandler(SurveySyntaxError.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody String handleSurveySyntaxError(SurveySyntaxError e) {
-        StringWriter sw = new StringWriter();
-        e.printStackTrace(new PrintWriter(sw));
-        return sw.toString();
-
+        return  getRootCauseMessage(e);
     }
 
     /* Endpoint for users to create surveys.

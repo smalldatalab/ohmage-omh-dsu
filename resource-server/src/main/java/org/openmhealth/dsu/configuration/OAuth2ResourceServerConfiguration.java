@@ -42,7 +42,7 @@ public class OAuth2ResourceServerConfiguration extends ResourceServerConfigurerA
 
         http.authorizeRequests()
                 // validate-survey endpoint should be accessible by anyone
-                .antMatchers("/*/validate-survey**").permitAll()
+                .antMatchers("/*/surveys/validate-survey").permitAll()
                 .anyRequest().authenticated();
     }
 }
