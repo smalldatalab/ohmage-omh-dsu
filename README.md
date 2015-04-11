@@ -1,7 +1,7 @@
 # Ohmage OMH: A platform for mHealth applications
 Ohmage OMH, an implementation of [Open-mHealth standards](http://www.openmhealth.org/), is a batteries-included open source platform for mHealth applications. It offers cross-platform mobile apps that collect most common mHealth data, a dashboard for deploying studies, simple integration with 3rd-party services, and secure APIs, along with cross-platforms libraries.
 
-### Open-source mobile apps made with love
+### Open-source mobile apps
   * **Ohmage** for creating and distributing multimedia surveys. ([Android](https://play.google.com/store/apps/details?id=io.smalldatalab.android.ohmage), [iOS](https://ohmage-omh.smalldata.io/ios/ohmage.html))
   * **PAM** for accurate and affect measuring. ([Android](https://play.google.com/store/apps/details?id=io.smalldatalab.android.pam), [iOS](https://ohmage-omh.smalldata.io/ios/pam.html))
   * **Mobility** for zero-effort activity tracking. ([Android](https://play.google.com/store/apps/details?id=io.smalldatalab.android.mobility), [iOS](https://ohmage-omh.smalldata.io/ios/mobility.html))
