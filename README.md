@@ -13,11 +13,18 @@ Ohmage OMH, an implementation of [Open-mHealth standards](http://www.openmhealth
   * and more
 
 ### Managing studies of any sizes
-  * Simple on-boarding process ([Enroll test study](ohmage-omh.smalldata.io/dsu/studies/Study for testing surveys only/enroll))
-  * Data visualizations for troubleshooting and diagnoses
+  * Simple on-boarding process ([enroll test study now!](ohmage-omh.smalldata.io/dsu/studies/Study for testing surveys only/enroll))
   * Dashboard for study management ([link](https://ohmage-omh.smalldata.io/admin/))
-  * Data export in the format you like (CSV, JSON)
+  * Data visualizations for troubleshooting and diagnoses ([mobility-view](https://github.com/smalldatalab/omh-dsu/blob/master/wiki-imgs/mobility-view.png), [calendar-view](https://github.com/smalldatalab/omh-dsu/blob/master/wiki-imgs/calendar-view.png))
+  * Data export in the format you like: CSV, JSON. ([sample data](https://github.com/smalldatalab/omh-dsu/blob/master/wiki-imgs/mobility_daily_summary_data_points.csv))
 
 ### Secure APIs with comprehensive developer tools
   * Strctly enforce OAuth & HTTPS (see our [data storage unit](https://github.com/smalldatalab/omh-dsu/))
   * Cross-platform libraries: [Android](https://github.com/smalldatalab/android-omh-dsu-client-lib/), [iOS](https://github.com/smalldatalab/ios-omh-dsu-client-lib), and Javascript (comming soon)
+  * 
+### Guides
+  * [Guide for web application developers](https://github.com/smalldatalab/omh-dsu/wiki/Guide-for-Client-Applications-Developers)
+  * [Guide for mobile app developers](https://github.com/smalldatalab/omh-dsu/wiki/Guide-for-Mobile-Apps-Developers)
+  * [Guide for composing ohmage surveys](https://github.com/ohmage/server/wiki/3.x-Survey-Structure)
+  * Descriptions of data: [Mobility](https://github.com/smalldatalab/omh-dsu/wiki/Mobility-Data), [PAM](https://github.com/smalldatalab/omh-dsu/wiki/PAM-Data)
+  * [Guide for running your own Data Storage Unit instance](https://github.com/smalldatalab/omh-dsu/wiki/Guide-for-DSU-(Server)-Installation)
