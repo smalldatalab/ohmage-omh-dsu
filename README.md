@@ -30,4 +30,4 @@ Ohmage OMH, an implementation of [Open-mHealth standards](http://www.openmhealth
   * [Guide for composing ohmage surveys](https://github.com/ohmage/server/wiki/3.x-Survey-Structure)
   * Descriptions of data: [Mobility](https://github.com/smalldatalab/omh-dsu/wiki/Mobility-Data), [PAM](https://github.com/smalldatalab/omh-dsu/wiki/PAM-Data)
   * [Guide for running your own Data Storage Unit instance](https://github.com/smalldatalab/omh-dsu/wiki/Guide-for-DSU-(Server)-Installation)
-  * [Guide for installing iOS Apps via Apple's Enterprise Distribution*](https://docs.google.com/document/d/13_KKPSgMpRekpXThaCmj0RDXoGGuQIij0I6uE96aXLc/edit?usp=sharing)
+  * [Guide for installing iOS Apps via Apple's Enterprise Distribution](https://docs.google.com/document/d/13_KKPSgMpRekpXThaCmj0RDXoGGuQIij0I6uE96aXLc/edit?usp=sharing)
