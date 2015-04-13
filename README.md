@@ -22,6 +22,8 @@ Ohmage OMH, an implementation of [Open-mHealth standards](http://www.openmhealth
   * Strctly enforce OAuth & HTTPS (see our [data storage unit](https://github.com/smalldatalab/omh-dsu/))
   * Cross-platform libraries: [Android](https://github.com/smalldatalab/android-omh-dsu-client-lib/), [iOS](https://github.com/smalldatalab/ios-omh-dsu-client-lib), and Javascript (comming soon)
   * 
+  
+
 ### Guides
   * [Guide for web application developers](https://github.com/smalldatalab/omh-dsu/wiki/Guide-for-Client-Applications-Developers)
   * [Guide for mobile app developers](https://github.com/smalldatalab/omh-dsu/wiki/Guide-for-Mobile-Apps-Developers)
