@@ -36,23 +36,32 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
     ObjectMapper objectMapper;
 
     private static final Logger log = LoggerFactory.getLogger(AdminDashbaordServiceImpl.class);
-
+    /**
+     *  We uses the "username" field to map the users between DSU and admindashboard.
+     *  The values in this field corresponds to the EndUser.username field in the DSU
+     */
+    final static String queryUserIdByUsername =
+            "SELECT id FROM users WHERE username = ? LIMIT 1;";
     final static String queryStudyByName =
             "SELECT id, name from studies WHERE name = ? LIMIT 1";
-    final static String queryParticipantMembershipByEmailAndStudyId =
+    final static String queryParticipantMembershipByUsernameAndStudyId =
             "SELECT COUNT(*) " +
             "FROM   users " +
             "       INNER JOIN study_participants " +
             "               ON users.id = study_participants.user_id " +
-            "WHERE  gmail = ? " +
+            "WHERE  users.username = ? " +
             "       AND study_id = ?; ";
     final static String insertNewStudyParticipant =
             "INSERT INTO study_participants (study_id, user_id, created_at, updated_at) VALUES (?, ?, ?, ?);";
     final static String insertNewUser =
-            "INSERT INTO users (first_name, last_name, gmail, created_at, updated_at) VALUES (?, ?, ?, ?, ?);";
-    final static String queryUserIdByEmail =
-            "SELECT id FROM users WHERE gmail = ? LIMIT 1;";
-    final static String querySurveysByUserEmail =
+            "INSERT INTO users (username, first_name, last_name, gmail, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?);";
+
+    /**
+     * A user should see two kinds of surveys:
+     * 1. The surveys belongs to the studies the user belongs to
+     * 2. The public surveys that are visible to everyone
+     */
+    final static String querySurveysByUsername =
             "SELECT definition " +
                     "FROM   surveys " +
                     "       INNER JOIN s_surveys " +
@@ -60,8 +69,8 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
                     "       INNER JOIN study_participants " +
                     "               ON study_participants.study_id = s_surveys.study_id " +
                     "       INNER JOIN users " +
-                    "               ON users.id = study_participants.user_id " +
-                    "WHERE  gmail = ? " +
+                    "               ON users.username = study_participants.user_id " +
+                    "WHERE  user.username = ? " +
                     "UNION " +
                     "SELECT definition " +
                     "FROM   surveys " +
@@ -76,9 +85,10 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
         Timestamp timestamp = new Timestamp(new Date().getTime());
         String firstname = user.getFirstName()!=null ? user.getFirstName() : "";
         String lastname = user.getLastName()!=null ? user.getLastName(): "";
-
         JdbcTemplate select = new JdbcTemplate(dataSource);
-        select.update(insertNewUser, firstname, lastname,
+        select.update(insertNewUser,
+                user.getUsername(),
+                firstname, lastname,
                 user.getEmailAddress().get().getAddress(),
                 timestamp,
                 timestamp);
@@ -93,10 +103,10 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
     }
     class UserNotFoundException extends Exception{}
     private Long getUserId(EndUser user) throws UserNotFoundException {
-        Object[] args = {user.getEmailAddress().get().getAddress()};
+        Object[] args = {user.getUsername()};
         JdbcTemplate select = new JdbcTemplate(dataSource);
         try{
-            return select.queryForObject(queryUserIdByEmail, args, Long.class);
+            return select.queryForObject(queryUserIdByUsername, args, Long.class);
         }catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException();
         }
@@ -124,8 +134,8 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
     public boolean isUserEnrolled(EndUser user, Study study) {
 
         JdbcTemplate select = new JdbcTemplate(dataSource);
-        Object[] args = {user.getEmailAddress().get().toString(), study.getId()};
-        return select.queryForObject(queryParticipantMembershipByEmailAndStudyId, args, Integer.class) > 0;
+        Object[] args = {user.getUsername(), study.getId()};
+        return select.queryForObject(queryParticipantMembershipByUsernameAndStudyId, args, Integer.class) > 0;
     }
 
     /**
@@ -176,8 +186,8 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
     @Override
     public Iterable<Survey> findAllSurveysAvailableToUser(EndUser user) throws SQLException {
         JdbcTemplate select = new JdbcTemplate(dataSource);
-        String[] args = {user.getEmailAddress().get().getAddress()};
-        List<Survey> surveys = new ArrayList<>(select.query(querySurveysByUserEmail, args, new JsonToSurveyExtractor()));
+        String[] args = {user.getUsername()};
+        List<Survey> surveys = new ArrayList<>(select.query(querySurveysByUsername, args, new JsonToSurveyExtractor()));
         // remove any null values (i.e. the survey schemas with incorrect syntax)
         surveys.removeIf(survey -> survey == null);
         return surveys;

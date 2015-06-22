@@ -1,10 +1,4 @@
 package org.openmhealth.dsu.controller;
-
-/**
- * Created by changun on 12/17/14.
- */
-
-import org.apache.http.util.ExceptionUtils;
 import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.dsu.domain.ohmage.survey.Survey;
 import org.openmhealth.dsu.repository.EndUserRepository;
@@ -22,9 +16,12 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 /**
- * A controller that manages user accounts.
+ * A controller that returns surveys descriptions in JSON, mainly used by the ohmage apps
+ * to retrieve surveys available for the app user. The current implementation is based on
+ * the "admin dashboard", and uses the User->Study->Survey relations the dashboard maintains
+ * to decide which surveys to show to different users.
  *
- * @author Emerson Farrugia
+ * @author Andy Hsieh
  */
 @ApiController
 public class SurveyController {
@@ -46,8 +43,9 @@ public class SurveyController {
     @RequestMapping(value="/surveys", method= RequestMethod.GET)
     @ResponseBody
     public Iterable<Survey> get(Authentication auth) throws SQLException {
-        Optional<EndUser> user = endUserRepo.findOne(auth.getName())   ;
+        Optional<EndUser> user = endUserRepo.findOne(auth.getName());
         if(user.isPresent()){
+
             return repo.findAllSurveysAvailableToUser(user.get());
         }
         else return null;
