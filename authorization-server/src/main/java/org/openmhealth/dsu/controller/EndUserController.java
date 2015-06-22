@@ -17,8 +17,6 @@
 package org.openmhealth.dsu.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,8 +33,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class EndUserController {
-    @Autowired
-    ConnectionRepository connectionRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
@@ -45,14 +41,15 @@ public class EndUserController {
     }
 
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
-    public String singout() throws ServletException {
+    public String signIn() throws ServletException {
         return "signin";
     }
 
     @RequestMapping(value = "/signout", method = RequestMethod.GET)
     @ResponseBody
-    public String singout(HttpServletRequest request) throws ServletException {
+    public String signOut(HttpServletRequest request) throws ServletException {
         request.logout();
         return "You have signed out.";
     }
+
 }

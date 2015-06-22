@@ -65,6 +65,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**", "/images/**", "/js/**", "/fonts/**", "/favicon.ico");
     }
 
+    /**
+     *
+     * @return a signin successHandler that redirect to the originally requested page
+     */
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler successHandler() {
         SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
@@ -80,15 +84,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .successHandler(successHandler())
                 .and()
 
-                        // permit unauthenticated access to favicon, signin page and auth pages for different social services
+                // permit unauthenticated access to favicon, signin page and auth pages for different social services
                 .authorizeRequests()
                 .antMatchers(
-                        "/signin",
-                        "/auth/**",
-                        "/google-signin**",
-                        "/social-signin/**").permitAll()
-                .antMatchers("/oauth/token", "/oauth/check_token").permitAll()
-                .antMatchers("/internal/**").hasIpAddress("127.0.0.1")
+                        "/signin", // main web sign in page
+                        "/auth/**", // web social signin endpoints
+                        "/google-signin**", // mobile google social signin endpoint (FIXME: deprecated)
+                        "/social-signin/**" // mobile social signin endpoints
+                ).permitAll()
+                .antMatchers("/oauth/token", "/oauth/check_token").permitAll()// oauth token endpoints
+                                                                              // (oauth/authorize should only be accessed by users who have signin, so is exclude from here)
+                .antMatchers("/internal/**").hasIpAddress("127.0.0.1")// internal endpoints.
                 .antMatchers("/**").authenticated()
                 // enable cookie
                 .and()

@@ -97,9 +97,8 @@ public class EndUserServiceImpl implements EndUserService {
     public void registerUser(Connection<?> socialConnection) {
         EndUserRegistrationData newUser = new EndUserRegistrationData();
         newUser.setUsername(socialConnectionToUsername(socialConnection));
-        // use random password
+        // use random password. A social sign-in user should never sign in using password.
         newUser.setPassword(new RandomValueStringGenerator(50).generate());
-        ;
 
         UserProfile profile = socialConnection.fetchUserProfile();
         newUser.setEmailAddress(profile.getEmail());

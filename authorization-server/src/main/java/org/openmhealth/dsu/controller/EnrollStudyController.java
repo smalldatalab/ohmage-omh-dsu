@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Optional;
 
 /**
- * A controller for user to sign up for a study.
+ * A controller for user to sign up for a study based on the StudyService implementation.
+ * The current study service implementation assumes a Ruby-based "admin dashboard" is running on the
+ * same server, and directly modify its database records to enroll users to the studies.
  * Created by Cheng-Kang Hsieh on 3/25/15.
  */
 @Controller
