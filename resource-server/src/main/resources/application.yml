@@ -19,28 +19,28 @@ dataStore: mongo
 
 
 server:
-  port: 10003
+  port: 8083
 
 spring:
   application:
     name: Open mHealth DSU resource server
   data:
     mongodb:
-      host: localhost
+      host: omh-mongo
       database: omh
       #port: 27017
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/omh
-    username: omh
-    password: omh
+    url: jdbc:postgresql://omh-postgres:5432/omh
+    username: postgres
+    password: postgres
 
 admindashboard:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/admindashboard
-    username: omh
-    password: omh
+    url: jdbc:postgresql://ohmage-admin:5432/admindashboard
+    username: postgres
+    password: postgres
 
 
 multipart:

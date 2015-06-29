@@ -1,5 +1,5 @@
 FROM java:openjdk-8-jre
-MAINTAINER Emerson Farrugia <emerson@openmhealth.org>
+MAINTAINER Jared Sieling <jared.sieling@gmail.com>
 
 ENV SERVER_PREFIX /opt/omh-dsu-ri/authorization-server
  

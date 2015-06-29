@@ -20,39 +20,39 @@ dataStore: mongo
 application:
   url: https://lifestreams.smalldata.io/dsu/
 internalShimServer:
-  url: http://localhost:8083/
+  url: http://ohmage-shim:8084/
 
 server:
-  port: 10002
+  port: 8082
 
 spring:
   application:
     name: Open mHealth DSU authorisation server
   data:
     mongodb:
-      host: localhost
+      host: omh-mongo
       database: omh
       #port: 27017
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/omh
-    username: omh
-    password: omh
+    url: jdbc:postgresql://omh-postgres:5432/omh
+    username: postgres
+    password: postgres
 
 admindashboard:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/admindashboard
-    username: omh
-    password: omh
+    url: jdbc:postgresql://ohmage-admin:5432/admindashboard
+    username: postgres
+    password: postgres
 
 http:
   mappers:
     jsonPrettyPrint: true
 
 google:
-  clientId: 48636836762-mulldgpmet2r4s3f16s931ea9crcc64m.apps.googleusercontent.com
-  clientSecret: Gnn944Z3BAdZ9sImjx5p5GDi
+  clientId: FROM_ENV
+  clientSecret: FROM_ENV
   scope: email https://www.googleapis.com/auth/userinfo.profile
 
 logging:
