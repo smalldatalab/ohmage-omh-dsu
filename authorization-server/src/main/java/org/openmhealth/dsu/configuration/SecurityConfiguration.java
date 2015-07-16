@@ -81,21 +81,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 // redirect all unauthenticated request to google sign-in
                 .loginPage("/signin")
-                .successHandler(successHandler())
+                    .successHandler(successHandler())
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .permitAll()
                 .and()
 
                 // permit unauthenticated access to favicon, signin page and auth pages for different social services
                 .authorizeRequests()
                 .antMatchers(
-                        "/signin", // main web sign in page
                         "/auth/**", // web social signin endpoints
-                        "/google-signin**", // mobile google social signin endpoint (FIXME: deprecated)
-                        "/social-signin/**" // mobile social signin endpoints
+                        "/social-signin/**", // mobile social signin endpoints
+                        "/google-signin**" // mobile google social signin endpoint (FIXME: deprecated)
                 ).permitAll()
-                .antMatchers("/oauth/token", "/oauth/check_token").permitAll()// oauth token endpoints
-                                                                              // (oauth/authorize should only be accessed by users who have signin, so is exclude from here)
-                .antMatchers("/internal/**").hasIpAddress("127.0.0.1")// internal endpoints.
-                .antMatchers("/**").authenticated()
+                // oauth token endpoints
+                // (oauth/authorize should only be accessed by users who have signin, so is excluded from here)
+                .antMatchers("/oauth/token", "/oauth/check_token")
+                    .permitAll()
+                .antMatchers("/internal/**")
+                    .hasIpAddress("127.0.0.1")// internal endpoints.
+                .antMatchers("/**")
+                    .authenticated()
                 // enable cookie
                 .and()
                 .rememberMe()
@@ -103,7 +109,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .apply(new SpringSocialConfigurer())
                 .and()
-                        // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
+                // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
                 .csrf().disable();
 
     }
