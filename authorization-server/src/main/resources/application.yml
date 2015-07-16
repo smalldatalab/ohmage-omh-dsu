@@ -24,6 +24,7 @@ internalShimServer:
 
 server:
   port: 8082
+  context-path: /dsu/
 
 spring:
   application:
