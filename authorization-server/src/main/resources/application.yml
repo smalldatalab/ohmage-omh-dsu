@@ -24,7 +24,7 @@ internalShimServer:
 
 server:
   port: 8082
-  context-path: /dsu/
+  context-path: /dsu
 
 spring:
   application:
@@ -43,7 +43,7 @@ spring:
 admindashboard:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://ohmage-admin:5432/admindashboard
+    url: jdbc:postgresql://omh-postgres:5432/admindashboard
     username: postgres
     password: postgres
 
@@ -59,3 +59,4 @@ google:
 logging:
   level:
     org.springframework: INFO
+  path: /var/log/ohmage-auth/
