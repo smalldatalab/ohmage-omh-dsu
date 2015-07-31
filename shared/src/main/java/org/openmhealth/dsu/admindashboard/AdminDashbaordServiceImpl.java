@@ -69,8 +69,8 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
                     "       INNER JOIN study_participants " +
                     "               ON study_participants.study_id = s_surveys.study_id " +
                     "       INNER JOIN users " +
-                    "               ON users.username = study_participants.user_id " +
-                    "WHERE  user.username = ? " +
+                    "               ON users.id = study_participants.user_id " +
+                    "WHERE  users.username = ? " +
                     "UNION " +
                     "SELECT definition " +
                     "FROM   surveys " +
@@ -89,7 +89,8 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
         select.update(insertNewUser,
                 user.getUsername(),
                 firstname, lastname,
-                user.getEmailAddress().get().getAddress(),
+                user.getEmailAddress().isPresent() ?
+                        user.getEmailAddress().get().getAddress() : null,
                 timestamp,
                 timestamp);
         // query the user id again
