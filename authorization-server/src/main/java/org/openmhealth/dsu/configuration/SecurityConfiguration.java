@@ -80,16 +80,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
                 // redirect all unauthenticated request to google sign-in
-                .loginPage("/signin")
+                .loginPage("/signin?*")
                     .successHandler(successHandler())
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .permitAll()
+
                 .and()
 
                 // permit unauthenticated access to favicon, signin page and auth pages for different social services
                 .authorizeRequests()
                 .antMatchers(
+                        "/signin",
                         "/auth/**", // web social signin endpoints
                         "/social-signin/**", // mobile social signin endpoints
                         "/google-signin**" // mobile google social signin endpoint (FIXME: deprecated)
@@ -110,7 +112,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .apply(new SpringSocialConfigurer())
                 .and()
                 // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
-                .csrf().disable();
+                .csrf().disable()
+                // use a custom authentication entry point to preserve query parameter
+                .exceptionHandling().authenticationEntryPoint(new AuthenticationProcessingFilterEntryPoint("/signin"));
 
     }
 
