@@ -46,8 +46,11 @@
     </div>
 </section>
 <script>
+    if(url("?gmailOnly")=="1"){
+        window.location.href = "auth/google";
+    }
     if(window.location.search.substring(1).indexOf("error") === 0){
-
+        // show Invalid Username/Password alert
         $("#alert").removeClass("hidden");
     }
 </script>
