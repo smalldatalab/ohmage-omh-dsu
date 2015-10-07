@@ -51,6 +51,12 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
             "               ON users.id = study_participants.user_id " +
             "WHERE  users.username = ? " +
             "       AND study_id = ?; ";
+    final static String queryStudiesByUsername =
+            "SELECT studies.id AS id, studies.name AS name " +
+                    "FROM studies " +
+                    "   JOIN study_participants ON study_participants.study_id = studies.id " +
+                    "   JOIN users ON users.id = study_participants.user_id " +
+                    "WHERE users.username = ?; ";
     final static String insertNewStudyParticipant =
             "INSERT INTO study_participants (study_id, user_id, created_at, updated_at) VALUES (?, ?, ?, ?);";
     final static String insertNewUser =
@@ -129,6 +135,17 @@ public class AdminDashbaordServiceImpl implements StudyService, SurveyService {
             return Optional.empty();
         }
 
+    }
+
+    @Override
+    public List<Study> getStudiesByUsername(String username) {
+        JdbcTemplate select = new JdbcTemplate(dataSource);
+        String[] args = {username};
+        try {
+            return select.query(queryStudiesByUsername, new RowToStudy(), args);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<Study>();
+        }
     }
 
     @Override

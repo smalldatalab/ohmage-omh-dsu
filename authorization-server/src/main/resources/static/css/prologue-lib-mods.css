@@ -1,0 +1,23 @@
+/* Override libs/prologue styles */
+.banner {
+    background-color: #1abc9c;
+    margin: 0px !important;
+    padding: 1em 1.25em 1.25em 1.25em !important;
+    height: 25px;
+}
+
+.instruments .item .image {
+    background-color: white;
+    padding: 15px;
+}
+
+.instruments .item .store-links {
+    display: block;
+    padding-top: 15px;
+    margin-bottom: -20px;
+}
+
+a {
+    border-bottom: none;
+}
+

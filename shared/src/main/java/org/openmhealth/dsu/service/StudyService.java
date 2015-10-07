@@ -3,6 +3,7 @@ package org.openmhealth.dsu.service;
 import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.dsu.domain.Study;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,6 +18,13 @@ public interface StudyService {
      * @return A optional Study object
      */
     Optional<Study> getStudyByName(String studyName);
+
+    /**
+     * Get a list of the studies that this user is a participant of.
+     * @param username The username from the DSU.
+     * @return A list of Study objects.  List is empty if user is not a participant in any studies.
+     */
+    List<Study> getStudiesByUsername(String username);
 
     /**
      * Check if a user already belongs to a study
