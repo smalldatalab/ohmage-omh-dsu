@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 /**
  * The configuration for accessing the database used by the admin dashboard.
  * (usually a Postgres db)
- * Only enable it when the admin dashboard is in use.
+ * Disable it if the admin dashboard is NOT in use by commenting out @Configuration
  * Created by changun on 2/26/15.
  */
 @Configuration
