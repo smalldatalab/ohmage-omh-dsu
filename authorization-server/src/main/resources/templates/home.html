@@ -5,8 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--[if lte IE 8]><script th:src="@{/libs/prologue/assets/js/ie/html5shiv.js}"></script><![endif]-->
-    <link rel="stylesheet" th:href="@{/libs/prologue/assets/css/main.css}" />
-    <link rel="stylesheet" th:href="@{/css/prologue-lib-mods.css}" />
+    <link rel="stylesheet" th:href="@{/libs/prologue/assets/css/main.css}"
+            href="../static/libs/prologue/assets/css/main.css"/>
+    <link rel="stylesheet" th:href="@{/css/prologue-lib-mods.css}"
+            href="../static/css/prologue-lib-mods.css"/>
     <!--[if lte IE 8]><link rel="stylesheet" th:href="@{/libs/prologue/assets/css/ie8.css}" /><![endif]-->
     <!--[if lte IE 9]><link rel="stylesheet" th:href="@{/libs/prologue/assets/css/ie9.css}" /><![endif]-->
 
@@ -62,10 +64,10 @@
 
     <section id="top" class="banner">
         <div class="pull-left" style="margin-top: -15px;">
-            <a class="brand" href="http://smalldata.io/" style="padding-right: 10px; font-family: 'Lato', sans-serif; color: #34495e; font-weight: 800; letter-spacing: -1px;
+            <a class="brand" href="http://smalldata.io/" style="padding-right: 5px; font-family: 'Lato', sans-serif; color: #34495e; font-weight: 800; letter-spacing: -1px;
     font-size: 18px;">
                 the small data lab </a>
-            <a class="brand" style="font-weight: 400; color: #777;" href="http://tech.cornell.edu/">@ CornellTech</a>
+            <a class="brand" style="font-weight: 400; color: white;" href="http://tech.cornell.edu/">@ CornellTech</a>
         </div>
         <div class="pull-right" style="margin-top: -15px; color: white;">
             <a class="small" th:href="@{/logout}">Logout</a>
@@ -122,7 +124,7 @@
                 <div class="4u$ 12u$(mobile)">
                     <article class="item">
                         <a class="image fit">
-                            <img th:src="@{/images/pam.jpg}" alt="" />
+                            <img th:src="@{/images/pam.jpg}" src="../static/images/pam.jpg" alt="" />
                         </a>
                         <header>
                             <h3>PAM-omh App</h3>
@@ -169,20 +171,13 @@
 
             <p>These are the visualization tools that you have access to.  Click on a tool to open it.</p>
 
-            <div class="row">
+            <div class="row instruments">
                 <div class="6u 12u$(mobile)">
                     <article class="item">
-                        <a href="#" class="image fit"><img th:src="@{/libs/prologue/images/pic02.jpg}" alt="" /></a>
+                        <a href="/mobility-ui/#" class="image fit"><img th:src="@{/images/mobility-ui.png}"
+                                                           src="../static/images/mobility-ui.png" alt="" /></a>
                         <header>
-                            <h3>Ipsum Feugiat</h3>
-                        </header>
-                    </article>
-                </div>
-                <div class="6u$ 12u$(mobile)">
-                    <article class="item">
-                        <a href="#" class="image fit"><img th:src="@{/libs/prologue/images/pic06.jpg}" alt="" /></a>
-                        <header>
-                            <h3>Dolor Penatibus</h3>
+                            <h3>Mobility Dashboard</h3>
                         </header>
                     </article>
                 </div>

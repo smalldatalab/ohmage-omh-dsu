@@ -17,13 +17,22 @@
 package org.openmhealth.dsu.controller;
 
 
+import org.openmhealth.dsu.domain.EndUser;
+import org.openmhealth.dsu.domain.Study;
+import org.openmhealth.dsu.repository.EndUserRepository;
+import org.openmhealth.dsu.service.StudyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -33,11 +42,18 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class EndUserController {
+    @Autowired
+    EndUserRepository endUserRepo;
+    @Autowired
+    StudyService studyService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
-    public String home() {
-        return "You have signed in.";
+    public String home(Authentication auth, Model model) {
+        Optional<EndUser> user = endUserRepo.findOne(auth.getName());
+        model.addAttribute("user", user.get());
+        List<Study> studies = studyService.getStudiesByUsername(user.get().getUsername());
+        model.addAttribute("studies", studies);
+        return "home";
     }
 
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
