@@ -24,7 +24,7 @@ import java.util.*;
 
 /**
  * A service that manages study and survey via querying/modifying the admin dashboard's database
- * Disable it if the project does not use the admin dashboard.
+ * Disable it if the project does not use the admin dashboard by commenting out @Service.
  * Created by Cheng-Kang Hsieh on 3/25/15.
  */
 @Service

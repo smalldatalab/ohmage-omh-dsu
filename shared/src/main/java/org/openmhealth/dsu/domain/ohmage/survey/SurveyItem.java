@@ -2,16 +2,7 @@ package org.openmhealth.dsu.domain.ohmage.survey;
 
 import org.openmhealth.dsu.domain.ohmage.exception.InvalidArgumentException;
 import org.openmhealth.dsu.domain.ohmage.survey.condition.Condition;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.AudioPrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.ImagePrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.NumberMultiChoicePrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.NumberPrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.NumberSingleChoicePrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.StringMultiChoicePrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.StringSingleChoicePrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.TextPrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.TimestampPrompt;
-import org.openmhealth.dsu.domain.ohmage.survey.prompt.VideoPrompt;
+import org.openmhealth.dsu.domain.ohmage.survey.prompt.*;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -70,7 +61,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         name = TextPrompt.SURVEY_ITEM_TYPE),
     @JsonSubTypes.Type(
         value = TimestampPrompt.class,
-        name = TimestampPrompt.SURVEY_ITEM_TYPE)})
+        name = TimestampPrompt.SURVEY_ITEM_TYPE),
+    @JsonSubTypes.Type(
+            value = VisualAnalogPrompt.class,
+            name = VisualAnalogPrompt.SURVEY_ITEM_TYPE)
+
+})
 public abstract class SurveyItem {
     /**
      * The JSON key used to define which kind of survey item this is.
