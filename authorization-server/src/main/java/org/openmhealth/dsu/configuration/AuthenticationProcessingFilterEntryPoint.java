@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * An AuthenticationProcessingFilterEntryPoint that preserves "gmailOnly" url parameter
+ * when redirecting unauthorized request to the signIn page.
  * Created by Cheng-Kang Hsieh on 9/24/15.
  */
 public class AuthenticationProcessingFilterEntryPoint extends LoginUrlAuthenticationEntryPoint {
@@ -21,7 +23,6 @@ public class AuthenticationProcessingFilterEntryPoint extends LoginUrlAuthentica
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws  ServletException, IOException {
         RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-        String queryString;
         if(request.getParameter("gmailOnly") != null && request.getParameter("gmailOnly").equals("1")){
             redirectStrategy.sendRedirect(request, response, getLoginFormUrl()+"?gmailOnly=1");
         }else{
