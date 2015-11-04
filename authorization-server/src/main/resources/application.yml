@@ -51,8 +51,8 @@ http:
     jsonPrettyPrint: true
 
 google:
-  clientId: 48636836762-mulldgpmet2r4s3f16s931ea9crcc64m.apps.googleusercontent.com
-  clientSecret: Gnn944Z3BAdZ9sImjx5p5GDi
+  clientId: [GOOGLE_CLIENT_ID]
+  clientSecret: [GOOGLE_CLIENT_SECRET]
   scope: email https://www.googleapis.com/auth/userinfo.profile
 
 logging:
