@@ -18,6 +18,7 @@ package org.openmhealth.dsu.controller;
 
 import com.google.common.collect.Range;
 import com.mongodb.gridfs.GridFSDBFile;
+import org.openmhealth.dsu.domain.ChronologicalOrder;
 import org.openmhealth.dsu.domain.DataPoint;
 import org.openmhealth.dsu.domain.DataPointMedia;
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
@@ -74,7 +75,11 @@ public class DataPointController {
 
     public static final String RESULT_OFFSET_PARAMETER = "skip";
     public static final String RESULT_LIMIT_PARAMETER = "limit";
+    public static final String CHRONOLOGICAL = "chronological";
+    public static final String DEFAULT_CHRONOLOGICAL = "asc";
     public static final String DEFAULT_RESULT_LIMIT = "100";
+
+
 
     @Autowired
     private DataPointService dataPointService;
@@ -111,6 +116,7 @@ public class DataPointController {
             @RequestParam(value = CREATED_BEFORE_PARAMETER, required = false) final OffsetDateTime createdBefore,
             @RequestParam(value = RESULT_OFFSET_PARAMETER, defaultValue = "0") final Integer offset,
             @RequestParam(value = RESULT_LIMIT_PARAMETER, defaultValue = DEFAULT_RESULT_LIMIT) final Integer limit,
+            @RequestParam(value = CHRONOLOGICAL, defaultValue = DEFAULT_CHRONOLOGICAL) final String chronological,
             Authentication authentication) {
 
         // TODO add validation or explicitly comment that this is handled using exception translators
@@ -130,8 +136,9 @@ public class DataPointController {
         else if (createdBefore != null) {
             searchCriteria.setCreationTimestampRange(Range.lessThan(createdBefore));
         }
-
-        Iterable<DataPoint> dataPoints = dataPointService.findBySearchCriteria(searchCriteria, offset, limit);
+        // determine the ChronologicalOrder
+        ChronologicalOrder order = chronological.toLowerCase().equals("desc") ? ChronologicalOrder.DESC : ChronologicalOrder.ASC;
+        Iterable<DataPoint> dataPoints = dataPointService.findBySearchCriteria(searchCriteria, order, offset, limit);
 
         HttpHeaders headers = new HttpHeaders();
 
