@@ -16,8 +16,10 @@
 
 package org.openmhealth.dsu.repository;
 
+import org.openmhealth.dsu.domain.ChronologicalOrder;
 import org.openmhealth.dsu.domain.DataPoint;
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
+import org.openmhealth.dsu.service.DataPointService;
 
 import javax.annotation.Nullable;
 
@@ -29,6 +31,8 @@ import javax.annotation.Nullable;
  */
 public interface CustomDataPointRepository {
 
-    Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria, @Nullable Integer offset,
-            @Nullable Integer limit);
+    Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria,
+                                             ChronologicalOrder chronological,
+                                             @Nullable Integer offset,
+                                             @Nullable Integer limit);
 }
