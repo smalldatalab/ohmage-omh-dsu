@@ -8,12 +8,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by changun on 12/12/15.
  */
 public class Coordinates {
-    final Number latitude, longitude;
+    @JsonProperty(Location.JSON_KEY_LATITUDE)  private final double latitude;
+    @JsonProperty(Location.JSON_KEY_LONGITUDE) private final double longitude;
 
     @JsonCreator
     public Coordinates(
-            @JsonProperty(value = Location.JSON_KEY_LATITUDE, required = true) final Number latitude,
-            @JsonProperty(value = Location.JSON_KEY_LONGITUDE, required = true) final Number longitude
+            @JsonProperty(value = Location.JSON_KEY_LATITUDE, required = true) final double latitude,
+            @JsonProperty(value = Location.JSON_KEY_LONGITUDE, required = true) final double longitude
     ) {
         this.latitude = latitude;
         this.longitude = longitude;
