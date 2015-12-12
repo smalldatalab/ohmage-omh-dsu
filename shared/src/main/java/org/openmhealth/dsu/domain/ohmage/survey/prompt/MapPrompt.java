@@ -3,35 +3,25 @@ package org.openmhealth.dsu.domain.ohmage.survey.prompt;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import name.jenkins.paul.john.concordia.schema.Schema;
+import org.openmhealth.dsu.domain.ohmage.Coordinates;
 import org.openmhealth.dsu.domain.ohmage.exception.InvalidArgumentException;
 import org.openmhealth.dsu.domain.ohmage.survey.Media;
 import org.openmhealth.dsu.domain.ohmage.survey.condition.Condition;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by changun on 12/12/15.
  */
-public class MapPrompt extends Prompt<MapPrompt.Coordinates> {
+public class MapPrompt extends Prompt<Coordinates> {
 
     /**
      * The string type of this survey item.
      */
     public static final String SURVEY_ITEM_TYPE = "map_prompt";
 
-    static public class Coordinates{
-        final Number latitude, longitude;
-        @JsonCreator
-        public Coordinates(
-                @JsonProperty(value = "latitude", required = true) final Number latitude,
-                @JsonProperty(value = "longitude", required = true) final Number longitude
-                ){
-            this.latitude = latitude;
-            this.longitude = longitude;
 
-        }
-    }
+
     /**
      * Creates a new prompt.
      *
