@@ -73,18 +73,18 @@ public class VisualAnalogPrompt extends NumberPrompt {
                 displayLabel,
                 skippable,
                 defaultResponse,
-                0.0, 1.0, false);
+                1, 100, false);
 
         if(!
                 (
-                                DisplayType.SLIDER.equals(displayType))) {
+                                DisplayType.VAS.equals(displayType))) {
 
             throw
                     new InvalidArgumentException(
                             "The display type '" +
                                     displayType.toString() +
                                     "' is not valid for the prompt, which must be '" +
-                                    DisplayType.SLIDER.toString() +
+                                    DisplayType.VAS.toString() +
                                     getSurveyItemId());
         }
 
