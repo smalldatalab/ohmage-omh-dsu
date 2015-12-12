@@ -2,32 +2,36 @@ package org.openmhealth.dsu.domain.ohmage.survey.prompt;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import name.jenkins.paul.john.concordia.schema.NumberSchema;
 import name.jenkins.paul.john.concordia.schema.Schema;
 import org.openmhealth.dsu.domain.ohmage.exception.InvalidArgumentException;
 import org.openmhealth.dsu.domain.ohmage.survey.Media;
 import org.openmhealth.dsu.domain.ohmage.survey.condition.Condition;
 
+import java.util.List;
 import java.util.Map;
 
 /**
- * Created by changun on 10/21/15.
+ * Created by changun on 12/12/15.
  */
-public class VisualAnalogPrompt extends NumberPrompt {
+public class MapPrompt extends Prompt<MapPrompt.Coordinates> {
+
     /**
      * The string type of this survey item.
      */
-    public static final String SURVEY_ITEM_TYPE = "vas_prompt";
+    public static final String SURVEY_ITEM_TYPE = "map_prompt";
 
-    /**
-     * The JSON key for the minimum value.
-     */
-    public static final String JSON_KEY_MIN_LABEL = "min_label";
-    /**
-     * The JSON key for the maximum value.
-     */
-    public static final String JSON_KEY_MAX_LABEL = "max_label";
+    static public class Coordinates{
+        final Number latitude, longitude;
+        @JsonCreator
+        public Coordinates(
+                @JsonProperty(value = "latitude", required = true) final Number latitude,
+                @JsonProperty(value = "longitude", required = true) final Number longitude
+                ){
+            this.latitude = latitude;
+            this.longitude = longitude;
 
+        }
+    }
     /**
      * Creates a new prompt.
      *
@@ -39,17 +43,18 @@ public class VisualAnalogPrompt extends NumberPrompt {
      * @param skippable       Whether or not this prompt may be skipped.
      * @param defaultResponse The default response for this prompt or null if a default is not
      *                        allowed.
-     * @throws org.openmhealth.dsu.domain.ohmage.exception.InvalidArgumentException A parameter was invalid.
+     * @throws InvalidArgumentException A parameter was invalid.
      */
     @JsonCreator
-    public VisualAnalogPrompt(
+    public MapPrompt(
             @JsonProperty(JSON_KEY_SURVEY_ITEM_ID) final String surveyItemId,
             @JsonProperty(JSON_KEY_CONDITION) final Condition condition,
             @JsonProperty(JSON_KEY_DISPLAY_TYPE) final DisplayType displayType,
             @JsonProperty(JSON_KEY_TEXT) final String text,
             @JsonProperty(JSON_KEY_DISPLAY_LABEL) final String displayLabel,
             @JsonProperty(JSON_KEY_SKIPPABLE) final boolean skippable,
-            @JsonProperty(JSON_KEY_DEFAULT_RESPONSE) final Number defaultResponse)
+            @JsonProperty(JSON_KEY_DEFAULT_RESPONSE)
+            final Coordinates defaultResponse)
             throws InvalidArgumentException {
 
         super(
@@ -59,20 +64,26 @@ public class VisualAnalogPrompt extends NumberPrompt {
                 text,
                 displayLabel,
                 skippable,
-                defaultResponse,
-                1, 100, false);
-
-        if(!(DisplayType.VAS.equals(displayType))) {
+                defaultResponse);
+        if(!(DisplayType.GOOGLE_MAP.equals(displayType))) {
 
             throw
                     new InvalidArgumentException(
                             "The display type '" +
                                     displayType.toString() +
                                     "' is not valid for the prompt, which must be '" +
-                                    DisplayType.VAS.toString() +
+                                    DisplayType.GOOGLE_MAP.toString() +
                                     getSurveyItemId());
         }
-
     }
 
+    @Override
+    public Coordinates validateResponse(Coordinates response, Map<String, Media> media) throws InvalidArgumentException {
+        return null;
+    }
+
+    @Override
+    public Schema getResponseSchema() throws IllegalStateException {
+        return null;
+    }
 }

@@ -68,7 +68,11 @@ public abstract class Prompt<ResponseType>
         /**
          * Visual Analogue Scale
          */
-        VAS;
+        VAS,
+        /**
+         * Google Map
+         */
+        GOOGLE_MAP;
 
         /**
          * Make enum deserialization case-insensitive
