@@ -39,7 +39,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
- * This controller that is intended for the internal use only, MUST be accessed only by localhost.
+ * This controller that is intended for the internal use only, MUST be only accessed by localhost.
  * Created by Cheng-Kang Hsieh on 4/4/15.
  */
 @Controller
