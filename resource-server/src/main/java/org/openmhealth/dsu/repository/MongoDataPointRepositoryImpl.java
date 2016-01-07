@@ -90,7 +90,6 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
         if (searchCriteria.getCreationTimestampRange().isPresent()) {
             addCreationTimestampCriteria(query, searchCriteria.getCreationTimestampRange().get());
         }
-
         return query;
     }
 
