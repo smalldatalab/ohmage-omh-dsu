@@ -64,7 +64,15 @@ public abstract class Prompt<ResponseType>
         /**
          * A simple text box where a user may enter their response directly.
          */
-        TEXTBOX;
+        TEXTBOX,
+        /**
+         * Visual Analogue Scale
+         */
+        VAS,
+        /**
+         * Google Map
+         */
+        GOOGLE_MAP;
 
         /**
          * Make enum deserialization case-insensitive

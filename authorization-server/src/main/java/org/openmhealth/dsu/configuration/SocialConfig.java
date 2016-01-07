@@ -94,6 +94,7 @@ public class SocialConfig implements SocialConfigurer {
         }
 
         @Override
+        @Deprecated
         public AccessGrant exchangeForAccess(String authorizationCode, String redirectUri, MultiValueMap<String, String> additionalParameters) {
             // DEPRECATED: Allow mobile apps to direct send authorization code to /auth/google. e.g. /auth/google?code=fromApp_{code}
             // such auth code is prefixed by "fromApp_" and so is distinguishable from the code redirected from Google

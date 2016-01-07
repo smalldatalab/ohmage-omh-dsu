@@ -17,6 +17,7 @@
 package org.openmhealth.dsu.repository;
 
 import com.google.common.collect.Range;
+import org.openmhealth.dsu.domain.ChronologicalOrder;
 import org.openmhealth.dsu.domain.DataPoint;
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +46,16 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
     // if a data point is filtered by its data and not just its header, these queries will need to be written using
     // the MongoDB Java driver instead of Spring Data MongoDB, since there is no mapping information to work against
     @Override
-    public Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria, @Nullable Integer offset,
-            @Nullable Integer limit) {
+    public Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria,
+                                                    ChronologicalOrder order,
+                                                    @Nullable Integer offset,
+                                                    @Nullable Integer limit) {
 
         checkNotNull(searchCriteria);
         checkArgument(offset == null || offset >= 0);
         checkArgument(limit == null || limit >= 0);
 
-        Query query = newQuery(searchCriteria);
+        Query query = newQuery(searchCriteria, order);
 
         if (offset != null) {
             query.skip(offset);
@@ -65,7 +68,7 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
         return mongoOperations.find(query, DataPoint.class);
     }
 
-    private Query newQuery(DataPointSearchCriteria searchCriteria) {
+    private Query newQuery(DataPointSearchCriteria searchCriteria, ChronologicalOrder order) {
 
         Query query = new Query();
 
@@ -74,7 +77,8 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
         query.addCriteria(where("header.schema_id.name").is(searchCriteria.getSchemaName()));
         query.addCriteria(where("header.schema_id.version.major").is(searchCriteria.getSchemaVersion().getMajor()));
         query.addCriteria(where("header.schema_id.version.minor").is(searchCriteria.getSchemaVersion().getMinor()));
-        query.with(new Sort(Sort.Direction.ASC, "header.creation_date_time_epoch_milli"));
+        query.with(new Sort(order == ChronologicalOrder.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
+                "header.creation_date_time_epoch_milli"));
         if (searchCriteria.getSchemaVersion().getQualifier().isPresent()) {
             query.addCriteria(where("header.schema_id.version.qualifier")
                     .is(searchCriteria.getSchemaVersion().getQualifier().get()));
@@ -86,7 +90,6 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
         if (searchCriteria.getCreationTimestampRange().isPresent()) {
             addCreationTimestampCriteria(query, searchCriteria.getCreationTimestampRange().get());
         }
-
         return query;
     }
 
