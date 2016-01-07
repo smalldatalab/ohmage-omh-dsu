@@ -80,7 +80,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
                 // redirect all unauthenticated request to google sign-in
-                .loginPage("/signin?*")
+                .loginPage("/signin")
                     .successHandler(successHandler())
                     .usernameParameter("username")
                     .passwordParameter("password")
