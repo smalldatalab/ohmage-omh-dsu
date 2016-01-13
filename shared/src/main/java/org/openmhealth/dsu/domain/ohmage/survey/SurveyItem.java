@@ -64,7 +64,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         name = TimestampPrompt.SURVEY_ITEM_TYPE),
     @JsonSubTypes.Type(
             value = VisualAnalogPrompt.class,
-            name = VisualAnalogPrompt.SURVEY_ITEM_TYPE)
+            name = VisualAnalogPrompt.SURVEY_ITEM_TYPE),
+    @JsonSubTypes.Type(
+            value = MapPrompt.class,
+            name = MapPrompt.SURVEY_ITEM_TYPE)
 
 })
 public abstract class SurveyItem {
