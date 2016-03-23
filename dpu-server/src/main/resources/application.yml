@@ -1,6 +1,7 @@
 omh:
   shim:
     url: http://192.168.99.101:8084
+    fakedata: false # set to true to use data in the /sample-data directory
 spring:
     data:
         mongodb:
