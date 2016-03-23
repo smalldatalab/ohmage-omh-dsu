@@ -1,6 +1,5 @@
 package org.openmhealth.dpu.config;
 
-import org.openmhealth.dpu.processor.BlankProcessor;
 import org.openmhealth.dpu.reader.EndUserReader;
 import org.openmhealth.dpu.util.DataPoint;
 import org.openmhealth.dpu.util.EndUser;
@@ -46,12 +45,6 @@ public class BatchConfiguration {
         return new EndUserReader();
     }
 
-    // This bean definition is not required here, because we use the @Component annotation on the class
-    @Bean(name = "sampleProcessor")
-    public ItemProcessor<EndUser, DataPoint> sampleProcessor() {
-        return new BlankProcessor();
-    }
-
     @Bean(name = "dpuResultWriter")
     public MongoItemWriter<DataPoint> dpuResultWriter(MongoTemplate mongoTemplate) {
         MongoItemWriter<DataPoint> writer = new MongoItemWriter<>();
@@ -72,26 +65,6 @@ public class BatchConfiguration {
                 .build();
 
         return jobs.get("syncFitbitJob")
-                .incrementer(new RunIdIncrementer())
-                .listener(listener)
-                .flow(s1)
-                .end()
-                .build();
-    }
-
-    @Bean(name = "sampleJob")
-    public Job sampleJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
-                                      JobExecutionListener listener, MongoItemWriter<DataPoint> writer,
-                                      @Qualifier("blankProcessor") ItemProcessor processor) {
-
-        Step s1 = stepBuilderFactory.get("sampleStep1")
-                .<EndUser, DataPoint>chunk(10)
-                .reader(endUserReader())
-                .processor(processor)
-//                .writer(writer)
-                .build();
-
-        return jobs.get("sampleJob")
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
                 .flow(s1)
