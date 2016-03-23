@@ -2,7 +2,7 @@ package org.openmhealth.dpu.config;
 
 import org.openmhealth.dpu.processor.BlankProcessor;
 import org.openmhealth.dpu.reader.EndUserReader;
-import org.openmhealth.dpu.util.DpuResult;
+import org.openmhealth.dpu.util.DataPoint;
 import org.openmhealth.dpu.util.EndUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +25,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import java.util.List;
+
 /**
  * (Description here)
  *
@@ -44,25 +46,46 @@ public class BatchConfiguration {
         return new EndUserReader();
     }
 
+    // This bean definition is not required here, because we use the @Component annotation on the class
     @Bean(name = "sampleProcessor")
-    public ItemProcessor<EndUser, DpuResult> sampleProcessor() {
+    public ItemProcessor<EndUser, DataPoint> sampleProcessor() {
         return new BlankProcessor();
     }
 
     @Bean(name = "dpuResultWriter")
-    public MongoItemWriter<DpuResult> dpuResultWriter(MongoTemplate mongoTemplate) {
-        MongoItemWriter<DpuResult> writer = new MongoItemWriter<>();
+    public MongoItemWriter<DataPoint> dpuResultWriter(MongoTemplate mongoTemplate) {
+        MongoItemWriter<DataPoint> writer = new MongoItemWriter<>();
         writer.setTemplate(mongoTemplate);
         return writer;
     }
 
+    @Bean(name = "syncFitbitJob")
+    public Job syncFitbitJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
+                         JobExecutionListener listener, MongoItemWriter<DataPoint> writer,
+                         @Qualifier("syncFitbitProcessor") ItemProcessor<EndUser, List<DataPoint>> processor) {
+
+        Step s1 = stepBuilderFactory.get("syncFitbitStep1")
+                .<EndUser, List<DataPoint>>chunk(10)
+                .reader(endUserReader())
+                .processor(processor)
+//                .writer(writer)
+                .build();
+
+        return jobs.get("syncFitbitJob")
+                .incrementer(new RunIdIncrementer())
+                .listener(listener)
+                .flow(s1)
+                .end()
+                .build();
+    }
+
     @Bean(name = "sampleJob")
     public Job sampleJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
-                                      JobExecutionListener listener, MongoItemWriter<DpuResult> writer,
+                                      JobExecutionListener listener, MongoItemWriter<DataPoint> writer,
                                       @Qualifier("blankProcessor") ItemProcessor processor) {
 
         Step s1 = stepBuilderFactory.get("sampleStep1")
-                .<EndUser, DpuResult>chunk(10)
+                .<EndUser, DataPoint>chunk(10)
                 .reader(endUserReader())
                 .processor(processor)
 //                .writer(writer)

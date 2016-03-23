@@ -28,12 +28,13 @@ public class EndUserReader implements ItemReader<EndUser> {
     void getUsers() {
         // Fake a user for now
         EndUser user = new EndUser();
+        user.setUsername("localguy");
         users.add(user);
         iterator = users.iterator();
     }
 
     @Override
-    public EndUser read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    public EndUser read() throws Exception {
         if (iterator.hasNext()) {
             return iterator.next();
         } else {

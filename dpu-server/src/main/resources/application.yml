@@ -1,17 +1,17 @@
 omh:
   shim:
-    url: http://192.168.99.102:8084
+    url: http://192.168.99.101:8084
 spring:
     data:
         mongodb:
-            host: 192.168.99.102
+            host: 192.168.99.101
             port: 27017
             database: metis
     batch:
         job:
             enabled: false
 server:
-  port: 8081
+  port: 8085
 logging:
   level:
     org.springframework: INFO

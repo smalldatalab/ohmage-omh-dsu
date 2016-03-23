@@ -1,8 +1,5 @@
 package org.openmhealth.dpu.util;
 
-/**
- * @author Manvendra SK on 27/1/16.
- */
 public class ManualJobTriggerInfo {
 
     private String userId;

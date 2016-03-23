@@ -24,9 +24,6 @@ import javax.validation.Valid;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * @author Manvendra SK
- */
 @RestController
 @RequestMapping("/api")
 public class JobResource {
@@ -42,15 +39,16 @@ public class JobResource {
      @RequestMapping(value = "/jobs",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> executeJob(@Valid @RequestBody ManualJobTriggerInfo manualJobTriggerInfo) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    public ResponseEntity<?> executeJob(@Valid @RequestBody ManualJobTriggerInfo manualJobTriggerInfo)
+             throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException,
+             JobInstanceAlreadyCompleteException {
          log.info("REST request to trigger job execution: ", manualJobTriggerInfo);
 
          JobParametersBuilder jpBuilder = new JobParametersBuilder();
-         jpBuilder.addString("tag", ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
+         jpBuilder.addString("initTime", ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
          jpBuilder.addString("jobName", manualJobTriggerInfo.getJobName());
-         jpBuilder.addString("userId", manualJobTriggerInfo.getUserId());
-         jpBuilder.addString("channelId", "on-demand");
-
+//         jpBuilder.addString("userId", manualJobTriggerInfo.getUserId());
+//         jpBuilder.addString("callbackUrl", manualJobTriggerInfo.getCallbackUrl());
 
          try {
              jobLauncher.run(jobLocator.getJob(manualJobTriggerInfo.getJobName()), jpBuilder.toJobParameters());
