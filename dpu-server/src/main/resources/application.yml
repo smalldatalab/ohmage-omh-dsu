@@ -1,13 +1,13 @@
 omh:
   shim:
     url: http://192.168.99.101:8084
-    fakedata: false # set to true to use data in the /sample-data directory
+    fakedata: true # set to true to use data in the /sample-data directory`
 spring:
     data:
         mongodb:
             host: 192.168.99.101
             port: 27017
-            database: metis
+            database: omh
     batch:
         job:
             enabled: false

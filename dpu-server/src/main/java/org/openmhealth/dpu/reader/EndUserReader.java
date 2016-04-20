@@ -1,10 +1,7 @@
 package org.openmhealth.dpu.reader;
 
-import org.openmhealth.dpu.util.EndUser;
+import org.openmhealth.dsu.domain.EndUser;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;

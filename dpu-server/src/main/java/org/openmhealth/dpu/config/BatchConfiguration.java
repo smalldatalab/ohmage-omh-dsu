@@ -1,8 +1,8 @@
 package org.openmhealth.dpu.config;
 
 import org.openmhealth.dpu.reader.EndUserReader;
-import org.openmhealth.dpu.util.DataPoint;
-import org.openmhealth.dpu.util.EndUser;
+import org.openmhealth.dsu.domain.EndUser;
+import org.openmhealth.schema.domain.omh.DataPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -27,8 +27,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.util.List;
 
 /**
- * (Description here)
- *
  * @author Jared Sieling.
  */
 @Configuration
@@ -44,17 +42,17 @@ public class BatchConfiguration {
     public ItemReader<EndUser> endUserReader() {
         return new EndUserReader();
     }
-
-    @Bean(name = "dpuResultWriter")
-    public MongoItemWriter<DataPoint> dpuResultWriter(MongoTemplate mongoTemplate) {
-        MongoItemWriter<DataPoint> writer = new MongoItemWriter<>();
-        writer.setTemplate(mongoTemplate);
-        return writer;
-    }
+//
+//    @Bean(name = "dpuResultWriter")
+//    public MongoItemWriter<DataPoint> dpuResultWriter(MongoTemplate mongoTemplate) {
+//        MongoItemWriter<DataPoint> writer = new MongoItemWriter<>();
+//        writer.setTemplate(mongoTemplate);
+//        return writer;
+//    }
 
     @Bean(name = "syncFitbitJob")
     public Job syncFitbitJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
-                         JobExecutionListener listener, MongoItemWriter<DataPoint> writer,
+                         JobExecutionListener listener,
                          @Qualifier("syncFitbitProcessor") ItemProcessor<EndUser, List<DataPoint>> processor) {
 
         Step s1 = stepBuilderFactory.get("syncFitbitStep1")
