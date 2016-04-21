@@ -17,39 +17,27 @@
 package org.openmhealth.dsu.controller;
 
 import com.google.common.collect.Range;
-import com.mongodb.gridfs.GridFSDBFile;
-import org.openmhealth.dsu.domain.ChronologicalOrder;
-import org.openmhealth.dsu.domain.DataPoint;
-import org.openmhealth.dsu.domain.DataPointMedia;
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
+import org.openmhealth.dsu.domain.EndUserUserDetails;
 import org.openmhealth.dsu.service.DataPointService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openmhealth.schema.domain.omh.DataPoint;
+import org.openmhealth.schema.domain.omh.DataPointHeader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.openmhealth.dsu.configuration.OAuth2Properties.*;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 
@@ -60,8 +48,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @ApiController
 public class DataPointController {
-
-    private static final Logger log = LoggerFactory.getLogger(DataPointController.class);
 
     /*
      * These filtering parameters are temporary. They will likely change when a more generic filtering approach is
@@ -75,18 +61,11 @@ public class DataPointController {
 
     public static final String RESULT_OFFSET_PARAMETER = "skip";
     public static final String RESULT_LIMIT_PARAMETER = "limit";
-    public static final String CHRONOLOGICAL = "chronological";
-    public static final String DEFAULT_CHRONOLOGICAL = "asc";
     public static final String DEFAULT_RESULT_LIMIT = "100";
-
-
 
     @Autowired
     private DataPointService dataPointService;
-    @Autowired
-    private MappingJackson2HttpMessageConverter converter;
-    @Autowired
-    private GridFsOperations gridFsOperations;
+
     /**
      * Reads data points.
      *
@@ -102,6 +81,7 @@ public class DataPointController {
     // TODO confirm if HEAD handling needs anything additional
     // only allow clients with read scope to read data points
     @PreAuthorize("#oauth2.clientHasRole('" + CLIENT_ROLE + "') and #oauth2.hasScope('" + DATA_POINT_READ_SCOPE + "')")
+    // TODO look into any meaningful @PostAuthorize filtering
     @RequestMapping(value = "/dataPoints", method = {HEAD, GET}, produces = APPLICATION_JSON_VALUE)
     public
     @ResponseBody
@@ -116,7 +96,6 @@ public class DataPointController {
             @RequestParam(value = CREATED_BEFORE_PARAMETER, required = false) final OffsetDateTime createdBefore,
             @RequestParam(value = RESULT_OFFSET_PARAMETER, defaultValue = "0") final Integer offset,
             @RequestParam(value = RESULT_LIMIT_PARAMETER, defaultValue = DEFAULT_RESULT_LIMIT) final Integer limit,
-            @RequestParam(value = CHRONOLOGICAL, defaultValue = DEFAULT_CHRONOLOGICAL) final String chronological,
             Authentication authentication) {
 
         // TODO add validation or explicitly comment that this is handled using exception translators
@@ -136,9 +115,8 @@ public class DataPointController {
         else if (createdBefore != null) {
             searchCriteria.setCreationTimestampRange(Range.lessThan(createdBefore));
         }
-        // determine the ChronologicalOrder
-        ChronologicalOrder order = chronological.toLowerCase().equals("desc") ? ChronologicalOrder.DESC : ChronologicalOrder.ASC;
-        Iterable<DataPoint> dataPoints = dataPointService.findBySearchCriteria(searchCriteria, order, offset, limit);
+
+        Iterable<DataPoint> dataPoints = dataPointService.findBySearchCriteria(searchCriteria, offset, limit);
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -151,7 +129,7 @@ public class DataPointController {
 
     public String getEndUserId(Authentication authentication) {
 
-        return authentication.getName();
+        return ((EndUserUserDetails) authentication.getPrincipal()).getUsername();
     }
 
     /**
@@ -165,7 +143,7 @@ public class DataPointController {
     // only allow clients with read scope to read a data point
     @PreAuthorize("#oauth2.clientHasRole('" + CLIENT_ROLE + "') and #oauth2.hasScope('" + DATA_POINT_READ_SCOPE + "')")
     // ensure that the returned data point belongs to the user associated with the access token
-    @PostAuthorize("returnObject.body == null || returnObject.body.userId == principal.username")
+    @PostAuthorize("returnObject.body == null || returnObject.body.header.userId == principal.username")
     @RequestMapping(value = "/dataPoints/{id}", method = {HEAD, GET}, produces = APPLICATION_JSON_VALUE)
     public
     @ResponseBody
@@ -182,102 +160,40 @@ public class DataPointController {
     }
 
     /**
-     * Reads media data of a data point.
-     *
-     * @param id the identifier of the data point
-     * @param mId the desired media id
-     * @param authentication  user authentication
-     * @return a matching data point, if found
-     */
-    // only allow clients with read scope to read a data point
-    @PreAuthorize("#oauth2.clientHasRole('" + CLIENT_ROLE + "') and #oauth2.hasScope('" + DATA_POINT_READ_SCOPE + "')")
-    @RequestMapping(value = "/dataPoints/{id}/media/{mId}", method = {HEAD, GET},
-            produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE,MediaType.ALL_VALUE})
-    public ResponseEntity<InputStreamResource> readDataPointMedia(@PathVariable String id, @PathVariable String mId, Authentication authentication) {
-        Query query = new Query();
-
-        query.addCriteria(where("metadata.data_point_id").is(id));
-        query.addCriteria(where("metadata.user_id").is(getEndUserId(authentication)));
-        query.addCriteria(where("metadata.media_id").is(mId));
-
-        GridFSDBFile gridFsFile = gridFsOperations.findOne(query);
-
-        if(gridFsFile != null){
-            HttpHeaders respHeaders = new HttpHeaders();
-            respHeaders.setContentType(MediaType.parseMediaType(gridFsFile.getContentType()));
-            respHeaders.setContentLength(gridFsFile.getLength());
-            respHeaders.setContentDispositionFormData("attachment", mId);
-            InputStreamResource inputStreamResource = new InputStreamResource(gridFsFile.getInputStream());
-            return new ResponseEntity<>(inputStreamResource, respHeaders, OK);
-        }
-        return new ResponseEntity<>(NOT_FOUND);
-
-    }
-
-
-
-    /**
-     * Internal write data point function
-     * @param dataPoint  data point to write
-     * @param mediaParts  media multi parts (if any)
-     * @param authentication  user authentication
-     * @return CONFLICT if data point exists, otherwise CREATED
-     * @throws IOException
-     */
-    public ResponseEntity<?> writeDataPoint(DataPoint dataPoint,  Optional<List<MultipartFile>> mediaParts,
-                                            Authentication authentication) throws IOException {
-        // FIXME test validation
-        if (dataPointService.exists(dataPoint.getId())) {
-            return new ResponseEntity<>(CONFLICT);
-        }
-        // set the owner of the data point to be the user associated with the access token
-        String endUserId = getEndUserId(authentication);
-        dataPoint.setUserId(endUserId);
-
-
-
-        // store the media files (if any)
-        if(mediaParts.isPresent()) {
-            for (MultipartFile mediaPart : mediaParts.get()) {
-                DataPointMedia media = new DataPointMedia(dataPoint, mediaPart);
-                dataPoint.getHeader().getMedia().add(media);
-                gridFsOperations.store(media.getStream(), media.getId(), media.getContentType(), media);
-
-            }
-        }
-        // save data points
-        dataPointService.save(dataPoint);
-        return new ResponseEntity<>(CREATED);
-    }
-    /**
-     * Writes a data point without media data.
+     * Writes a data point.
      *
      * @param dataPoint the data point to write
      */
     // only allow clients with write scope to write data points
     @PreAuthorize("#oauth2.clientHasRole('" + CLIENT_ROLE + "') and #oauth2.hasScope('" + DATA_POINT_WRITE_SCOPE + "')")
-    @RequestMapping(value = "/dataPoints", method = POST, consumes = APPLICATION_JSON_VALUE )
-    public ResponseEntity<?> writeDataPoint(@RequestBody @Valid DataPoint dataPoint, Authentication authentication) throws IOException {
-        return writeDataPoint(dataPoint, Optional.<List<MultipartFile>>empty(), authentication);
+    @RequestMapping(value = "/dataPoints", method = POST, consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> writeDataPoint(@RequestBody @Valid DataPoint dataPoint, Authentication authentication) {
+
+        // FIXME test validation
+        if (dataPointService.exists(dataPoint.getHeader().getId())) {
+            return new ResponseEntity<>(CONFLICT);
+        }
+
+        String endUserId = getEndUserId(authentication);
+
+        // set the owner of the data point to be the user associated with the access token
+        setUserId(dataPoint.getHeader(), endUserId);
+
+        dataPointService.save(dataPoint);
+
+        return new ResponseEntity<>(CREATED);
     }
 
-
-    /**
-     * Writes a data point with media data as multi-parts.
-     *
-     * @param mediaParts the media multi-parts
-     * @param dataPointStr  data point string in JSON format
-     *
-     */
-    // only allow clients with write scope to write data points
-    @PreAuthorize("#oauth2.clientHasRole('" + CLIENT_ROLE + "') and #oauth2.hasScope('" + DATA_POINT_WRITE_SCOPE + "')")
-    @RequestMapping(value = "/dataPoints", method = POST, consumes = MULTIPART_FORM_DATA_VALUE,
-                                                          headers = "content-type="+MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> writeDataPoint(@RequestParam("media") List<MultipartFile> mediaParts,
-                                            @RequestParam("data")  String dataPointStr,
-                                            Authentication authentication) throws IOException {
-        DataPoint dataPoint = converter.getObjectMapper().readValue(dataPointStr, DataPoint.class);
-        return  writeDataPoint(dataPoint, Optional.of(mediaParts), authentication);
+    // this is currently implemented using reflection, until we see other use cases where mutability would be useful
+    private void setUserId(DataPointHeader header, String endUserId) {
+        try {
+            Field userIdField = header.getClass().getDeclaredField("userId");
+            userIdField.setAccessible(true);
+            userIdField.set(header, endUserId);
+        }
+        catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new IllegalStateException("A user identifier property can't be changed in the data point header.", e);
+        }
     }
 
     /**

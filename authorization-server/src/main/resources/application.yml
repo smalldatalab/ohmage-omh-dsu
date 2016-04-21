@@ -17,14 +17,8 @@
 # FIXME revise this if mixing data stores
 dataStore: mongo
 
-application:
-  url: https://lifestreams.smalldata.io/dsu/
-internalShimServer:
-  url: http://ohmage-shim:8084/
-
 server:
   port: 8082
-  context-path: /dsu
 
 spring:
   application:
@@ -38,25 +32,10 @@ spring:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://omh-postgres:5432/omh
     username: postgres
-    password: postgres
-
-admindashboard:
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://omh-postgres:5432/admindashboard
-    username: postgres
-    password: postgres
-
-http:
-  mappers:
-    jsonPrettyPrint: true
-
-google:
-  clientId: FROM_ENV
-  clientSecret: FROM_ENV
-  scope: email https://www.googleapis.com/auth/userinfo.profile
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
 
 logging:
   level:
     org.springframework: INFO
-  path: /var/log/ohmage-auth/

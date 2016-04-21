@@ -17,7 +17,6 @@
 # FIXME revise this if mixing data stores
 dataStore: mongo
 
-
 server:
   port: 8083
 
@@ -33,26 +32,10 @@ spring:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://omh-postgres:5432/omh
     username: postgres
-    password: postgres
-
-admindashboard:
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://omh-postgres:5432/admindashboard
-    username: postgres
-    password: postgres
-
-
-multipart:
-  maxFileSize: 50MB
-  maxRequestSize: 50MB
-
-http:
-  mappers:
-    jsonPrettyPrint: true
-
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
 
 logging:
-  path: /var/log/ohmage-resource/
   level:
     org.springframework: INFO

@@ -16,9 +16,8 @@
 
 package org.openmhealth.dsu.service;
 
-import org.openmhealth.dsu.domain.ChronologicalOrder;
-import org.openmhealth.dsu.domain.DataPoint;
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
+import org.openmhealth.schema.domain.omh.DataPoint;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -30,14 +29,13 @@ import java.util.Optional;
  * @author Emerson Farrugia
  */
 public interface DataPointService {
+
     boolean exists(String id);
 
     Optional<DataPoint> findOne(String id);
 
-    Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria,
-                                             ChronologicalOrder chronological,
-                                             @Nullable Integer offset,
-                                             @Nullable Integer limit);
+    Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria, @Nullable Integer offset,
+            @Nullable Integer limit);
 
     DataPoint save(DataPoint dataPoint);
 
