@@ -1,9 +1,7 @@
 package org.openmhealth.dpu.processor;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.openmhealth.dpu.repository.DataPointRepository;
 import org.openmhealth.dpu.service.OmhShimService;
 import org.openmhealth.dsu.domain.EndUser;
@@ -27,7 +25,7 @@ public class SyncFitbitProcessor implements ItemProcessor<EndUser, List<DataPoin
     private static final Logger log = LoggerFactory.getLogger(SyncFitbitProcessor.class);
 
     @Autowired
-    private DataPointRepository repository;
+    DataPointRepository dataPointRepository;
 
     @Inject
     private OmhShimService omhShimService;
@@ -45,9 +43,7 @@ public class SyncFitbitProcessor implements ItemProcessor<EndUser, List<DataPoin
         LocalDate startDate = endDate.minusDays(6);
 
         // Fetch data
-        String responseString = omhShimService.getData(user, "fitbit", "steps", true, startDate, endDate);
-
-        JsonNode responseRoot = objectMapper.readTree(responseString);
+        JsonNode responseRoot = omhShimService.getDataAsJsonNode(user, "fitbit", "steps", true, startDate, endDate);
         JsonNode responseBody = responseRoot.get("body");
 
         List<DataPoint<StepCount>> dataPoints = new ArrayList<DataPoint<StepCount>>();
@@ -56,7 +52,10 @@ public class SyncFitbitProcessor implements ItemProcessor<EndUser, List<DataPoin
                 DataPoint<StepCount> dataPoint = new DataPoint<>(
                         objectMapper.readValue(dataPointJson.get("header").toString(), DataPointHeader.class),
                         objectMapper.readValue(dataPointJson.get("body").toString(), StepCount.class));
-                repository.save(dataPoint);
+
+                // TODO Check if the data points already exist, or just delete dataPoints in last 7 days
+                dataPointRepository.save(dataPoint);
+
                 dataPoints.add(dataPoint);
             }
         }

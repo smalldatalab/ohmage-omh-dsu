@@ -1,5 +1,6 @@
 package org.openmhealth.dpu.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -17,14 +18,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 /**
- * (Description here)
- *
  * @author Jared Sieling.
  */
 @Service
@@ -39,9 +39,9 @@ public class OmhShimService {
     @Value("${omh.shim.url}") String shimUrl;
 
     @Autowired
-    ObjectMapper mapper;
+    ObjectMapper objectMapper;
 
-    public String getData(EndUser user, String shim, String endpoint, Boolean normalize, LocalDate startDate, LocalDate endDate) {
+    public String getDataAsString(EndUser user, String shim, String endpoint, Boolean normalize, LocalDate startDate, LocalDate endDate) {
         if (!useFakeData) {
             HttpClient client = HttpClients.createDefault();
             UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shimUrl)
@@ -77,6 +77,11 @@ public class OmhShimService {
         }
     }
 
+    public JsonNode getDataAsJsonNode(EndUser user, String shim, String endpoint, Boolean normalize, LocalDate startDate, LocalDate endDate) throws IOException {
+        String responseString = getDataAsString(user, shim, endpoint, normalize, startDate, endDate);
+        JsonNode responseRoot = objectMapper.readTree(responseString);
 
+        return responseRoot;
+    }
 
 }
