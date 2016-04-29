@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/layout :: head"></head><body>
+<header th:replace="fragments/layout :: header"></header>
+<section class="header-11-sub bg-clouds">
+    <div class="background">
+    </div>
+
+
+        <div class="container" th:switch="${connected}">
+            <div class="row" th:case="${false}">
+                <div class="col-sm-12">
+                    <h2 th:text="'Connect ' + ${#strings.capitalize(appName)}">
+                        Connect
+                    </h2>
+                    <h3 th:text="'to allow us to pull out your ' + ${#strings.capitalize(appName)} + ' data for you.'">
+
+                    </h3>
+                    <a  th:href="${authorizationUrl}" class="btn btn-primary btn-lg">Connect Now!</a>
+                </div>
+                <div class="col-sm-3 col-sm-offset-1 player-wrapper">
+                </div>
+            </div>
+            <div class="row" th:case="${true}">
+                <div class="col-sm-12">
+                    <h2 th:text="'Reconnect?'">
+                        Connect
+                    </h2>
+                    <h3 th:text="${#strings.capitalize(appName)} + ' has already been connected. Do you want to reconnect and replace the existing connection?'">
+                    </h3>
+                    <a  th:href="@{'/shims/reauthorize/'} + ${appName}" class="btn btn-warning btn-lg">Yes, Reconnect</a>
+                </div>
+                <div class="col-sm-3 col-sm-offset-1 player-wrapper">
+                </div>
+            </div>
+        </div>
+
+
+</section>
+</body>
+
+</html>

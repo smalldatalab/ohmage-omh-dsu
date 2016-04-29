@@ -17,12 +17,23 @@
 # FIXME revise this if mixing data stores
 dataStore: mongo
 
+application:
+  url: http://localhost:8082/dsu
+internalShimServer:
+  url: http://ohmage-shim:8084/
+
+google:
+  clientId: FROM_ENV
+  clientSecret: FROM_ENV
+  scope: email https://www.googleapis.com/auth/userinfo.profile
+
 server:
   port: 8082
+  context-path: /dsu
 
 spring:
   application:
-    name: Open mHealth DSU authorisation server
+    name: ohmage-omh
   data:
     mongodb:
       host: 192.168.99.101
@@ -36,6 +47,11 @@ spring:
     serialization:
       INDENT_OUTPUT: true
 
+http:
+  mappers:
+    jsonPrettyPrint: true
+
 logging:
   level:
     org.springframework: INFO
+  path: /var/log/ohmage-auth/

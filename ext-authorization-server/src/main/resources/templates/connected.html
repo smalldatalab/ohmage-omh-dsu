@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head"></head><body>
+<header th:replace="fragments/layout :: header"></header>
+<section class="header-11-sub bg-clouds">
+    <div class="background">
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>
+                    Connected!
+                </h2>
+                <h3 th:text="'Your ' + ${#strings.capitalize(appName)} + ' account is connected. Thank you!'">
+
+                </h3>
+            </div>
+            <div class="col-sm-3 col-sm-offset-1 player-wrapper">
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+</script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js">
+</script>
+</body>
+
+</html>

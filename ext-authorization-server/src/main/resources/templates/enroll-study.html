@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/layout :: head"></head><body>
+<header th:replace="fragments/layout :: header"></header>
+<section class="header-11-sub bg-clouds">
+    <div class="background">
+    </div>
+    <form action="" method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 th:text="'Enroll Study'">
+
+                </h2>
+                <h3>
+                    Click to enroll <b><span th:text="${study.name}"></span></b>
+                </h3>
+                <button type="submit" class="btn btn-primary btn-lg">Enroll now!</button>
+            </div>
+            <div class="col-sm-3 col-sm-offset-1 player-wrapper">
+            </div>
+        </div>
+    </div>
+    </form>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+</script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js">
+</script>
+</body>
+
+</html>
