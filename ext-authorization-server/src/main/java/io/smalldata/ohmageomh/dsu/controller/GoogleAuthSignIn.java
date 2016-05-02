@@ -51,7 +51,7 @@ import static org.openmhealth.dsu.configuration.OAuth2Properties.END_USER_ROLE;
  *
  * @author Cheng-Kang Hsieh
  */
-@Controller
+//@Controller
 public class GoogleAuthSignIn {
 
     private static final Logger log = LoggerFactory.getLogger(GoogleAuthSignIn.class);

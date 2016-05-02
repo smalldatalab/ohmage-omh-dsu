@@ -18,7 +18,7 @@
 dataStore: mongo
 
 application:
-  url: http://localhost:8082/dsu
+  url: http://localhost:8082/dsu/
 internalShimServer:
   url: http://ohmage-shim:8084/
 
