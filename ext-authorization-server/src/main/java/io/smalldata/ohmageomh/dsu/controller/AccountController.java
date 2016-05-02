@@ -28,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -63,8 +64,8 @@ public class AccountController {
 
     @RequestMapping(value = "/signout", method = RequestMethod.GET)
     @ResponseBody
-    public String signOut(HttpServletRequest request) throws ServletException {
+    public RedirectView signOut(HttpServletRequest request) throws ServletException {
         request.logout();
-        return "You have signed out.";
+        return new RedirectView(""); // Redirect back to home
     }
 }
