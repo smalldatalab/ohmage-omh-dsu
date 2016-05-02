@@ -87,7 +87,7 @@ public class SocialConfig implements SocialConfigurer {
         public String buildAuthorizeUrl(GrantType grantType, OAuth2Parameters parameters) {
             // always prompt user for approval
             parameters.set("approval_prompt", "force");
-            if (parameters.getScope().equals("")) {
+            if (parameters.getScope() == null || parameters.getScope().equals("")) {
                 // the scope that allow access to the user's email address and other profile
                 parameters.setScope(googleScope);
             }
