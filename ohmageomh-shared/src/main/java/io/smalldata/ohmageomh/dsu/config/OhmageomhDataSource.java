@@ -8,15 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 /**
- * The configuration for accessing the database used by the admin dashboard.
- * (usually a Postgres db)
- * Disable it if the admin dashboard is NOT in use by commenting out @Configuration
- * Created by changun on 2/26/15.
+ * The configuration for accessing the database used for ohmage-omh objects. Not for the data points.
+ *
  */
 @Configuration
-public class AdminDashboardDataSource {
-    @Bean(name="admindashboardDataSource")
-    @ConfigurationProperties(prefix="admindashboard.datasource")
+public class OhmageomhDataSource {
+    @Bean(name="manageDataSource")
+    @ConfigurationProperties(prefix="ohmageomh.datasource")
     public DataSource secondaryDataSource() {
         return DataSourceBuilder.create().build();
     }

@@ -30,7 +30,7 @@ public class StudyServiceImpl implements StudyService {
 
     private static final Logger log = LoggerFactory.getLogger(StudyServiceImpl.class);
 
-    @Resource(name="admindashboardDataSource")
+    @Resource(name="manageDataSource")
     DataSource dataSource;
     @Autowired
     ObjectMapper objectMapper;

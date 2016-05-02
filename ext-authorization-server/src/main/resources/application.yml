@@ -18,9 +18,9 @@
 dataStore: mongo
 
 application:
-  url: http://localhost:8082/dsu/
+  url: http://192.168.99.101:8082/dsu/
 internalShimServer:
-  url: http://ohmage-shim:8084/
+  url: http://192.168.99.101:8084/
 
 google:
   clientId: FROM_ENV
@@ -47,7 +47,7 @@ spring:
     serialization:
       INDENT_OUTPUT: true
 
-admindashboard:
+ohmageomh:
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://192.168.99.101:5432/admindashboard
