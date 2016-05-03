@@ -4,4 +4,6 @@ include 'authorization-server'
 include 'resource-server'
 include 'ext-authorization-server'
 include 'ohmageomh-shared'
+include 'ext-resource-server'
+include 'ohmageomh-surveys'
 
