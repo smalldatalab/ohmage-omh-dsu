@@ -6,4 +6,5 @@ include 'ohmageomh-authorization-server'
 include 'ohmageomh-resource-server'
 include 'ohmageomh-shared'
 include 'ohmageomh-surveys'
+include 'ohmageomh-dpu-server'
 
