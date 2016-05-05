@@ -1,0 +1,21 @@
+version: '2'
+services:
+    ohmage-app:
+        image: ohmage
+        external_links:
+            - ohmage-postgresql:postgresql
+            - ohmage-elasticsearch:elasticsearch
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/Ohmage
+            - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:9300
+        ports:
+            - 8080:8080
+    ohmage-postgresql:
+        extends:
+            file: postgresql.yml
+            service: ohmage-postgresql
+    ohmage-elasticsearch:
+        extends:
+            file: elasticsearch.yml
+            service: ohmage-elasticsearch
