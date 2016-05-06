@@ -1,0 +1,40 @@
+
+<div>
+    <h2><span>Participant</span> {{vm.participant.id}}</h2>
+    <hr>
+    <dl class="dl-horizontal">
+        <dt><span>First Name</span></dt>
+        <dd>
+            <span>{{vm.participant.firstName}}</span>
+        </dd>
+        <hr>
+        <dt><span>Last Name</span></dt>
+        <dd>
+            <span>{{vm.participant.lastName}}</span>
+        </dd>
+        <hr>
+        <dt><span>Gmail</span></dt>
+        <dd>
+            <span>{{vm.participant.gmail}}</span>
+        </dd>
+        <hr>
+        <dt><span>Username</span></dt>
+        <dd>
+            <span>{{vm.participant.username}}</span>
+        </dd>
+        <hr>
+        <dt><span>Study</span></dt>
+        <dd>
+            <span ng-repeat="study in vm.participant.studies">
+                <a ui-sref="study-detail({id: {{study.id}}})">{{study.id}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+        <hr>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+</div>

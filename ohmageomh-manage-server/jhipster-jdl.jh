@@ -1,0 +1,91 @@
+entity Study {
+	name String maxlength(255) required,
+    removeGps Boolean required
+}
+
+entity Participant {
+	firstName String maxlength(255),
+    lastName String maxlength(255),
+    gmail String maxlength(255),
+    username String maxlength(255) required
+}
+
+relationship ManyToMany {
+	Participant{study} to Study{participant}
+}
+
+relationship ManyToMany {
+	Study{manager} to User{study}
+}
+
+entity Organization {
+	name String maxlength(255)
+}
+
+relationship ManyToMany {
+	Organization{study} to Study{organization}
+}
+
+relationship ManyToMany {
+	Organization{owner} to User{organization}
+}
+
+entity Survey {
+	name String maxlength(255) required,
+    version String maxlength(255) required,
+    description String maxlength(255),
+    isPublic Boolean required,
+    definition String required
+}
+
+relationship ManyToMany {
+	Study{survey} to Survey{study}
+}
+
+entity DataType {
+	name String maxlength(255) required,
+    description String maxlength(255),
+    schemaNamespace String maxlength(255),
+    schemaName String maxlength(255),
+    schemaVersion String maxlength(255),
+    csvMapper String
+}
+
+entity Integration {
+	name String maxlength(255) required,
+    description String maxlength(255)
+}
+
+relationship ManyToMany {
+	Integration{dataType} to DataType{integration}
+}
+
+relationship ManyToMany {
+	Study{integration} to Integration{study}
+}
+
+entity Note {
+	body String maxlength(1024) required,
+    date LocalDate required
+}
+
+relationship ManyToOne {
+	Note{study} to Study
+}
+
+relationship ManyToOne {
+	Note{manager} to User
+}
+
+relationship ManyToOne {
+	Note{participant} to Participant
+}
+
+service all with serviceImpl
+
+paginate all with pagination
+
+
+
+
+

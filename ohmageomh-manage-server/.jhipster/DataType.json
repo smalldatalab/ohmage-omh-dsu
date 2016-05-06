@@ -1,0 +1,69 @@
+{
+  "relationships": [
+    {
+      "relationshipId": 1,
+      "relationshipName": "integration",
+      "otherEntityName": "integration",
+      "relationshipType": "many-to-many",
+      "ownerSide": false,
+      "otherEntityRelationshipName": "dataType"
+    }
+  ],
+  "fields": [
+    {
+      "fieldId": 1,
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength",
+        "required"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    },
+    {
+      "fieldId": 2,
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    },
+    {
+      "fieldId": 3,
+      "fieldName": "schemaNamespace",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    },
+    {
+      "fieldId": 4,
+      "fieldName": "schemaName",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    },
+    {
+      "fieldId": 5,
+      "fieldName": "schemaVersion",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    },
+    {
+      "fieldId": 6,
+      "fieldName": "csvMapper",
+      "fieldType": "String"
+    }
+  ],
+  "changelogDate": "20160506164056",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "serviceImpl"
+}

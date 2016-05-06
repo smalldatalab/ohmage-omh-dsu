@@ -1,0 +1,55 @@
+{
+  "relationships": [
+    {
+      "relationshipId": 1,
+      "relationshipName": "study",
+      "otherEntityName": "study",
+      "relationshipType": "many-to-many",
+      "otherEntityField": "id",
+      "ownerSide": true
+    }
+  ],
+  "fields": [
+    {
+      "fieldId": 1,
+      "fieldName": "firstName",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    },
+    {
+      "fieldId": 2,
+      "fieldName": "lastName",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    },
+    {
+      "fieldId": 3,
+      "fieldName": "gmail",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    },
+    {
+      "fieldId": 4,
+      "fieldName": "username",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength",
+        "required"
+      ],
+      "fieldValidateRulesMaxlength": 255
+    }
+  ],
+  "changelogDate": "20160506164053",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "serviceImpl"
+}
