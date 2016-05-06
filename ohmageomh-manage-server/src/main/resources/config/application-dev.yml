@@ -50,6 +50,7 @@ liquibase:
 
 server:
     port: 8080
+    context-path: /manage
 
 # ===================================================================
 # JHipster specific properties
