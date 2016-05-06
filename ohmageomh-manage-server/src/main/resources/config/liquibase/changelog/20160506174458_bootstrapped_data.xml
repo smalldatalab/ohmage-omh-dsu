@@ -30,5 +30,17 @@
                   tableName="study_manager">
         </loadData>
 
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/participants.csv"
+                  separator=";"
+                  tableName="participant">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/participants_studies.csv"
+                  separator=";"
+                  tableName="participant_study">
+        </loadData>
+
     </changeSet>
 </databaseChangeLog>
