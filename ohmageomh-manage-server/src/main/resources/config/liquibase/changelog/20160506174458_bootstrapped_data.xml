@@ -84,5 +84,17 @@
                   tableName="study_integration">
         </loadData>
 
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/surveys.csv"
+                  separator=";"
+                  tableName="survey">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/studies_surveys.csv"
+                  separator=";"
+                  tableName="study_survey">
+        </loadData>
+
     </changeSet>
 </databaseChangeLog>

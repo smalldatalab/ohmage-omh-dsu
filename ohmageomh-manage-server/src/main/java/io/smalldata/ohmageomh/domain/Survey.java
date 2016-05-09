@@ -1,6 +1,7 @@
 package io.smalldata.ohmageomh.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
@@ -44,6 +45,7 @@ public class Survey implements Serializable {
 
     @NotNull
     @Column(name = "definition", nullable = false)
+    @Type(type = "text")
     private String definition;
 
     @ManyToMany(mappedBy = "surveys")
