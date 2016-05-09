@@ -8,4 +8,5 @@ include 'ohmageomh-shared'
 include 'ohmageomh-surveys'
 include 'ohmageomh-dpu-server'
 include 'ohmageomh-manage-server'
+include 'ohmageomh-data'
 

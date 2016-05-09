@@ -1,0 +1,26 @@
+group 'io.smalldata.ohmageomh'
+version '0.1.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springBootVersion = '1.3.1.RELEASE'
+}
+
+dependencies {
+
+    compile group: 'org.openmhealth.schema', name: 'omh-schema-sdk', version: '1.0.6'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: springBootVersion
+    compile group: 'com.google.guava', name: 'guava', version: '18.0' // required for omh-schema-sdk?
+    compile group: 'com.google.code.findbugs', name:'jsr305', version: '3.0.0'
+    compile 'org.mongodb:mongo-java-driver'
+
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}

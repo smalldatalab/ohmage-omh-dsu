@@ -34,8 +34,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile project(":shared")
     compile project(":ohmageomh-shared")
+    compile project(":ohmageomh-data")
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version: springBootVersion

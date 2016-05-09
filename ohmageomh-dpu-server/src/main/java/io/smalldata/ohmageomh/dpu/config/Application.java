@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ import javax.inject.Inject;
 @ComponentScan(
         basePackages = "org.openmhealth, io.smalldata.ohmageomh",
         excludeFilters = {
-                @ComponentScan.Filter(value = EnableAutoConfiguration.class)
+                @ComponentScan.Filter(value = EnableAutoConfiguration.class),
         })
 @EnableAutoConfiguration
 @EnableConfigurationProperties

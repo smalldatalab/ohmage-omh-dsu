@@ -36,5 +36,5 @@ server:
   port: 8085
 logging:
   level:
-    org.springframework: DEBUG
+    org.springframework: INFO
   path: /var/log/metis/dpu

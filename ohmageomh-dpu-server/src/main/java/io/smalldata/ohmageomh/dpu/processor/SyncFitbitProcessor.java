@@ -2,7 +2,7 @@ package io.smalldata.ohmageomh.dpu.processor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openmhealth.dsu.repository.DataPointRepository;
+import io.smalldata.ohmageomh.data.service.DataPointService;
 import io.smalldata.ohmageomh.dpu.service.OmhShimService;
 import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.schema.domain.omh.DataPoint;
@@ -25,7 +25,7 @@ public class SyncFitbitProcessor implements ItemProcessor<EndUser, List<DataPoin
     private static final Logger log = LoggerFactory.getLogger(SyncFitbitProcessor.class);
 
     @Autowired
-    DataPointRepository dataPointRepository;
+    DataPointService dataPointService;
 
     @Inject
     private OmhShimService omhShimService;
@@ -54,8 +54,11 @@ public class SyncFitbitProcessor implements ItemProcessor<EndUser, List<DataPoin
                         objectMapper.readValue(dataPointJson.get("body").toString(), StepCount.class));
 
                 // TODO Check if the data points already exist, or just delete dataPoints in last 7 days
-                dataPointRepository.save(dataPoint);
 
+                // set the owner of the data point to be the user associated with the access token
+                dataPointService.setUserId(dataPoint.getHeader(), user.getUsername());
+
+                dataPointService.save(dataPoint);
                 dataPoints.add(dataPoint);
             }
         }
