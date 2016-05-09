@@ -42,5 +42,23 @@
                   tableName="participant_study">
         </loadData>
 
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/organizations.csv"
+                  separator=";"
+                  tableName="organization">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/organizations_owners.csv"
+                  separator=";"
+                  tableName="organization_owner">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/organizations_studies.csv"
+                  separator=";"
+                  tableName="organization_study">
+        </loadData>
+
     </changeSet>
 </databaseChangeLog>
