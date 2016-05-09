@@ -16,7 +16,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "data_type")
 @Document(indexName = "datatype")
-public class DataType implements Serializable {
+public class DataType extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

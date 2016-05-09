@@ -12,6 +12,7 @@
     <include file="classpath:config/liquibase/changelog/20160506164056_added_entity_DataType.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20160506164057_added_entity_Integration.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20160506164058_added_entity_Note.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20160509165507_added_entity_EntityAuditEvent.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20160506164052_added_entity_constraints_Study.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20160506164053_added_entity_constraints_Participant.xml" relativeToChangelogFile="false"/>

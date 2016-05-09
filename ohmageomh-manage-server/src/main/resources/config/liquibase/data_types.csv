@@ -1,3 +1,3 @@
-id;name;description;schema_namespace;schema_name;schema_version;csv_mapper
-101;Step count;Number of steps for a single count of steps.;omh;step-count;1.0;TBD
-102;Physical activity;This schema represents a single episode of physical activity, including the name of the activity, duration, distance, intensity and calories burned.;omh;physical-activity;1.2;TBD
+id;name;description;schema_namespace;schema_name;schema_version;csv_mapper;created_by;created_date;last_modified_by;last_modified_date
+101;Step count;Number of steps for a single count of steps.;omh;step-count;1.0;TBD;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
+102;Physical activity;This schema represents a single episode of physical activity, including the name of the activity, duration, distance, intensity and calories burned.;omh;physical-activity;1.2;TBD;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
