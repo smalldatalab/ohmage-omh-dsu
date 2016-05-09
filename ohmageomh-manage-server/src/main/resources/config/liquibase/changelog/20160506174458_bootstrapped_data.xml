@@ -60,5 +60,29 @@
                   tableName="organization_study">
         </loadData>
 
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/integrations.csv"
+                  separator=";"
+                  tableName="integration">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/data_types.csv"
+                  separator=";"
+                  tableName="data_type">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/integrations_data_types.csv"
+                  separator=";"
+                  tableName="integration_data_type">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/studies_integrations.csv"
+                  separator=";"
+                  tableName="study_integration">
+        </loadData>
+
     </changeSet>
 </databaseChangeLog>
