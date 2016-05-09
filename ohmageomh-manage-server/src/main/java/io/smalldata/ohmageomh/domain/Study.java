@@ -6,6 +6,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -32,6 +33,12 @@ public class Study implements Serializable {
     @NotNull
     @Column(name = "remove_gps", nullable = false)
     private Boolean removeGps;
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @ManyToMany
     @JoinTable(name = "study_manager",
@@ -81,6 +88,22 @@ public class Study implements Serializable {
 
     public void setRemoveGps(Boolean removeGps) {
         this.removeGps = removeGps;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public Set<User> getManagers() {
@@ -149,6 +172,8 @@ public class Study implements Serializable {
             "id=" + id +
             ", name='" + name + "'" +
             ", removeGps='" + removeGps + "'" +
+            ", startDate='" + startDate + "'" +
+            ", endDate='" + endDate + "'" +
             '}';
     }
 }

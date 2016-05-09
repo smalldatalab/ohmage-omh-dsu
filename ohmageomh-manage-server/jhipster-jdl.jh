@@ -1,6 +1,8 @@
 entity Study {
 	name String maxlength(255) required,
-    removeGps Boolean required
+    removeGps Boolean required,
+    startDate LocalDate,
+    endDate LocalDate
 }
 
 entity Participant {

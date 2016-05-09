@@ -59,6 +59,16 @@
       "fieldValidateRules": [
         "required"
       ]
+    },
+    {
+      "fieldId": 3,
+      "fieldName": "startDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldId": 4,
+      "fieldName": "endDate",
+      "fieldType": "LocalDate"
     }
   ],
   "changelogDate": "20160506164052",

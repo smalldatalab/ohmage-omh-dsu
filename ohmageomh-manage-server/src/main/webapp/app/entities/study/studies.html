@@ -38,6 +38,8 @@
                     <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="removeGps"><span>Remove Gps</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="startDate"><span>Start Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="endDate"><span>End Date</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -46,6 +48,8 @@
                     <td><a ui-sref="study-detail({id:study.id})">{{study.id}}</a></td>
                     <td>{{study.name}}</td>
                     <td>{{study.removeGps}}</td>
+                        <td>{{study.startDate | date:'mediumDate'}}</td>
+                        <td>{{study.endDate | date:'mediumDate'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

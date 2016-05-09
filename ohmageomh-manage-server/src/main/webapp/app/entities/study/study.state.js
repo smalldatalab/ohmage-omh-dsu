@@ -84,6 +84,8 @@
                             return {
                                 name: null,
                                 removeGps: false,
+                                startDate: null,
+                                endDate: null,
                                 id: null
                             };
                         }

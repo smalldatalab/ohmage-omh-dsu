@@ -13,6 +13,16 @@
             <span>{{vm.study.removeGps}}</span>
         </dd>
         <hr>
+        <dt><span>Start Date</span></dt>
+        <dd>
+            <span>{{vm.study.startDate | date:'mediumDate'}}</span>
+        </dd>
+        <hr>
+        <dt><span>End Date</span></dt>
+        <dd>
+            <span>{{vm.study.endDate | date:'mediumDate'}}</span>
+        </dd>
+        <hr>
         <dt><span>Manager</span></dt>
         <dd>
             <span ng-repeat="manager in vm.study.managers">

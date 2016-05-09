@@ -29,6 +29,14 @@
                 <constraints nullable="false" />
             </column>
             
+            <column name="start_date" type="date">
+                <constraints nullable="true" />
+            </column>
+            
+            <column name="end_date" type="date">
+                <constraints nullable="true" />
+            </column>
+            
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
         

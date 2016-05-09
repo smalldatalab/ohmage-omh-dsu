@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +50,12 @@ public class StudyResourceIntTest {
 
     private static final Boolean DEFAULT_REMOVE_GPS = false;
     private static final Boolean UPDATED_REMOVE_GPS = true;
+
+    private static final LocalDate DEFAULT_START_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_START_DATE = LocalDate.now(ZoneId.systemDefault());
+
+    private static final LocalDate DEFAULT_END_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_END_DATE = LocalDate.now(ZoneId.systemDefault());
 
     @Inject
     private StudyRepository studyRepository;
@@ -84,6 +92,8 @@ public class StudyResourceIntTest {
         study = new Study();
         study.setName(DEFAULT_NAME);
         study.setRemoveGps(DEFAULT_REMOVE_GPS);
+        study.setStartDate(DEFAULT_START_DATE);
+        study.setEndDate(DEFAULT_END_DATE);
     }
 
     @Test
@@ -104,6 +114,8 @@ public class StudyResourceIntTest {
         Study testStudy = studies.get(studies.size() - 1);
         assertThat(testStudy.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testStudy.isRemoveGps()).isEqualTo(DEFAULT_REMOVE_GPS);
+        assertThat(testStudy.getStartDate()).isEqualTo(DEFAULT_START_DATE);
+        assertThat(testStudy.getEndDate()).isEqualTo(DEFAULT_END_DATE);
 
         // Validate the Study in ElasticSearch
         Study studyEs = studySearchRepository.findOne(testStudy.getId());
@@ -158,7 +170,9 @@ public class StudyResourceIntTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(study.getId().intValue())))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].removeGps").value(hasItem(DEFAULT_REMOVE_GPS.booleanValue())));
+                .andExpect(jsonPath("$.[*].removeGps").value(hasItem(DEFAULT_REMOVE_GPS.booleanValue())))
+                .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+                .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
     }
 
     @Test
@@ -173,7 +187,9 @@ public class StudyResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(study.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.removeGps").value(DEFAULT_REMOVE_GPS.booleanValue()));
+            .andExpect(jsonPath("$.removeGps").value(DEFAULT_REMOVE_GPS.booleanValue()))
+            .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
+            .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()));
     }
 
     @Test
@@ -197,6 +213,8 @@ public class StudyResourceIntTest {
         updatedStudy.setId(study.getId());
         updatedStudy.setName(UPDATED_NAME);
         updatedStudy.setRemoveGps(UPDATED_REMOVE_GPS);
+        updatedStudy.setStartDate(UPDATED_START_DATE);
+        updatedStudy.setEndDate(UPDATED_END_DATE);
 
         restStudyMockMvc.perform(put("/api/studies")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -209,6 +227,8 @@ public class StudyResourceIntTest {
         Study testStudy = studies.get(studies.size() - 1);
         assertThat(testStudy.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testStudy.isRemoveGps()).isEqualTo(UPDATED_REMOVE_GPS);
+        assertThat(testStudy.getStartDate()).isEqualTo(UPDATED_START_DATE);
+        assertThat(testStudy.getEndDate()).isEqualTo(UPDATED_END_DATE);
 
         // Validate the Study in ElasticSearch
         Study studyEs = studySearchRepository.findOne(testStudy.getId());
@@ -249,6 +269,8 @@ public class StudyResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(study.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].removeGps").value(hasItem(DEFAULT_REMOVE_GPS.booleanValue())));
+            .andExpect(jsonPath("$.[*].removeGps").value(hasItem(DEFAULT_REMOVE_GPS.booleanValue())))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
     }
 }
