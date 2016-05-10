@@ -3,7 +3,7 @@
 
     angular
         .module('ohmageApp', [
-            'ngStorage', 
+            'ngStorage',
             'ngResource',
             'ngCookies',
             'ngAria',
@@ -14,6 +14,8 @@
             'ui.router',
             'infinite-scroll',
             'ds.objectDiff',
+            'ui.grid',
+            'ui.grid.exporter',
             // jhipster-needle-angularjs-add-module JHipster will add new module here
             'angular-loading-bar'
         ])
