@@ -16,6 +16,7 @@
             'ds.objectDiff',
             'ui.grid',
             'ui.grid.exporter',
+            'ui.grid.resizeColumns',
             // jhipster-needle-angularjs-add-module JHipster will add new module here
             'angular-loading-bar'
         ])

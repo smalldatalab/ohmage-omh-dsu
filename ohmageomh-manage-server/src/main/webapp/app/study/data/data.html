@@ -1,1 +1,33 @@
-<div ui-grid="gridOptions" ui-grid-exporter></div>
+<jhi-alert></jhi-alert>
+<div class="container-fluid">
+    <form name="searchForm" role="form" novalidate ng-submit="vm.loadData()">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <div class="form-group">
+                    <label for="field_participant">Data Type</label>
+                    <select class="form-control" id="field_data_type" name="data_type" ng-model="vm.dataType" ng-options="dataType as dataType.name for dataType in vm.dataTypes track by dataType.id">
+                        <option value="">Select a data type</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <div class="form-group">
+                    <label for="field_participant">Participant</label>
+                    <select class="form-control" id="field_participant" name="participant" ng-model="vm.participant" ng-options="participant as participant.id + ' - ' + participant.username for participant in vm.participants track by participant.id">
+                        <option value="">All participants</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-4 no-padding-right" style="padding-top: 25px;">
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                        <span class="hidden-xs" >
+                            Load Data
+                        </span>
+                </button>
+            </div>
+
+        </div>
+    </form>
+</div>
+<div ui-grid="vm.gridOptions" ui-grid-exporter ui-grid-resize-columns></div>
