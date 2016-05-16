@@ -19,7 +19,6 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: springBootVersion
     compile group: 'com.google.guava', name: 'guava', version: '18.0' // required for omh-schema-sdk?
     compile group: 'com.google.code.findbugs', name:'jsr305', version: '3.0.0'
-    compile 'org.mongodb:mongo-java-driver'
 
 
     testCompile group: 'junit', name: 'junit', version: '4.11'

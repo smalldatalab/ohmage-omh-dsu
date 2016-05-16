@@ -16,7 +16,7 @@
 
 package org.openmhealth.dsu.repository;
 
-import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import org.openmhealth.dsu.domain.DataPointSearchCriteria;
 import org.openmhealth.schema.domain.omh.DataPoint;
 
 import javax.annotation.Nullable;

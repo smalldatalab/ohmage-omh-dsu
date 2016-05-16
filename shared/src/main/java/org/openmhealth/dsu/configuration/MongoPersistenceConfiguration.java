@@ -50,7 +50,7 @@ import java.util.List;
  */
 @Configuration
 @ConditionalOnExpression("'${dataStore}' == 'mongo'")
-@EnableMongoRepositories(basePackages = "org.openmhealth.dsu.repository")
+@EnableMongoRepositories(basePackages = "org.openmhealth.dsu")
 public class MongoPersistenceConfiguration extends AbstractMongoConfiguration {
 
     @Autowired

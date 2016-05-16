@@ -11,6 +11,7 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+dataStore: mongo
 
 spring:
     application:
@@ -27,6 +28,11 @@ spring:
             enabled: false
     thymeleaf:
         mode: XHTML
+    data:
+        mongodb:
+              host: 192.168.99.101
+              database: omh
+              #port: 27017
 
 security:
     basic:

@@ -17,7 +17,7 @@
 package org.openmhealth.dsu.repository;
 
 import com.google.common.collect.Range;
-import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import org.openmhealth.dsu.domain.DataPointSearchCriteria;
 import org.openmhealth.schema.domain.omh.DataPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;

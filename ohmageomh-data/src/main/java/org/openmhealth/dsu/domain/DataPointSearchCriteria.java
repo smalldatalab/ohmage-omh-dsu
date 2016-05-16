@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.smalldata.ohmageomh.data.domain;
+package org.openmhealth.dsu.domain;
 
 import com.google.common.collect.Range;
 import org.openmhealth.schema.domain.omh.SchemaVersion;

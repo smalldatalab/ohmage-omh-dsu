@@ -10,6 +10,7 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+dataStore: mongo
 
 spring:
     devtools:
@@ -18,9 +19,9 @@ spring:
         livereload:
             enabled: false
     datasource:
-        url: jdbc:postgresql://localhost:5432/Ohmage
+        url: jdbc:postgresql://ohmage-postgres:5432/ohmage
         name:
-        username: Ohmage
+        username: postgres
         password:
     jpa:
         database-platform: io.smalldata.ohmageomh.domain.util.FixedPostgreSQL82Dialect
@@ -34,6 +35,9 @@ spring:
         elasticsearch:
             cluster-name:
             cluster-nodes: localhost:9300
+        mongodb:
+            host: omh-mongo
+            database: omh
     mail:
         host: localhost
         port: 25
@@ -50,6 +54,7 @@ server:
     compression:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
+    context-path: /manage
 
 # ===================================================================
 # JHipster specific properties

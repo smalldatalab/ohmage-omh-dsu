@@ -10,6 +10,11 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+dataStore: mongo
+
+logging:
+    level:
+        org.springframework: DEBUG
 
 spring:
     devtools:
@@ -38,6 +43,10 @@ spring:
                 path:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
+        mongodb:
+              host: 192.168.99.101
+              database: omh
+              #port: 27017
     mail:
         host: localhost
     messages:

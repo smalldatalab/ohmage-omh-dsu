@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.smalldata.ohmageomh.data.service;
+package org.openmhealth.dsu.service;
 
-import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import org.openmhealth.dsu.domain.DataPointSearchCriteria;
 import org.openmhealth.schema.domain.omh.DataPoint;
 import org.openmhealth.schema.domain.omh.DataPointHeader;
 

@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
 
@@ -21,7 +22,19 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 
-@ComponentScan
+@ComponentScan(
+    basePackages = "io.smalldata.ohmageomh, org.openmhealth",
+    excludeFilters = {
+        // these exclusions avoid duplicate configurations specific to ohmageomh files
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern="org.openmhealth.dsu.configuration.JacksonConfiguration"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern="org.openmhealth.dsu.configuration.JdbcOAuth2SupportConfiguration"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern="org.openmhealth.dsu.configuration.OAuth2Properties"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern="org.openmhealth.dsu.configuration.TestConfguration"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern="org.openmhealth.dsu.configuration.ValidationConfiguration"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern="io.smalldata.ohmageomh.dsu.config.OhmageomhDataSource"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern="io.smalldata.ohmageomh.dsu.domain.Study"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern="io.smalldata.ohmageomh.dsu.service.StudyServiceImpl")
+    })
 @EnableAutoConfiguration(exclude = { MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class })
 @EnableConfigurationProperties({ JHipsterProperties.class, LiquibaseProperties.class })
 public class OhmageApp {

@@ -2,7 +2,7 @@ package io.smalldata.ohmageomh.dpu.processor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.smalldata.ohmageomh.data.service.DataPointService;
+import org.openmhealth.dsu.service.DataPointService;
 import io.smalldata.ohmageomh.dpu.service.OmhShimService;
 import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.schema.domain.omh.DataPoint;

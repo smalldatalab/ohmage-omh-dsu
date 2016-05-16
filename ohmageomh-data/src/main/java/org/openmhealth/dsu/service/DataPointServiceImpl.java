@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.smalldata.ohmageomh.data.service;
+package org.openmhealth.dsu.service;
 
-import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import org.openmhealth.dsu.domain.DataPointSearchCriteria;
 import org.openmhealth.dsu.repository.DataPointRepository;
 import org.openmhealth.schema.domain.omh.DataPoint;
 import org.openmhealth.schema.domain.omh.DataPointHeader;
@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Service
 public class DataPointServiceImpl implements DataPointService {
 
-    @Autowired
+//    @Autowired
     private DataPointRepository repository;
 
     @Override
