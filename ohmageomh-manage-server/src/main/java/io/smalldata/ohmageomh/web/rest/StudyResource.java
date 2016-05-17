@@ -163,25 +163,6 @@ public class StudyResource {
     }
 
     /**
-     * GET  /studies/:id/integrations : get all the integrations for the study
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of integrations in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @RequestMapping(value = "/studies/{id}/integrations",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<List<Integration>> getStudyIntegrations(@PathVariable Long id, Pageable pageable)
-        throws URISyntaxException {
-        Study study = studyService.findOne(id);
-        Page<Integration> page = integrationService.findAllByStudy(study, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/integrations");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
-    /**
      * DELETE  /studies/:id : delete the "id" study.
      *
      * @param id the id of the study to delete

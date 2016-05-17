@@ -7,6 +7,8 @@
         </ul>
     </div>
     <div class="col-md-4">
+        <h4><a ui-sref="data({study: vm.study.id})">Browse Study Data</a></h4>
+        <br/>
         <h4>Apps and Data Types</h4>
         <ul ng-repeat="integration in vm.study.integrations">
             <li>{{integration.name}}</li>
@@ -14,6 +16,8 @@
                 <li>{{type.name}}</li>
             </ul>
         </ul>
+
+
 
     </div>
 </div>

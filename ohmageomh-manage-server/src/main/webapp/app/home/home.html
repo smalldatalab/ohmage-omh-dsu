@@ -24,7 +24,7 @@
             <div ng-show="vm.isAuthenticated()" has-authority="ROLE_USER">
                 <p>You have access to following studies:</p>
                 <ul ng-repeat="study in vm.studies">
-                    <li><a ui-sref="dashboard({study: {{study.id}}})">{{study.name}}</a></li>
+                    <li><a ui-sref="dashboard({study: study.id})">{{study.name}}</a></li>
                 </ul>
                 <br/>
             </div>

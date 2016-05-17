@@ -11,7 +11,7 @@
         $stateProvider
             .state('data', {
                 parent: 'app',
-                url: '/data',
+                url: '/data?study',
                 data: {
                     authorities: ['ROLE_ADMIN', 'ROLE_USER'],
                     pageTitle: 'Data'
