@@ -231,4 +231,17 @@ public class UserService {
             userSearchRepository.delete(user);
         }
     }
+
+    /**
+     * Does the current logged in user has the specified authority?
+     *
+     * @param authority
+     * @return
+     */
+    public boolean hasAuthority(String authority) {
+        User user = this.getUserWithAuthorities();
+        Authority auth = new Authority();
+        auth.setName(authority);
+        return user.getAuthorities().contains(auth);
+    }
 }

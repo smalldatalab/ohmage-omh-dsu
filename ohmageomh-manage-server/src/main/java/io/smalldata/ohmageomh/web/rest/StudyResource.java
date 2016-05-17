@@ -1,8 +1,12 @@
 package io.smalldata.ohmageomh.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import io.smalldata.ohmageomh.domain.Authority;
 import io.smalldata.ohmageomh.domain.Study;
+import io.smalldata.ohmageomh.domain.User;
+import io.smalldata.ohmageomh.security.AuthoritiesConstants;
 import io.smalldata.ohmageomh.service.StudyService;
+import io.smalldata.ohmageomh.service.UserService;
 import io.smalldata.ohmageomh.web.rest.util.HeaderUtil;
 import io.smalldata.ohmageomh.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -13,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -34,10 +39,12 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class StudyResource {
 
     private final Logger log = LoggerFactory.getLogger(StudyResource.class);
-        
+
     @Inject
     private StudyService studyService;
-    
+    @Inject
+    private UserService userService;
+
     /**
      * POST  /studies : Create a new study.
      *
@@ -98,7 +105,16 @@ public class StudyResource {
     public ResponseEntity<List<Study>> getAllStudies(Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Studies");
-        Page<Study> page = studyService.findAll(pageable); 
+
+        // If request is from ROLE_USER, filter to studies they are manager on.
+        User user = userService.getUserWithAuthorities();
+        Page<Study> page = null;
+        if(userService.hasAuthority(AuthoritiesConstants.ADMIN)) {
+            page = studyService.findAll(pageable);
+        } else {
+            page = studyService.findAllByManager(user, pageable);
+        }
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/studies");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

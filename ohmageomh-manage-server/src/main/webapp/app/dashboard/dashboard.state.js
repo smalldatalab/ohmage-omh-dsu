@@ -9,17 +9,17 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-            .state('data', {
+            .state('dashboard', {
                 parent: 'app',
-                url: '/data',
+                url: '/dashboard?study',
                 data: {
                     authorities: ['ROLE_ADMIN', 'ROLE_USER'],
-                    pageTitle: 'Data'
+                    pageTitle: 'Dashboard'
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'app/study/data/data.html',
-                        controller: 'DataController',
+                        templateUrl: 'app/dashboard/dashboard.html',
+                        controller: 'DashboardController',
                         controllerAs: 'vm'
                     },
                 }

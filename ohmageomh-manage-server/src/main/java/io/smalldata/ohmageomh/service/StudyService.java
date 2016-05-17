@@ -1,6 +1,7 @@
 package io.smalldata.ohmageomh.service;
 
 import io.smalldata.ohmageomh.domain.Study;
+import io.smalldata.ohmageomh.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +14,7 @@ public interface StudyService {
 
     /**
      * Save a study.
-     * 
+     *
      * @param study the entity to save
      * @return the persisted entity
      */
@@ -21,15 +22,23 @@ public interface StudyService {
 
     /**
      *  Get all the studies.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
     Page<Study> findAll(Pageable pageable);
 
     /**
+     *  Get all the studies a user is a manager for.
+     *
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    Page<Study> findAllByManager(User user, Pageable pageable);
+
+    /**
      *  Get the "id" study.
-     *  
+     *
      *  @param id the id of the entity
      *  @return the entity
      */
@@ -37,14 +46,14 @@ public interface StudyService {
 
     /**
      *  Delete the "id" study.
-     *  
+     *
      *  @param id the id of the entity
      */
     void delete(Long id);
 
     /**
      * Search for the study corresponding to the query.
-     * 
+     *
      *  @param query the query of the search
      *  @return the list of entities
      */

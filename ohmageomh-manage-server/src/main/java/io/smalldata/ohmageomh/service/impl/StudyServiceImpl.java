@@ -1,5 +1,6 @@
 package io.smalldata.ohmageomh.service.impl;
 
+import io.smalldata.ohmageomh.domain.User;
 import io.smalldata.ohmageomh.service.StudyService;
 import io.smalldata.ohmageomh.domain.Study;
 import io.smalldata.ohmageomh.repository.StudyRepository;
@@ -26,16 +27,16 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class StudyServiceImpl implements StudyService{
 
     private final Logger log = LoggerFactory.getLogger(StudyServiceImpl.class);
-    
+
     @Inject
     private StudyRepository studyRepository;
-    
+
     @Inject
     private StudySearchRepository studySearchRepository;
-    
+
     /**
      * Save a study.
-     * 
+     *
      * @param study the entity to save
      * @return the persisted entity
      */
@@ -48,14 +49,27 @@ public class StudyServiceImpl implements StudyService{
 
     /**
      *  Get all the studies.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public Page<Study> findAll(Pageable pageable) {
         log.debug("Request to get all Studies");
-        Page<Study> result = studyRepository.findAll(pageable); 
+        Page<Study> result = studyRepository.findAll(pageable);
+        return result;
+    }
+
+    /**
+     *  Get all the studies a manager has access to.
+     *
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<Study> findAllByManager(User user, Pageable pageable) {
+        log.debug("Request to get all Studies");
+        Page<Study> result = studyRepository.findAllByManagers(user, pageable);
         return result;
     }
 
@@ -65,7 +79,7 @@ public class StudyServiceImpl implements StudyService{
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public Study findOne(Long id) {
         log.debug("Request to get Study : {}", id);
         Study study = studyRepository.findOneWithEagerRelationships(id);
@@ -74,7 +88,7 @@ public class StudyServiceImpl implements StudyService{
 
     /**
      *  Delete the  study by id.
-     *  
+     *
      *  @param id the id of the entity
      */
     public void delete(Long id) {
