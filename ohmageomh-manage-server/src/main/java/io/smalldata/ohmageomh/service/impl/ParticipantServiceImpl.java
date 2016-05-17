@@ -1,5 +1,6 @@
 package io.smalldata.ohmageomh.service.impl;
 
+import io.smalldata.ohmageomh.domain.Study;
 import io.smalldata.ohmageomh.service.ParticipantService;
 import io.smalldata.ohmageomh.domain.Participant;
 import io.smalldata.ohmageomh.repository.ParticipantRepository;
@@ -26,16 +27,16 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class ParticipantServiceImpl implements ParticipantService{
 
     private final Logger log = LoggerFactory.getLogger(ParticipantServiceImpl.class);
-    
+
     @Inject
     private ParticipantRepository participantRepository;
-    
+
     @Inject
     private ParticipantSearchRepository participantSearchRepository;
-    
+
     /**
      * Save a participant.
-     * 
+     *
      * @param participant the entity to save
      * @return the persisted entity
      */
@@ -48,14 +49,27 @@ public class ParticipantServiceImpl implements ParticipantService{
 
     /**
      *  Get all the participants.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public Page<Participant> findAll(Pageable pageable) {
         log.debug("Request to get all Participants");
-        Page<Participant> result = participantRepository.findAll(pageable); 
+        Page<Participant> result = participantRepository.findAll(pageable);
+        return result;
+    }
+
+    /**
+     *  Get all the participants in a study.
+     *
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<Participant> findAllByStudy(Study study, Pageable pageable) {
+        log.debug("Request to get all Participants");
+        Page<Participant> result = participantRepository.findAllByStudies(study, pageable);
         return result;
     }
 
@@ -65,7 +79,7 @@ public class ParticipantServiceImpl implements ParticipantService{
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public Participant findOne(Long id) {
         log.debug("Request to get Participant : {}", id);
         Participant participant = participantRepository.findOneWithEagerRelationships(id);
@@ -74,7 +88,7 @@ public class ParticipantServiceImpl implements ParticipantService{
 
     /**
      *  Delete the  participant by id.
-     *  
+     *
      *  @param id the id of the entity
      */
     public void delete(Long id) {

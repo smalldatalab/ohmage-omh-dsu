@@ -1,10 +1,10 @@
 package io.smalldata.ohmageomh.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import io.smalldata.ohmageomh.domain.Authority;
-import io.smalldata.ohmageomh.domain.Study;
-import io.smalldata.ohmageomh.domain.User;
+import io.smalldata.ohmageomh.domain.*;
 import io.smalldata.ohmageomh.security.AuthoritiesConstants;
+import io.smalldata.ohmageomh.service.IntegrationService;
+import io.smalldata.ohmageomh.service.ParticipantService;
 import io.smalldata.ohmageomh.service.StudyService;
 import io.smalldata.ohmageomh.service.UserService;
 import io.smalldata.ohmageomh.web.rest.util.HeaderUtil;
@@ -44,6 +44,10 @@ public class StudyResource {
     private StudyService studyService;
     @Inject
     private UserService userService;
+    @Inject
+    private ParticipantService participantService;
+    @Inject
+    private IntegrationService integrationService;
 
     /**
      * POST  /studies : Create a new study.
@@ -137,6 +141,44 @@ public class StudyResource {
                 result,
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * GET  /studies/:id/participants : get the participants for the study.
+     *
+     * @param id the id of the study to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the list of participants, or with status 404 (Not Found)
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @RequestMapping(value = "/studies/{id}/participants",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<Participant>> getStudyParticipants(@PathVariable Long id, Pageable pageable) throws URISyntaxException {
+        Study study = studyService.findOne(id);
+        Page<Participant> page = participantService.findAllByStudy(study, pageable);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/studies/" + study.getId() + "/participants");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /studies/:id/integrations : get all the integrations for the study
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of integrations in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @RequestMapping(value = "/studies/{id}/integrations",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<Integration>> getStudyIntegrations(@PathVariable Long id, Pageable pageable)
+        throws URISyntaxException {
+        Study study = studyService.findOne(id);
+        Page<Integration> page = integrationService.findAllByStudy(study, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/integrations");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**

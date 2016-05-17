@@ -33,7 +33,7 @@ public class Integration extends AbstractAuditingEntity implements Serializable 
     @Column(name = "description", length = 255)
     private String description;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "integration_data_type",
                joinColumns = @JoinColumn(name="integrations_id", referencedColumnName="ID"),
                inverseJoinColumns = @JoinColumn(name="data_types_id", referencedColumnName="ID"))

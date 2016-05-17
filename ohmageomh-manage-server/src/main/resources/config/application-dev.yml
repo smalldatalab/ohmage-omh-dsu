@@ -14,7 +14,7 @@ dataStore: mongo
 
 logging:
     level:
-        org.springframework: DEBUG
+        org.springframework: INFO
 
 spring:
     devtools:

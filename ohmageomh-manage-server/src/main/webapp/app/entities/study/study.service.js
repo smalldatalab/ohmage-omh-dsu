@@ -7,7 +7,7 @@
     Study.$inject = ['$resource', 'DateUtils'];
 
     function Study ($resource, DateUtils) {
-        var resourceUrl =  'api/studies/:id';
+        var resourceUrl =  'api/studies/:id/:sub';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
@@ -35,6 +35,9 @@
                     data.endDate = DateUtils.convertLocalDateToServer(data.endDate);
                     return angular.toJson(data);
                 }
+            },
+            'getParticipants': {
+                method: 'GET', params: {id: '@id', sub: 'participants'}, isArray: true
             }
         });
     }
