@@ -31,7 +31,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="participant in vm.participants track by participant.id">
-                        <td><a ui-sref="participant-detail({id:participant.id})">{{participant.id}}</a></td>
+                        <td><a ui-sref="dashboard-detail({participant: participant.id})">{{participant.id}}</a></td>
                         <td>{{participant.username}}</td>
                     </tr>
                     </tbody>
