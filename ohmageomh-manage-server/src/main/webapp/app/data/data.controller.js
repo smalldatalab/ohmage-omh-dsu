@@ -5,9 +5,9 @@
         .module('ohmageApp')
         .controller('DataController', DataController);
 
-    DataController.$inject = ['$scope', '$state', '$stateParams', '_', 'Data', 'Study']
+    DataController.$inject = ['$scope', '$state', '$stateParams', '_', 'AlertService', 'Data', 'Study']
 
-    function DataController($scope, $state, $stateParams, _, Data, Study) {
+    function DataController($scope, $state, $stateParams, _, AlertService, Data, Study) {
         // Make sure a study is specified
         if(typeof $stateParams.study == 'undefined'){
             $state.go('home');
@@ -37,10 +37,17 @@
         };
 
         function loadData() {
-            vm.gridOptions.data = Data.query();
-            vm.dataType = vm.dataTypes[1];
+            if(vm.dataType == null){
+                AlertService.warning("You must select a data type.");
+            } else {
+                var params = {dataType: vm.dataType.id};
+                if(vm.participant != null) {
+                    params.participant = vm.participant.id;
+                }
+                vm.gridOptions.data = Data.query(params);
 
-            vm.gridOptions.columnDefs = angular.fromJson(vm.dataType.csvMapper);
+                vm.gridOptions.columnDefs = angular.fromJson(vm.dataType.csvMapper);
+            }
         };
 
         function populateDataTypes() {

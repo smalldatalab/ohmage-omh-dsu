@@ -46,7 +46,7 @@ public class DataResource {
     @Timed
     @ResponseBody
     ResponseEntity<Iterable<DataPoint<StepCount>>> readDataPoints() {
-
+        // TODO Fix this to return actual data.
         List<DataPoint<StepCount>> dataPoints = new ArrayList<DataPoint<StepCount>>();
 
         try {
@@ -58,11 +58,6 @@ public class DataResource {
                     DataPoint<StepCount> dataPoint = new DataPoint<>(
                         objectMapper.readValue(dataPointJson.get("header").toString(), DataPointHeader.class),
                         objectMapper.readValue(dataPointJson.get("body").toString(), StepCount.class));
-
-                    // TODO Check if the data points already exist, or just delete dataPoints in last 7 days
-
-                    // set the owner of the data point to be the user associated with the access token
-//                    dataPointService.setUserId(dataPoint.getHeader(), user.getUsername());
 
                     dataPoints.add(dataPoint);
                 }
