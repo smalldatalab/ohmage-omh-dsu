@@ -1,20 +1,61 @@
-<h3>{{vm.study.name}}</h3>
+<h3>
+    Study: {{vm.study.name}}
+    <div class="pull-right">
+        <div class="col-xs-4 no-padding-left">
+            <button class="btn btn-primary" ui-sref="data({study: vm.study.id})" >
+                <span class="glyphicon glyphicon-th-list"></span>
+                    <span class="hidden-xs" >
+                        Browse Study Data
+                    </span>
+            </button>
+        </div>
+    </div>
+</h3>
+
+
+<hr>
+<jhi-alert></jhi-alert>
+
 <div class="row">
     <div class="col-md-8">
-        <h4>Participants</h4>
-        <ul ng-repeat="pt in vm.participants">
-            <li><a ui-sref="dashboard-detail({participant: pt.id})">{{pt.id}}</a></li>
-        </ul>
+        <div>
+            <h4>Participants</h4>
+
+            <div class="table-responsive">
+                <table class="jh-table table table-striped">
+                    <thead>
+                    <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                        <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                        <th jh-sort-by="username"><span>Username</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="participant in vm.participants track by participant.id">
+                        <td><a ui-sref="participant-detail({id:participant.id})">{{participant.id}}</a></td>
+                        <td>{{participant.username}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <jhi-item-count page="vm.page" total="vm.queryCount"></jhi-item-count>
+                <uib-pagination class="pagination-sm" total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+            </div>
+        </div>
     </div>
     <div class="col-md-4">
-        <h4><a ui-sref="data({study: vm.study.id})">Browse Study Data</a></h4>
-        <br/>
         <h4>Apps and Data Types</h4>
         <ul ng-repeat="integration in vm.study.integrations">
             <li>{{integration.name}}</li>
             <ul ng-repeat="type in integration.dataTypes">
                 <li>{{type.name}}</li>
             </ul>
+        </ul>
+
+        <br/>
+        <h4>Surveys</h4>
+        <ul ng-repeat="survey in vm.study.surveys">
+            <li>{{survey.name}}</li>
         </ul>
 
 

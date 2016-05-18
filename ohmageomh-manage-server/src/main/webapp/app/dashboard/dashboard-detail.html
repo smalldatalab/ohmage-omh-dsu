@@ -1,2 +1,95 @@
-<h3>Participant: {{vm.participant.id}}</h3>
+<h3>
+    <button class="btn btn-info" ui-sref="dashboard({study: vm.study.id})" >
+        <span class="glyphicon glyphicon-arrow-left"></span>
+    </button> &nbsp Participant: {{vm.participant.id}}
+    <div class="pull-right">
+        <div class="col-xs-4 no-padding-left">
+            <button class="btn btn-primary" ui-sref="data({study: vm.study.id})" >
+                <span class="glyphicon glyphicon-th-list"></span>
+                    <span class="hidden-xs" >
+                        Browse Study Data
+                    </span>
+            </button>
+        </div>
+    </div>
+</h3>
+<hr/>
+<div class="row">
+    <div class="col-md-9">
+        <h2 class="text-center">{{ vm.calendarTitle }}</h2>
 
+        <div class="row">
+
+            <div class="col-md-6 text-center">
+                <div class="btn-group">
+
+                    <button
+                        class="btn btn-primary"
+                        mwl-date-modifier
+                        date="vm.viewDate"
+                        decrement="vm.calendarView">
+                        Previous
+                    </button>
+                    <button
+                        class="btn btn-default"
+                        mwl-date-modifier
+                        date="vm.viewDate"
+                        set-to-today>
+                        Today
+                    </button>
+                    <button
+                        class="btn btn-primary"
+                        mwl-date-modifier
+                        date="vm.viewDate"
+                        increment="vm.calendarView">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <br class="visible-xs visible-sm">
+
+            <div class="col-md-6 text-center">
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'year'">Year</label>
+                    <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'month'">Month</label>
+                    <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'week'">Week</label>
+                    <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'day'">Day</label>
+                </div>
+            </div>
+
+        </div>
+
+        <br>
+
+        <mwl-calendar
+            events="vm.events"
+            view="vm.calendarView"
+            view-title="vm.calendarTitle"
+            view-date="vm.viewDate"
+            on-event-click="vm.eventClicked(calendarEvent)"
+            on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+            edit-event-html="'<i class=\'glyphicon glyphicon-pencil\'></i>'"
+            delete-event-html="'<i class=\'glyphicon glyphicon-remove\'></i>'"
+            on-edit-event-click="vm.eventEdited(calendarEvent)"
+            on-delete-event-click="vm.eventDeleted(calendarEvent)"
+            cell-is-open="vm.isCellOpen"
+            day-view-start="00:00"
+            day-view-end="24:00"
+            day-view-split="30"
+            cell-modifier="vm.modifyCell(calendarCell)">
+        </mwl-calendar>
+
+
+    </div>
+    <div class="col-md-3">
+        <h4>Apps and Data Types</h4>
+        <ul ng-repeat="integration in vm.study.integrations">
+            <li>{{integration.name}}</li>
+            <ul ng-repeat="type in integration.dataTypes">
+                <li><a class="event-warning">{{type.name}}</a> </li>
+            </ul>
+        </ul>
+
+    </div>
+</div>

@@ -42,6 +42,8 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/angular-object-diff/dist/angular-object-diff.js',
             'src/main/webapp/bower_components/angular-ui-grid/ui-grid.js',
             'src/main/webapp/bower_components/underscore/underscore.js',
+            'src/main/webapp/bower_components/moment/moment.js',
+            'src/main/webapp/bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js',
             'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
             // endbower
             'src/main/webapp/app/app.module.js',
