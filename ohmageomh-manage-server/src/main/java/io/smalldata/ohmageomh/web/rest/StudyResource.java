@@ -7,6 +7,7 @@ import io.smalldata.ohmageomh.service.IntegrationService;
 import io.smalldata.ohmageomh.service.ParticipantService;
 import io.smalldata.ohmageomh.service.StudyService;
 import io.smalldata.ohmageomh.service.UserService;
+import io.smalldata.ohmageomh.web.rest.dto.ParticipantDetailDTO;
 import io.smalldata.ohmageomh.web.rest.util.HeaderUtil;
 import io.smalldata.ohmageomh.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -160,6 +161,25 @@ public class StudyResource {
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/studies/" + study.getId() + "/participants");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /studies/:id/participants/:pt : get the participant details.
+     *
+     * @param id the id of the study to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the list of participants, or with status 404 (Not Found)
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @RequestMapping(value = "/studies/{id}/participants/{pt}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<ParticipantDetailDTO> getStudyParticipant(@PathVariable Long id, @PathVariable Long pt, Pageable pageable) throws URISyntaxException {
+        Study study = studyService.findOne(id);
+        Participant participant = participantService.findOne(pt);
+        ParticipantDetailDTO dto = new ParticipantDetailDTO(participant);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     /**

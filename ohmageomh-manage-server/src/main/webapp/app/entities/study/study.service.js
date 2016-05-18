@@ -7,9 +7,9 @@
     Study.$inject = ['$resource', 'DateUtils'];
 
     function Study ($resource, DateUtils) {
-        var resourceUrl =  'api/studies/:id/:sub';
+        var resourceUrl =  'api/studies/:id';
 
-        return $resource(resourceUrl, {}, {
+        return $resource(resourceUrl, {id: null, participant: null}, {
             'query': { method: 'GET', isArray: true},
             'get': {
                 method: 'GET',
@@ -37,7 +37,15 @@
                 }
             },
             'getParticipants': {
-                method: 'GET', params: {id: '@id', sub: 'participants'}, isArray: true
+                method: 'GET',
+                url: resourceUrl + '/participants',
+                params: {id: '@id'},
+                isArray: true
+            },
+            'getParticipant': {
+                method: 'GET',
+                url: resourceUrl + '/participants/:participant',
+                params: {id: '@id', participant: '@participant'}
             }
         });
     }

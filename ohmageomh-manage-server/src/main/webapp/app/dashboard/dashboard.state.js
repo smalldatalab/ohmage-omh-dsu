@@ -24,5 +24,20 @@
                     },
                 }
             })
+            .state('dashboard-detail', {
+                parent: 'dashboard',
+                url: '/dashboard/detail?participant',
+                data: {
+                    authorities: ['ROLE_ADMIN', 'ROLE_USER'],
+                    pageTitle: 'Dashboard'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/dashboard/dashboard-detail.html',
+                        controller: 'DashboardDetailController',
+                        controllerAs: 'vm'
+                    },
+                }
+            })
     }
 })();

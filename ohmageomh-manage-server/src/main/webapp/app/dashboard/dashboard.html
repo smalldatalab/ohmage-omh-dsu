@@ -1,9 +1,9 @@
-<h1>{{vm.study.name}}</h1>
+<h3>{{vm.study.name}}</h3>
 <div class="row">
     <div class="col-md-8">
         <h4>Participants</h4>
         <ul ng-repeat="pt in vm.participants">
-            <li>{{pt.id}}</li>
+            <li><a ui-sref="dashboard-detail({participant: pt.id})">{{pt.id}}</a></li>
         </ul>
     </div>
     <div class="col-md-4">
