@@ -18,8 +18,8 @@
             <div class="col-xs-4">
                 <div class="form-group">
                     <label for="field_participant">Participant</label>
-                    <select class="form-control" id="field_participant" name="participant" ng-model="vm.participant" ng-options="participant as participant.id + ' - ' + participant.username for participant in vm.participants track by participant.id">
-                        <option value="">All participants</option>
+                    <select class="form-control" id="field_participant" name="participant" ng-model="vm.participant" ng-options="participant as participant.id for participant in vm.participants track by participant.id">
+                        <option value="">Select a participant</option>
                     </select>
                 </div>
             </div>

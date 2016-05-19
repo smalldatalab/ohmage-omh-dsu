@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.openmhealth.dsu.service;
+package io.smalldata.ohmageomh.data.service;
 
-import org.openmhealth.dsu.domain.DataPointSearchCriteria;
-import org.openmhealth.schema.domain.omh.DataPoint;
+import io.smalldata.ohmageomh.data.domain.DataPoint;
+import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
 import org.openmhealth.schema.domain.omh.DataPointHeader;
 
 import javax.annotation.Nullable;

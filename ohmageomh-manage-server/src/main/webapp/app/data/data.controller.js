@@ -25,6 +25,7 @@
 
         vm.loadData = loadData;
         vm.populateDataTypes = populateDataTypes;
+        vm.handleDataResponse = handleDataResponse;
         vm.gridOptions = {
             data: [],
             enableGridMenu: true,
@@ -37,18 +38,30 @@
         };
 
         function loadData() {
+            vm.gridOptions.data = [];
             if(vm.dataType == null){
                 AlertService.warning("You must select a data type.");
+            } else if(vm.participant == null) {
+                AlertService.warning("You must select a participant.");
             } else {
-                var params = {dataType: vm.dataType.id};
+                var params = {
+                    schema_namespace: vm.dataType.schemaNamespace,
+                    schema_name: vm.dataType.schemaName,
+                    schema_version: vm.dataType.schemaVersion
+                };
                 if(vm.participant != null) {
                     params.participant = vm.participant.id;
                 }
-                vm.gridOptions.data = Data.query(params);
-
                 vm.gridOptions.columnDefs = angular.fromJson(vm.dataType.csvMapper);
+                vm.gridOptions.data = Data.query(params, function(data){vm.handleDataResponse(data);});
             }
         };
+
+        function handleDataResponse(data) {
+            if(data.length == 0){
+                AlertService.error("This is no data for that search criteria.")
+            }
+        }
 
         function populateDataTypes() {
             var list = [];

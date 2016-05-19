@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.openmhealth.dsu.service;
+package io.smalldata.ohmageomh.data.service;
 
-import org.openmhealth.dsu.domain.DataPointSearchCriteria;
-import org.openmhealth.dsu.repository.DataPointRepository;
-import org.openmhealth.schema.domain.omh.DataPoint;
+import io.smalldata.ohmageomh.data.domain.DataPoint;
+import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import io.smalldata.ohmageomh.data.repository.DataPointRepository;
 import org.openmhealth.schema.domain.omh.DataPointHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Service
 public class DataPointServiceImpl implements DataPointService {
 
-//    @Autowired
+    @Autowired
     private DataPointRepository repository;
 
     @Override

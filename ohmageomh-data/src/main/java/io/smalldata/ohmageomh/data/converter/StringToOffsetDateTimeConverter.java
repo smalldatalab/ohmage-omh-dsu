@@ -14,14 +14,27 @@
  * limitations under the License.
  */
 
-package org.openmhealth.dsu.repository;
+package io.smalldata.ohmageomh.data.converter;
+
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+import java.time.OffsetDateTime;
+
 
 /**
- * A data point repository interface for MongoDB. This interface is necessary to get Spring Data to link up its
- * generated {@link DataPointRepository} implementation with {@link MongoDataPointRepositoryImpl}.
- *
  * @author Emerson Farrugia
  */
-public interface MongoDataPointRepository extends DataPointRepository {
+@Component
+public class StringToOffsetDateTimeConverter implements Converter<String, OffsetDateTime> {
 
+    @Override
+    public OffsetDateTime convert(String source) {
+
+        if (source == null) {
+            return null;
+        }
+
+        return OffsetDateTime.parse(source);
+    }
 }

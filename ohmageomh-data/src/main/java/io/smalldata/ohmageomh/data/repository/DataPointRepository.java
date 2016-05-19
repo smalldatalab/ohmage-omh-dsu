@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.openmhealth.dsu.repository;
+package io.smalldata.ohmageomh.data.repository;
 
-import org.openmhealth.schema.domain.omh.DataPoint;
+import io.smalldata.ohmageomh.data.domain.DataPoint;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 

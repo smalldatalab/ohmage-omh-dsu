@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.openmhealth.dsu.repository;
+package io.smalldata.ohmageomh.data.repository;
 
 import com.google.common.collect.Range;
-import org.openmhealth.dsu.domain.DataPointSearchCriteria;
-import org.openmhealth.schema.domain.omh.DataPoint;
+import io.smalldata.ohmageomh.data.domain.DataPoint;
+import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
