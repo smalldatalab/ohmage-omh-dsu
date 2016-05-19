@@ -1,5 +1,5 @@
 group 'io.smalldata.ohmageomh'
-version '1.1.0'
+version '2.0.0'
 
 apply plugin: 'java'
 
@@ -14,7 +14,6 @@ dependencies {
     compile project(":resource-server")
     compile project(':ohmageomh-shared')
     compile project(':ohmageomh-surveys')
-    compile project(':shared')
 
     compile 'org.mongodb:mongo-java-driver'
     compile 'org.springframework.data:spring-data-commons'
@@ -28,3 +27,13 @@ repositories {
         dirs '../libs'
     }
 }
+
+task copyArchiveJarToDockerContext(dependsOn: assemble, type: Copy) {
+    from 'build/libs'
+    into 'docker'
+    include "${jar.archiveName}"
+    rename { String fileName ->
+        fileName.replace("${jar.archiveName}", "${jar.baseName}.jar")
+    }
+}
+build.dependsOn copyArchiveJarToDockerContext

@@ -1,5 +1,5 @@
-group 'org.openmhealth'
-version '0.1.0'
+group 'io.smalldata.ohmageomh'
+version '2.0.0'
 
 apply plugin: 'java'
 
@@ -30,3 +30,13 @@ bootRun {
     addResources = true
     jvmArgs = ["-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"]
 }
+
+task copyArchiveJarToDockerContext(dependsOn: assemble, type: Copy) {
+    from 'build/libs'
+    into 'docker'
+    include "${jar.archiveName}"
+    rename { String fileName ->
+        fileName.replace("${jar.archiveName}", "${jar.baseName}.jar")
+    }
+}
+build.dependsOn copyArchiveJarToDockerContext
