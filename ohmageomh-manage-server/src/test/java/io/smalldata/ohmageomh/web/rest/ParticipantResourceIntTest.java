@@ -43,14 +43,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 public class ParticipantResourceIntTest {
 
-    private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    private static final String UPDATED_FIRST_NAME = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-    private static final String DEFAULT_LAST_NAME = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    private static final String UPDATED_LAST_NAME = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-    private static final String DEFAULT_GMAIL = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    private static final String UPDATED_GMAIL = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-    private static final String DEFAULT_USERNAME = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    private static final String UPDATED_USERNAME = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+    private static final String DEFAULT_DSU_ID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    private static final String UPDATED_DSU_ID = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+    private static final String DEFAULT_LABEL = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    private static final String UPDATED_LABEL = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
     @Inject
     private ParticipantRepository participantRepository;
@@ -85,10 +81,8 @@ public class ParticipantResourceIntTest {
     public void initTest() {
         participantSearchRepository.deleteAll();
         participant = new Participant();
-        participant.setFirstName(DEFAULT_FIRST_NAME);
-        participant.setLastName(DEFAULT_LAST_NAME);
-        participant.setGmail(DEFAULT_GMAIL);
-        participant.setUsername(DEFAULT_USERNAME);
+        participant.setDsuId(DEFAULT_DSU_ID);
+        participant.setLabel(DEFAULT_LABEL);
     }
 
     @Test
@@ -107,10 +101,8 @@ public class ParticipantResourceIntTest {
         List<Participant> participants = participantRepository.findAll();
         assertThat(participants).hasSize(databaseSizeBeforeCreate + 1);
         Participant testParticipant = participants.get(participants.size() - 1);
-        assertThat(testParticipant.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
-        assertThat(testParticipant.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
-        assertThat(testParticipant.getGmail()).isEqualTo(DEFAULT_GMAIL);
-        assertThat(testParticipant.getUsername()).isEqualTo(DEFAULT_USERNAME);
+        assertThat(testParticipant.getDsuId()).isEqualTo(DEFAULT_DSU_ID);
+        assertThat(testParticipant.getLabel()).isEqualTo(DEFAULT_LABEL);
 
         // Validate the Participant in ElasticSearch
         Participant participantEs = participantSearchRepository.findOne(testParticipant.getId());
@@ -119,10 +111,10 @@ public class ParticipantResourceIntTest {
 
     @Test
     @Transactional
-    public void checkUsernameIsRequired() throws Exception {
+    public void checkDsuIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = participantRepository.findAll().size();
         // set the field null
-        participant.setUsername(null);
+        participant.setDsuId(null);
 
         // Create the Participant, which fails.
 
@@ -146,10 +138,8 @@ public class ParticipantResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(participant.getId().intValue())))
-                .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
-                .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())))
-                .andExpect(jsonPath("$.[*].gmail").value(hasItem(DEFAULT_GMAIL.toString())))
-                .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME.toString())));
+                .andExpect(jsonPath("$.[*].dsuId").value(hasItem(DEFAULT_DSU_ID.toString())))
+                .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())));
     }
 
     @Test
@@ -163,10 +153,8 @@ public class ParticipantResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(participant.getId().intValue()))
-            .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME.toString()))
-            .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME.toString()))
-            .andExpect(jsonPath("$.gmail").value(DEFAULT_GMAIL.toString()))
-            .andExpect(jsonPath("$.username").value(DEFAULT_USERNAME.toString()));
+            .andExpect(jsonPath("$.dsuId").value(DEFAULT_DSU_ID.toString()))
+            .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()));
     }
 
     @Test
@@ -188,10 +176,8 @@ public class ParticipantResourceIntTest {
         // Update the participant
         Participant updatedParticipant = new Participant();
         updatedParticipant.setId(participant.getId());
-        updatedParticipant.setFirstName(UPDATED_FIRST_NAME);
-        updatedParticipant.setLastName(UPDATED_LAST_NAME);
-        updatedParticipant.setGmail(UPDATED_GMAIL);
-        updatedParticipant.setUsername(UPDATED_USERNAME);
+        updatedParticipant.setDsuId(UPDATED_DSU_ID);
+        updatedParticipant.setLabel(UPDATED_LABEL);
 
         restParticipantMockMvc.perform(put("/api/participants")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -202,10 +188,8 @@ public class ParticipantResourceIntTest {
         List<Participant> participants = participantRepository.findAll();
         assertThat(participants).hasSize(databaseSizeBeforeUpdate);
         Participant testParticipant = participants.get(participants.size() - 1);
-        assertThat(testParticipant.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
-        assertThat(testParticipant.getLastName()).isEqualTo(UPDATED_LAST_NAME);
-        assertThat(testParticipant.getGmail()).isEqualTo(UPDATED_GMAIL);
-        assertThat(testParticipant.getUsername()).isEqualTo(UPDATED_USERNAME);
+        assertThat(testParticipant.getDsuId()).isEqualTo(UPDATED_DSU_ID);
+        assertThat(testParticipant.getLabel()).isEqualTo(UPDATED_LABEL);
 
         // Validate the Participant in ElasticSearch
         Participant participantEs = participantSearchRepository.findOne(testParticipant.getId());
@@ -245,9 +229,7 @@ public class ParticipantResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(participant.getId().intValue())))
-            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
-            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())))
-            .andExpect(jsonPath("$.[*].gmail").value(hasItem(DEFAULT_GMAIL.toString())))
-            .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME.toString())));
+            .andExpect(jsonPath("$.[*].dsuId").value(hasItem(DEFAULT_DSU_ID.toString())))
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())));
     }
 }

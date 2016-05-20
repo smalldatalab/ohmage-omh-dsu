@@ -88,7 +88,7 @@ public class DataResource {
         Participant participant = participantService.findOne(participantId);
 
         DataPointSearchCriteria searchCriteria =
-            new DataPointSearchCriteria(participant.getUsername(), schemaNamespace, schemaName, schemaVersion);
+            new DataPointSearchCriteria(participant.getDsuId(), schemaNamespace, schemaName, schemaVersion);
 
         if (createdOnOrAfter != null && createdBefore != null) {
             searchCriteria.setCreationTimestampRange(Range.closedOpen(createdOnOrAfter, createdBefore));
@@ -101,6 +101,12 @@ public class DataResource {
         }
 
         Iterable<DataPoint> dataPoints = dataPointService.findBySearchCriteria(searchCriteria, offset, limit);
+
+        // TODO Move the appending of this information into service, when possible
+        for(DataPoint dataPoint : dataPoints) {
+            dataPoint.getHeader().setAdditionalProperty("participant_id", participant.getId());
+            dataPoint.getHeader().setAdditionalProperty("participant_label", participant.getLabel());
+        }
 
         HttpHeaders headers = new HttpHeaders();
 

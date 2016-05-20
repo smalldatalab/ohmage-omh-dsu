@@ -36,20 +36,16 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="firstName"><span>First Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="lastName"><span>Last Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="gmail"><span>Gmail</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="username"><span>Username</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dsuId"><span>Dsu Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="label"><span>Label</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="participant in vm.participants track by participant.id">
                     <td><a ui-sref="participant-detail({id:participant.id})">{{participant.id}}</a></td>
-                    <td>{{participant.firstName}}</td>
-                    <td>{{participant.lastName}}</td>
-                    <td>{{participant.gmail}}</td>
-                    <td>{{participant.username}}</td>
+                    <td>{{participant.dsuId}}</td>
+                    <td>{{participant.label}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

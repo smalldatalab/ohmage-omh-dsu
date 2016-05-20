@@ -12,38 +12,20 @@
   "fields": [
     {
       "fieldId": 1,
-      "fieldName": "firstName",
+      "fieldName": "dsuId",
       "fieldType": "String",
       "fieldValidateRules": [
-        "maxlength"
+        "maxlength",
+        "required"
       ],
       "fieldValidateRulesMaxlength": 255
     },
     {
       "fieldId": 2,
-      "fieldName": "lastName",
+      "fieldName": "label",
       "fieldType": "String",
       "fieldValidateRules": [
         "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 255
-    },
-    {
-      "fieldId": 3,
-      "fieldName": "gmail",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 255
-    },
-    {
-      "fieldId": 4,
-      "fieldName": "username",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "maxlength",
-        "required"
       ],
       "fieldValidateRulesMaxlength": 255
     }

@@ -1,5 +1,5 @@
-id;first_name;last_name;gmail;username;created_by;created_date;last_modified_by;last_modified_date
-21;Participant 1A;AutoGen;p1a@localhost;participant1a;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
-22;Participant 1B;AutoGen;p1b@localhost;participant1b;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
-23;Participant 2A;AutoGen;p2a@localhost;participant2a;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
-24;Participant 2B;AutoGen;p2b@localhost;participant2b;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
+id;dsu_id;label;created_by;created_date;last_modified_by;last_modified_date
+1001;participant1a;1A;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
+1002;participant1b;1B;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
+1003;participant2a;2A;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
+1004;participant2b;2B;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123

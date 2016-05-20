@@ -6,10 +6,8 @@ entity Study {
 }
 
 entity Participant {
-	firstName String maxlength(255),
-    lastName String maxlength(255),
-    gmail String maxlength(255),
-    username String maxlength(255) required
+    dsuId String maxlength(255) required,
+    label String maxlength(255),
 }
 
 relationship ManyToMany {

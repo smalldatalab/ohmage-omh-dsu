@@ -82,10 +82,8 @@
                     resolve: {
                         entity: function () {
                             return {
-                                firstName: null,
-                                lastName: null,
-                                gmail: null,
-                                username: null,
+                                dsuId: null,
+                                label: null,
                                 id: null
                             };
                         }

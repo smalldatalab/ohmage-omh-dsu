@@ -13,12 +13,14 @@ import java.util.Map;
 public class ParticipantDetailDTO {
 
     private Long id;
-    private String username;
+    private String dsuId;
+    private String label;
     private Map<String, String> latestDataPoints;
 
     public ParticipantDetailDTO(Participant participant) {
         this.id = participant.getId();
-        this.username = participant.getUsername();
+        this.dsuId = participant.getDsuId();
+        this.label = participant.getLabel();
         this.latestDataPoints = new HashMap<String, String>();
         latestDataPoints.put("Step Count", "2016-01-04");
         latestDataPoints.put("Physical Activity", "2016-03-05");
@@ -32,13 +34,22 @@ public class ParticipantDetailDTO {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getDsuId() {
+        return dsuId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setDsuId(String dsuId) {
+        this.dsuId = dsuId;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public Map<String, String> getLatestDataPoints() {
         return latestDataPoints;
     }

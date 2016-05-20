@@ -22,5 +22,4 @@ public interface ParticipantRepository extends JpaRepository<Participant,Long> {
     Participant findOneWithEagerRelationships(@Param("id") Long id);
 
     Page<Participant> findAllByStudies(Study study, Pageable pageable);
-
 }

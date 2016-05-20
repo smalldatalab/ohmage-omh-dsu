@@ -23,22 +23,14 @@ public class Participant extends AbstractAuditingEntity implements Serializable 
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Size(max = 255)
-    @Column(name = "first_name", length = 255)
-    private String firstName;
-
-    @Size(max = 255)
-    @Column(name = "last_name", length = 255)
-    private String lastName;
-
-    @Size(max = 255)
-    @Column(name = "gmail", length = 255)
-    private String gmail;
-
     @NotNull
     @Size(max = 255)
-    @Column(name = "username", length = 255, nullable = false)
-    private String username;
+    @Column(name = "dsu_id", length = 255, nullable = false)
+    private String dsuId;
+
+    @Size(max = 255)
+    @Column(name = "label", length = 255)
+    private String label;
 
     @ManyToMany
     @JoinTable(name = "participant_study",
@@ -54,36 +46,20 @@ public class Participant extends AbstractAuditingEntity implements Serializable 
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getDsuId() {
+        return dsuId;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setDsuId(String dsuId) {
+        this.dsuId = dsuId;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLabel() {
+        return label;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getGmail() {
-        return gmail;
-    }
-
-    public void setGmail(String gmail) {
-        this.gmail = gmail;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Set<Study> getStudies() {
@@ -118,10 +94,8 @@ public class Participant extends AbstractAuditingEntity implements Serializable 
     public String toString() {
         return "Participant{" +
             "id=" + id +
-            ", firstName='" + firstName + "'" +
-            ", lastName='" + lastName + "'" +
-            ", gmail='" + gmail + "'" +
-            ", username='" + username + "'" +
+            ", dsuId='" + dsuId + "'" +
+            ", label='" + label + "'" +
             '}';
     }
 }

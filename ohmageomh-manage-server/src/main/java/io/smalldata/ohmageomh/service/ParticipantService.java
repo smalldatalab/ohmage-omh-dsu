@@ -51,5 +51,12 @@ public interface ParticipantService {
      */
     Page<Participant> search(String query, Pageable pageable);
 
+    /**
+     * Search for the participants in the study.
+     *
+     *  @param study the study to filter by
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
     Page<Participant> findAllByStudy(Study study, Pageable pageable);
 }
