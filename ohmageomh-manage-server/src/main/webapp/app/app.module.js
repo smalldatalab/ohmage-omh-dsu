@@ -17,6 +17,7 @@
             'ui.grid',
             'ui.grid.exporter',
             'ui.grid.resizeColumns',
+            'ui.grid.pagination',
             // jhipster-needle-angularjs-add-module JHipster will add new module here
             'angular-loading-bar',
             'mwl.calendar'])

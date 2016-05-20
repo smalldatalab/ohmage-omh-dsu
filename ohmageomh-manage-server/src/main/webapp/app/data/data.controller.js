@@ -47,7 +47,8 @@
                 var params = {
                     schema_namespace: vm.dataType.schemaNamespace,
                     schema_name: vm.dataType.schemaName,
-                    schema_version: vm.dataType.schemaVersion
+                    schema_version: vm.dataType.schemaVersion,
+                    limit: 5000
                 };
                 if(vm.participant != null) {
                     params.participant = vm.participant.id;
@@ -60,6 +61,9 @@
         function handleDataResponse(data) {
             if(data.length == 0){
                 AlertService.error("This is no data for that search criteria.")
+            }
+            else if (data.length == 5000){
+                AlertService.error("The maximum number of viewable data points has been returned (5,000). There may be more. Contact the system admin to get more information.")
             }
         }
 
