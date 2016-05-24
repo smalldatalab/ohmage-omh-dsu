@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+    <property name="now" value="sysdate" dbms="oracle"/>
+
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle"/>
+
+    <!--
+        Add data exported from v1 of the admindashboard of ohmage-omh.
+    -->
+    <changeSet id="20160523174558-1" author="jaredsieling">
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/migration_data/study.csv"
+                  separator=";"
+                  tableName="study">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/migration_data/participant.csv"
+                  separator=";"
+                  tableName="participant">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/migration_data/jhi_user.csv"
+                  separator=";"
+                  tableName="jhi_user">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/migration_data/survey.csv"
+                  separator=";"
+                  tableName="survey">
+        </loadData>
+
+    </changeSet>
+
+    <changeSet id="20160523174558-2" author="jaredsieling">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/migration_data/study_manager.csv"
+                  separator=";"
+                  tableName="study_manager">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/migration_data/participant_study.csv"
+                  separator=";"
+                  tableName="participant_study">
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/migration_data/study_survey.csv"
+                  separator=";"
+                  tableName="study_survey">
+        </loadData>
+
+    </changeSet>
+
+</databaseChangeLog>

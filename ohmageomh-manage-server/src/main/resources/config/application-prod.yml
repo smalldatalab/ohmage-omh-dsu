@@ -12,6 +12,11 @@
 
 dataStore: mongo
 
+logging:
+    level:
+        org.springframework: INFO
+    path: /var/log/ohmage-manage/
+
 spring:
     devtools:
         restart:

@@ -24,21 +24,21 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            
+
             <column name="remove_gps" type="bit">
                 <constraints nullable="false" />
             </column>
-            
+
             <column name="start_date" type="date">
                 <constraints nullable="true" />
             </column>
-            
+
             <column name="end_date" type="date">
                 <constraints nullable="true" />
             </column>
-            
+
             <column name="created_by" type="varchar(50)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="created_date" type="timestamp" defaultValueDate="${now}">
                 <constraints nullable="false"/>
@@ -47,7 +47,7 @@
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
-        
+
         <createTable tableName="study_manager">
             <column name="managers_id" type="bigint">
                 <constraints nullable="false"/>
@@ -58,7 +58,7 @@
         </createTable>
 
         <addPrimaryKey columnNames="studies_id, managers_id" tableName="study_manager"/>
-        
+
         <createTable tableName="study_survey">
             <column name="surveys_id" type="bigint">
                 <constraints nullable="false"/>
@@ -69,7 +69,7 @@
         </createTable>
 
         <addPrimaryKey columnNames="studies_id, surveys_id" tableName="study_survey"/>
-        
+
         <createTable tableName="study_integration">
             <column name="integrations_id" type="bigint">
                 <constraints nullable="false"/>
@@ -80,6 +80,6 @@
         </createTable>
 
         <addPrimaryKey columnNames="studies_id, integrations_id" tableName="study_integration"/>
-        
+
     </changeSet>
 </databaseChangeLog>
