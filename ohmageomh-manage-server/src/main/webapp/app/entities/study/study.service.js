@@ -39,7 +39,7 @@
             'getParticipants': {
                 method: 'GET',
                 url: resourceUrl + '/participants',
-                params: {id: '@id'},
+                params: {id: '@id', size: 5000},
                 isArray: true
             },
             'getParticipant': {
