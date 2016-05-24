@@ -199,3 +199,13 @@ task wrapper(type: Wrapper) {
 
 task stage(dependsOn: 'bootRepackage') {
 }
+
+task copyArchiveWarToDockerContext(dependsOn: assemble, type: Copy) {
+    from 'build/libs'
+    into 'docker'
+    include "${war.archiveName}"
+    rename { String fileName ->
+        fileName.replace("${war.archiveName}", "${war.baseName}.war")
+    }
+}
+build.dependsOn copyArchiveWarToDockerContext
