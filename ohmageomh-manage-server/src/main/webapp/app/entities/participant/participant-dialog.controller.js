@@ -10,7 +10,7 @@
     function ParticipantDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Participant, Study) {
         var vm = this;
         vm.participant = entity;
-        vm.studies = Study.query();
+        vm.studies = Study.query({size: 5000});
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

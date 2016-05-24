@@ -26,21 +26,21 @@
         <dt><span>Manager</span></dt>
         <dd>
             <span ng-repeat="manager in vm.study.managers">
-                {{manager.id}}{{$last ? '' : ', '}}
+                {{manager.login}}{{$last ? '' : ', '}}
             </span>
         </dd>
         <hr>
         <dt><span>Survey</span></dt>
         <dd>
             <span ng-repeat="survey in vm.study.surveys">
-                <a ui-sref="survey-detail({id: {{survey.id}}})">{{survey.id}}</a>{{$last ? '' : ', '}}
+                <a ui-sref="survey-detail({id: {{survey.id}}})">{{survey.name}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
         <hr>
         <dt><span>Integration</span></dt>
         <dd>
             <span ng-repeat="integration in vm.study.integrations">
-                <a ui-sref="integration-detail({id: {{integration.id}}})">{{integration.id}}</a>{{$last ? '' : ', '}}
+                <a ui-sref="integration-detail({id: {{integration.id}}})">{{integration.name}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
         <hr>

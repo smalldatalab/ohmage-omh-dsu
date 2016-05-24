@@ -10,8 +10,8 @@
     function OrganizationDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Organization, Study, User) {
         var vm = this;
         vm.organization = entity;
-        vm.studies = Study.query();
-        vm.users = User.query();
+        vm.studies = Study.query({size: 5000});
+        vm.users = User.query({size: 5000});
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

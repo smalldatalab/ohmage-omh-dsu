@@ -10,11 +10,11 @@
     function StudyDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Study, User, Survey, Integration, Participant, Organization) {
         var vm = this;
         vm.study = entity;
-        vm.users = User.query();
-        vm.surveys = Survey.query();
-        vm.integrations = Integration.query();
+        vm.users = User.query({size: 5000});
+        vm.surveys = Survey.query({size: 5000});
+        vm.integrations = Integration.query({size: 5000});
         vm.participants = Participant.query();
-        vm.organizations = Organization.query();
+        vm.organizations = Organization.query({size: 5000});
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

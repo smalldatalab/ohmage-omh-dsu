@@ -10,8 +10,8 @@
     function IntegrationDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Integration, DataType, Study) {
         var vm = this;
         vm.integration = entity;
-        vm.datatypes = DataType.query();
-        vm.studies = Study.query();
+        vm.datatypes = DataType.query({size: 5000});
+        vm.studies = Study.query({size: 5000});
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
