@@ -63,6 +63,12 @@
                   tableName="study_survey">
         </loadData>
 
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/migration_data/jhi_user_authorities.csv"
+                  separator=";"
+                  tableName="jhi_user_authority">
+        </loadData>
+
     </changeSet>
 
 </databaseChangeLog>
