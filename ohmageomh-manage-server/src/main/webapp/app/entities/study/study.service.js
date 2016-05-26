@@ -4,9 +4,9 @@
         .module('ohmageApp')
         .factory('Study', Study);
 
-    Study.$inject = ['$resource', 'DateUtils'];
+    Study.$inject = ['$resource', 'DateUtils', '_'];
 
-    function Study ($resource, DateUtils) {
+    function Study ($resource, DateUtils, _) {
         var resourceUrl =  'api/studies/:id';
 
         return $resource(resourceUrl, {id: null, participant: null}, {
@@ -17,6 +17,10 @@
                     data = angular.fromJson(data);
                     data.startDate = DateUtils.convertLocalDateFromServer(data.startDate);
                     data.endDate = DateUtils.convertLocalDateFromServer(data.endDate);
+
+                    // Extract unique data types from integrations
+                    data.dataTypes = _.chain(data.integrations).pluck("dataTypes").flatten().unique().value();
+
                     return data;
                 }
             },

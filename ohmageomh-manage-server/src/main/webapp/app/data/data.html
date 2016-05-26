@@ -10,7 +10,7 @@
             <div class="col-xs-4 no-padding-left">
                 <div class="form-group">
                     <label for="field_participant">Data Type</label>
-                    <select class="form-control" id="field_data_type" name="data_type" ng-model="vm.dataType" ng-options="dataType as dataType.name for dataType in vm.dataTypes track by dataType.id">
+                    <select class="form-control" id="field_data_type" name="data_type" ng-model="vm.dataType" ng-options="dataType as dataType.name for dataType in vm.study.dataTypes track by dataType.id">
                         <option value="">Select a data type</option>
                     </select>
                 </div>

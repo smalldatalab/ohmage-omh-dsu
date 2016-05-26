@@ -14,6 +14,8 @@
     </div>
 </h3>
 <hr/>
+<jhi-alert></jhi-alert>
+
 <div class="row">
     <div class="col-md-9">
         <h2 class="text-center">{{ vm.calendarTitle }}</h2>
@@ -83,13 +85,14 @@
 
     </div>
     <div class="col-md-3">
-        <h4>Apps and Data Types</h4>
-        <ul ng-repeat="integration in vm.study.integrations">
-            <li>{{integration.name}}</li>
-            <ul ng-repeat="type in integration.dataTypes">
-                <li><a class="event-warning">{{type.name}}</a> </li>
+
+        <h4 class="green">Data Types</h4>
+        <div ng-repeat="dataType in vm.study.dataTypes">
+            <h5>{{dataType.name}}</h5>
+            <ul>
+                <li>{{dataType.summary}}</li>
             </ul>
-        </ul>
+        </div>
 
     </div>
 </div>

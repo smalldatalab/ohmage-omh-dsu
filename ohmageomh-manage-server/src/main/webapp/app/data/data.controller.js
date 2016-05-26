@@ -14,17 +14,12 @@
         }
 
         var vm = this;
-        vm.study = Study.get({id: $stateParams.study},
-            function(data){
-                vm.populateDataTypes()
-            });
+        vm.study = Study.get({id: $stateParams.study});
         vm.participants = Study.getParticipants({id: $stateParams.study});
-        vm.dataTypes = [];
         vm.participant = null;
         vm.dataType = null;
 
         vm.loadData = loadData;
-        vm.populateDataTypes = populateDataTypes;
         vm.handleDataResponse = handleDataResponse;
         vm.gridOptions = {
             data: [],
@@ -65,14 +60,6 @@
             else if (data.length == 5000){
                 AlertService.error("The maximum number of viewable data points has been returned (5,000). There may be more. Contact the system admin to get more information.")
             }
-        }
-
-        function populateDataTypes() {
-            var list = [];
-            _.each(vm.study.integrations, function(integration) {
-                list.push(_.flatten(integration.dataTypes))
-            });
-            vm.dataTypes = _.flatten(list);
         }
 
     }
