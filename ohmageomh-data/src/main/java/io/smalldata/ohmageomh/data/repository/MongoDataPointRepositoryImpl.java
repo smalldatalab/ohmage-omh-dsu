@@ -75,7 +75,7 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
         Aggregation agg = Aggregation.newAggregation(
                 Aggregation.match(Criteria.where("header.user_id").in(userIds)),
                 Aggregation.group("header.user_id")
-                        .last("header.creation_date_time").as("date")
+                        .max("header.creation_date_time").as("date")
                         .last("header.user_id").as("user_id")
         );
 
