@@ -18,9 +18,11 @@ package io.smalldata.ohmageomh.data.service;
 
 import io.smalldata.ohmageomh.data.domain.DataPoint;
 import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import io.smalldata.ohmageomh.data.domain.LastDataPointDate;
 import org.openmhealth.schema.domain.omh.DataPointHeader;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -48,4 +50,6 @@ public interface DataPointService {
     Long deleteByIdAndUserId(String id, String userId);
 
     void setUserId(DataPointHeader header, String endUserId);
+
+    List<LastDataPointDate> findLastDataPointDate(List<String> userIds);
 }

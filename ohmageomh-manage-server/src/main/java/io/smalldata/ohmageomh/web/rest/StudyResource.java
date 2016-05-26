@@ -8,6 +8,7 @@ import io.smalldata.ohmageomh.service.ParticipantService;
 import io.smalldata.ohmageomh.service.StudyService;
 import io.smalldata.ohmageomh.service.UserService;
 import io.smalldata.ohmageomh.web.rest.dto.ParticipantDetailDTO;
+import io.smalldata.ohmageomh.web.rest.dto.ParticipantSummaryDTO;
 import io.smalldata.ohmageomh.web.rest.util.HeaderUtil;
 import io.smalldata.ohmageomh.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -158,6 +159,25 @@ public class StudyResource {
     public ResponseEntity<List<Participant>> getStudyParticipants(@PathVariable Long id, Pageable pageable) throws URISyntaxException {
         Study study = studyService.findOne(id);
         Page<Participant> page = participantService.findAllByStudy(study, pageable);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/studies/" + study.getId() + "/participants");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /studies/:id/participantSummaries : get the participants for the study.
+     *
+     * @param id the id of the study to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the list of participants, or with status 404 (Not Found)
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @RequestMapping(value = "/studies/{id}/participantSummaries",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<ParticipantSummaryDTO>> getStudyParticipantSummaries(@PathVariable Long id, Pageable pageable) throws URISyntaxException {
+        Study study = studyService.findOne(id);
+        Page<ParticipantSummaryDTO> page = participantService.findAllSummariesByStudy(study, pageable);
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/studies/" + study.getId() + "/participants");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

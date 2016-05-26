@@ -19,13 +19,19 @@ package io.smalldata.ohmageomh.data.repository;
 import com.google.common.collect.Range;
 import io.smalldata.ohmageomh.data.domain.DataPoint;
 import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import io.smalldata.ohmageomh.data.domain.LastDataPointDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import javax.annotation.Nullable;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -62,6 +68,24 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
         }
 
         return mongoOperations.find(query, DataPoint.class);
+    }
+
+    @Override
+    public List<LastDataPointDate> findLastDataPointDate(List<String> userIds){
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("header.user_id").in(userIds)),
+                Aggregation.group("header.user_id")
+                        .last("header.creation_date_time").as("date")
+                        .last("header.user_id").as("user_id")
+        );
+
+        //Convert the aggregation result into a List
+        AggregationResults<LastDataPointDate> groupResults
+                = mongoOperations.aggregate(agg, "dataPoint", LastDataPointDate.class);
+
+        List<LastDataPointDate> result = groupResults.getMappedResults();
+
+        return result;
     }
 
     private Query newQuery(DataPointSearchCriteria searchCriteria) {

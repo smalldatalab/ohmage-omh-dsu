@@ -1,21 +1,25 @@
 package io.smalldata.ohmageomh.service.impl;
 
+import io.smalldata.ohmageomh.data.domain.LastDataPointDate;
+import io.smalldata.ohmageomh.data.service.DataPointService;
 import io.smalldata.ohmageomh.domain.Study;
 import io.smalldata.ohmageomh.service.ParticipantService;
 import io.smalldata.ohmageomh.domain.Participant;
 import io.smalldata.ohmageomh.repository.ParticipantRepository;
 import io.smalldata.ohmageomh.repository.search.ParticipantSearchRepository;
+import io.smalldata.ohmageomh.web.rest.dto.ParticipantSummaryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -33,6 +37,9 @@ public class ParticipantServiceImpl implements ParticipantService{
 
     @Inject
     private ParticipantSearchRepository participantSearchRepository;
+
+    @Inject
+    private DataPointService dataPointService;
 
     /**
      * Save a participant.
@@ -71,6 +78,37 @@ public class ParticipantServiceImpl implements ParticipantService{
         log.debug("Request to get all Participants");
         Page<Participant> result = participantRepository.findAllByStudies(study, pageable);
         return result;
+    }
+
+    /**
+     *  Get all the participant summaries in a study.
+     *
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<ParticipantSummaryDTO> findAllSummariesByStudy(Study study, Pageable pageable) {
+        log.debug("Request to get all Participants");
+        Page<Participant> page = participantRepository.findAllByStudies(study, pageable);
+        List<ParticipantSummaryDTO> summaries = new ArrayList<ParticipantSummaryDTO>();
+
+        List<String> userIds = page.getContent().stream().map(Participant::getDsuId).collect(Collectors.toList());
+        List<LastDataPointDate> dates = dataPointService.findLastDataPointDate(userIds);
+
+        for(Participant participant : page) {
+            ParticipantSummaryDTO dto = new ParticipantSummaryDTO(participant);
+
+            for(LastDataPointDate date : dates){
+                if(date.getUserId().equals(participant.getDsuId())) {
+                    dto.setLastDataPointDate(date.getDate());
+                    break;
+                }
+            }
+
+            summaries.add(dto);
+        }
+
+        return new PageImpl<ParticipantSummaryDTO>(summaries, pageable, page.getTotalElements());
     }
 
 

@@ -27,12 +27,14 @@
                     <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                         <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                         <th jh-sort-by="label"><span>Label</span> <span class="glyphicon glyphicon-sort"></span></th>
+                        <th><span>Last Data Point</span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="participant in vm.participants track by participant.id">
                         <td><a ui-sref="dashboard-detail({participant: participant.id})">{{participant.id}}</a></td>
                         <td>{{participant.label}}</td>
+                        <td>{{participant.lastDataPointDate | date}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -50,13 +52,20 @@
             <ul ng-repeat="type in integration.dataTypes">
                 <li>{{type.name}}</li>
             </ul>
+
         </ul>
+        <div ng-show="!vm.study.integrations.length">
+            <div class="alert alert-info">No apps are active for this study.</div>
+        </div>
 
         <br/>
         <h4>Surveys</h4>
         <ul ng-repeat="survey in vm.study.surveys">
             <li>{{survey.name}}</li>
         </ul>
+        <div ng-show="!vm.study.surveys.length">
+            <div class="alert alert-info">No surveys are active for this study.</div>
+        </div>
 
 
 

@@ -18,6 +18,7 @@ package io.smalldata.ohmageomh.data.service;
 
 import io.smalldata.ohmageomh.data.domain.DataPoint;
 import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import io.smalldata.ohmageomh.data.domain.LastDataPointDate;
 import io.smalldata.ohmageomh.data.repository.DataPointRepository;
 import org.openmhealth.schema.domain.omh.DataPointHeader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -71,6 +73,15 @@ public class DataPointServiceImpl implements DataPointService {
         checkArgument(limit == null || limit >= 0);
 
         return repository.findBySearchCriteria(searchCriteria, offset, limit);
+    }
+
+    @Override
+    @Transactional
+    public List<LastDataPointDate> findLastDataPointDate(List<String> userIds) {
+
+        checkNotNull(userIds);
+
+        return repository.findLastDataPointDate(userIds);
     }
 
     @Override

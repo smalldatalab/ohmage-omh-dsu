@@ -46,7 +46,14 @@
                 method: 'GET',
                 url: resourceUrl + '/participants/:participant',
                 params: {id: '@id', participant: '@participant'}
+            },
+            'getParticipantSummaries': {
+                method: 'GET',
+                url: resourceUrl + '/participantSummaries',
+                params: {id: '@id', size: 5000},
+                isArray: true
             }
+
         });
     }
 })();

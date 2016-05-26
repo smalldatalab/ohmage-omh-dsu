@@ -2,6 +2,7 @@ package io.smalldata.ohmageomh.service;
 
 import io.smalldata.ohmageomh.domain.Participant;
 import io.smalldata.ohmageomh.domain.Study;
+import io.smalldata.ohmageomh.web.rest.dto.ParticipantSummaryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -59,4 +60,13 @@ public interface ParticipantService {
      *  @return the list of entities
      */
     Page<Participant> findAllByStudy(Study study, Pageable pageable);
+
+    /**
+     * Search for the participants in the study, appended with data summary information.
+     *
+     *  @param study the study to filter by
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    Page<ParticipantSummaryDTO> findAllSummariesByStudy(Study study, Pageable pageable);
 }

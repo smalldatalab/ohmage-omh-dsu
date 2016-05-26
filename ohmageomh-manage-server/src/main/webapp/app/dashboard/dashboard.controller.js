@@ -37,7 +37,7 @@
                     sort: sort()
                 }, onSuccess, onError);
             } else {
-                Study.getParticipants({
+                Study.getParticipantSummaries({
                     id: $stateParams.study,
                     page: pagingParams.page - 1,
                     size: paginationConstants.itemsPerPage,

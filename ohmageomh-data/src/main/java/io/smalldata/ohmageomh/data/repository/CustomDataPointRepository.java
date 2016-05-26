@@ -18,8 +18,11 @@ package io.smalldata.ohmageomh.data.repository;
 
 import io.smalldata.ohmageomh.data.domain.DataPoint;
 import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
+import io.smalldata.ohmageomh.data.domain.LastDataPointDate;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -31,4 +34,6 @@ public interface CustomDataPointRepository {
 
     Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria, @Nullable Integer offset,
                                              @Nullable Integer limit);
+
+    List<LastDataPointDate> findLastDataPointDate(List<String> userIds);
 }
