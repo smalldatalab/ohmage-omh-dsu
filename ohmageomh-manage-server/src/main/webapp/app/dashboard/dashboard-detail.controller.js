@@ -15,12 +15,14 @@
 
         var vm = this;
 
+        vm.eventColors = ['info', 'warning', 'success', 'important', 'special', 'inverse']
         vm.handleDataResponse = handleDataResponse;
         vm.createEvent = createEvent;
 
         vm.study = Study.get({id: $stateParams.study},
             function(study){
-                _.each(study.dataTypes, function(dataType) {
+                _.each(study.dataTypes, function(dataType, index) {
+                    dataType.eventColor = vm.eventColors[index % 6];
                     Data.query({
                         participant: $stateParams.participant,
                         schema_namespace: dataType.schemaNamespace,
@@ -40,7 +42,7 @@
                 dataType.summary = data.length + " data points";
                 _.each(data, function(dataPoint) {
                     var date = new Date(eval('dataPoint.' + dataType.dateField));
-                    vm.events.push(vm.createEvent(dataType.name, date));
+                    vm.events.push(vm.createEvent(dataType.name, date, dataType.eventColor));
                     if(dataType.lastDataPointDate == null || dataType.lastDataPointDate < date) {
                         dataType.lastDataPointDate = date;
                     }
@@ -48,10 +50,10 @@
             }
         }
 
-        function createEvent(title, date) {
+        function createEvent(title, date, type) {
             return {
                 title: title,
-                type: 'info',
+                type: type,
                 startsAt: date,
                 draggable: false,
                 resizable: false,
