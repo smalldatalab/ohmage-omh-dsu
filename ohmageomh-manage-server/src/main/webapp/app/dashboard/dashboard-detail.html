@@ -90,7 +90,7 @@
         <div ng-repeat="dataType in vm.study.dataTypes">
             <h5>{{dataType.name}}</h5>
             <ul>
-                <li>{{dataType.summary}} (<a class="event event-{{dataType.eventColor}}" style="display: inline-block;"></a>)</li>
+                <li>{{dataType.summary}} (<a class="event event-{{dataType.color}}" style="display: inline-block;"></a>)</li>
                 <li ng-hide="!dataType.lastDataPointDate">Latest on {{dataType.lastDataPointDate | date}}</li>
             </ul>
         </div>

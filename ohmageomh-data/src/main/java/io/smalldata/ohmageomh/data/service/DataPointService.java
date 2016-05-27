@@ -51,5 +51,5 @@ public interface DataPointService {
 
     void setUserId(DataPointHeader header, String endUserId);
 
-    List<LastDataPointDate> findLastDataPointDate(List<String> userIds);
+    List<LastDataPointDate> findLastDataPointDate(List<String> userIds, DataPointSearchCriteria searchCriteria, String dateField);
 }

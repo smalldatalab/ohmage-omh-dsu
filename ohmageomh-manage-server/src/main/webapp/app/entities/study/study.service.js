@@ -18,8 +18,12 @@
                     data.startDate = DateUtils.convertLocalDateFromServer(data.startDate);
                     data.endDate = DateUtils.convertLocalDateFromServer(data.endDate);
 
-                    // Extract unique data types from integrations
+                    // Extract unique data types from integrations and assign a color
                     data.dataTypes = _.chain(data.integrations).pluck("dataTypes").flatten().unique().value();
+                    var colors = ['info', 'warning', 'success', 'important', 'special', 'inverse'];
+                    _.each(data.dataTypes, function(dataType, index) {
+                        dataType.color = colors[index % 6];
+                    });
 
                     return data;
                 }

@@ -14,10 +14,13 @@
         }
 
         var vm = this;
-        vm.study = Study.get({id: $stateParams.study});
+        vm.study = Study.get({id: $stateParams.study}, function(study) {
+            vm.handleStudy(study);
+        });
 
         vm.loadAll = loadAll;
         vm.loadPage = loadPage;
+        vm.handleStudy = handleStudy;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
@@ -26,7 +29,6 @@
         vm.searchQuery = pagingParams.search;
         vm.currentSearch = pagingParams.search;
         vm.loadAll();
-        //vm.participants = Study.getParticipants({id: $stateParams.study});
 
         function loadAll () {
             if (pagingParams.search) {
@@ -97,6 +99,14 @@
             vm.reverse = true;
             vm.currentSearch = null;
             vm.transition();
+        }
+
+        function handleStudy(study){
+            _.each(vm.study.integration, function(integration){
+                _.each(integration.dataTypes, function(dataType) {
+                   dataType.color = _.findWhere(vm.study.dataTypes, {id: dataType.id}).color;
+                });
+            });
         }
     }
 })();

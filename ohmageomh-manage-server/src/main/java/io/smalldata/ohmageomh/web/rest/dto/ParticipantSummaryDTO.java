@@ -15,12 +15,13 @@ public class ParticipantSummaryDTO {
     private Long id;
     private String dsuId;
     private String label;
-    private String lastDataPointDate;
+    private Map<String, String> latestDataPointDates;
 
     public ParticipantSummaryDTO(Participant participant) {
         this.id = participant.getId();
         this.dsuId = participant.getDsuId();
         this.label = participant.getLabel();
+        this.latestDataPointDates = new HashMap<String, String>();
     }
 
     public Long getId() {
@@ -47,12 +48,19 @@ public class ParticipantSummaryDTO {
         this.label = label;
     }
 
-    public String getLastDataPointDate() {
-        return lastDataPointDate;
+    public Map<String, String> getLatestDataPointDates() {
+        return latestDataPointDates;
     }
 
-    public void setLastDataPointDate(String lastDataPointDate) {
-        this.lastDataPointDate = lastDataPointDate;
+    public void setLatestDataPointDates(Map<String, String> latestDataPointDates) {
+        this.latestDataPointDates = latestDataPointDates;
     }
+
+    public void addLatestDataPointDate(String dataTypeId, String date){
+        this.latestDataPointDates.put(dataTypeId, date);
+    }
+
+
+
 
 }

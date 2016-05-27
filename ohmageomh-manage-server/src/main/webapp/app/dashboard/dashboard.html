@@ -27,14 +27,16 @@
                     <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                         <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                         <th jh-sort-by="label"><span>Label</span> <span class="glyphicon glyphicon-sort"></span></th>
-                        <th><span>Last Data Point Created</span></th>
+                        <th ng-repeat="dataType in vm.study.dataTypes">Latest <a class="event event-{{dataType.color}}" style="display: inline-block;"></a></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="participant in vm.participants track by participant.id">
                         <td><a ui-sref="dashboard-detail({participant: participant.id})">{{participant.id}}</a></td>
                         <td>{{participant.label}}</td>
-                        <td>{{participant.lastDataPointDate | date}}</td>
+                        <td ng-repeat="dataType in vm.study.dataTypes">
+                            {{participant.latestDataPointDates[dataType.id] | date}}
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -50,7 +52,7 @@
         <ul ng-repeat="integration in vm.study.integrations">
             <li>{{integration.name}}</li>
             <ul ng-repeat="type in integration.dataTypes">
-                <li>{{type.name}}</li>
+                <li>{{type.name}} (<a class="event event-{{type.color}}" style="display: inline-block;"></a>)</li>
             </ul>
 
         </ul>

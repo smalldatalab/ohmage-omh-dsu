@@ -77,11 +77,11 @@ public class DataPointServiceImpl implements DataPointService {
 
     @Override
     @Transactional
-    public List<LastDataPointDate> findLastDataPointDate(List<String> userIds) {
+    public List<LastDataPointDate> findLastDataPointDate(List<String> userIds, DataPointSearchCriteria searchCriteria, String dateField) {
 
         checkNotNull(userIds);
 
-        return repository.findLastDataPointDate(userIds);
+        return repository.findLastDataPointDate(userIds, searchCriteria, dateField);
     }
 
     @Override

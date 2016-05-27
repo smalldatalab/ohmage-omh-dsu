@@ -71,11 +71,18 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
     }
 
     @Override
-    public List<LastDataPointDate> findLastDataPointDate(List<String> userIds){
+    public List<LastDataPointDate> findLastDataPointDate(List<String> userIds, DataPointSearchCriteria searchCriteria, String dateField){
+
+        if(dateField == null){dateField = "header.creation_date_time";}
+
         Aggregation agg = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("header.user_id").in(userIds)),
+                Aggregation.match(Criteria.where("header.user_id").in(userIds)
+                        .and("header.schema_id.namespace").is(searchCriteria.getSchemaNamespace())
+                        .and("header.schema_id.name").is(searchCriteria.getSchemaName())
+                        .and("header.schema_id.version.major").is(searchCriteria.getSchemaVersion().getMajor())
+                        .and("header.schema_id.version.minor").is(searchCriteria.getSchemaVersion().getMinor())),
                 Aggregation.group("header.user_id")
-                        .max("header.creation_date_time").as("date")
+                        .max(dateField).as("date")
                         .last("header.user_id").as("user_id")
         );
 

@@ -1,7 +1,9 @@
 package io.smalldata.ohmageomh.service.impl;
 
+import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
 import io.smalldata.ohmageomh.data.domain.LastDataPointDate;
 import io.smalldata.ohmageomh.data.service.DataPointService;
+import io.smalldata.ohmageomh.domain.DataType;
 import io.smalldata.ohmageomh.domain.Study;
 import io.smalldata.ohmageomh.service.ParticipantService;
 import io.smalldata.ohmageomh.domain.Participant;
@@ -88,27 +90,43 @@ public class ParticipantServiceImpl implements ParticipantService{
      */
     @Transactional(readOnly = true)
     public Page<ParticipantSummaryDTO> findAllSummariesByStudy(Study study, Pageable pageable) {
-        log.debug("Request to get all Participants");
+        log.debug("Request to get all participant summaries");
+
+        // TODO this is pretty inefficient
+
+        // Create initial DTO items
         Page<Participant> page = participantRepository.findAllByStudies(study, pageable);
-        List<ParticipantSummaryDTO> summaries = new ArrayList<ParticipantSummaryDTO>();
-
-        List<String> userIds = page.getContent().stream().map(Participant::getDsuId).collect(Collectors.toList());
-        List<LastDataPointDate> dates = dataPointService.findLastDataPointDate(userIds);
-
+        List<ParticipantSummaryDTO> dtos = new ArrayList<ParticipantSummaryDTO>();
         for(Participant participant : page) {
             ParticipantSummaryDTO dto = new ParticipantSummaryDTO(participant);
+            dtos.add(dto);
+        }
+
+        // Get data types and query params
+        List<DataType> dataTypes = new ArrayList<DataType>();
+        study.getIntegrations().forEach(integration -> integration.getDataTypes().forEach(dataType -> dataTypes.add(dataType)));
+        List<String> userIds = page.getContent().stream().map(Participant::getDsuId).collect(Collectors.toList());
+
+        // Update summaries for each data type response
+        for(DataType dataType : dataTypes){
+            DataPointSearchCriteria searchCriteria =
+                new DataPointSearchCriteria("dummy", dataType.getSchemaNamespace(), dataType.getSchemaName(),
+                    dataType.getSchemaVersion()); // We use a dummy userId, for now
+
+            List<LastDataPointDate> dates = dataPointService.findLastDataPointDate(userIds, searchCriteria, dataType.getDateField());
 
             for(LastDataPointDate date : dates){
-                if(date.getUserId().equals(participant.getDsuId())) {
-                    dto.setLastDataPointDate(date.getDate());
-                    break;
+                for(ParticipantSummaryDTO dto : dtos) {
+                    if(date.getUserId().equals(dto.getDsuId())) {
+                        dto.addLatestDataPointDate(dataType.getId().toString(), date.getDate());
+                        break;
+                    }
                 }
             }
 
-            summaries.add(dto);
         }
 
-        return new PageImpl<ParticipantSummaryDTO>(summaries, pageable, page.getTotalElements());
+        return new PageImpl<ParticipantSummaryDTO>(dtos, pageable, page.getTotalElements());
     }
 
 
