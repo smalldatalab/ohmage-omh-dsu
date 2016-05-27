@@ -14,13 +14,13 @@
         }
 
         var vm = this;
+
         vm.handleDataResponse = handleDataResponse;
         vm.createEvent = createEvent;
 
         vm.study = Study.get({id: $stateParams.study},
             function(study){
                 _.each(study.dataTypes, function(dataType) {
-                    console.log(dataType.name);
                     Data.query({
                         participant: $stateParams.participant,
                         schema_namespace: dataType.schemaNamespace,
@@ -39,7 +39,11 @@
             else {
                 dataType.summary = data.length + " data points";
                 _.each(data, function(dataPoint) {
-                    vm.events.push(vm.createEvent(dataType.name, new Date(dataPoint.header.creation_date_time)));
+                    var date = new Date(eval('dataPoint.' + dataType.dateField));
+                    vm.events.push(vm.createEvent(dataType.name, date));
+                    if(dataType.lastDataPointDate == null || dataType.lastDataPointDate < date) {
+                        dataType.lastDataPointDate = date;
+                    }
                 });
             }
         }
@@ -62,6 +66,10 @@
         vm.viewDate = new Date();
         vm.isCellOpen = true;
         vm.events = [];
+
+        vm.modifyCell = function(cell) {
+            console.log(cell);
+        };
 
         vm.toggle = function($event, field, event) {
             $event.preventDefault();

@@ -38,10 +38,7 @@
                     <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="description"><span>Description</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="schemaNamespace"><span>Schema Namespace</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="schemaName"><span>Schema Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="schemaVersion"><span>Schema Version</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="csvMapper"><span>Csv Mapper</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th><span>Schema</span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -50,10 +47,7 @@
                     <td><a ui-sref="data-type-detail({id:dataType.id})">{{dataType.id}}</a></td>
                     <td>{{dataType.name}}</td>
                     <td>{{dataType.description}}</td>
-                    <td>{{dataType.schemaNamespace}}</td>
-                    <td>{{dataType.schemaName}}</td>
-                    <td>{{dataType.schemaVersion}}</td>
-                    <td>{{dataType.csvMapper}}</td>
+                    <td>{{dataType.schemaNamespace}}:{{dataType.schemaName}}:{{dataType.schemaVersion}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

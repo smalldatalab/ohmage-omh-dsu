@@ -1,7 +1,7 @@
 <h3>
     <button class="btn btn-info" ui-sref="dashboard({study: vm.study.id})" >
         <span class="glyphicon glyphicon-arrow-left"></span>
-    </button> &nbsp Participant: {{vm.participant.id}} (Note: this is not real data, yet)
+    </button> &nbsp Participant: {{vm.participant.id}}
     <div class="pull-right">
         <div class="col-xs-4 no-padding-left">
             <button class="btn btn-primary" ui-sref="data({study: vm.study.id})" >
@@ -16,7 +16,7 @@
 <hr/>
 <jhi-alert></jhi-alert>
 
-<div class="row">
+<div class="row" ng-cloak>
     <div class="col-md-9">
         <h2 class="text-center">{{ vm.calendarTitle }}</h2>
 
@@ -91,6 +91,7 @@
             <h5>{{dataType.name}}</h5>
             <ul>
                 <li>{{dataType.summary}}</li>
+                <li ng-hide="!dataType.lastDataPointDate">Latest on {{dataType.lastDataPointDate | date}}</li>
             </ul>
         </div>
 

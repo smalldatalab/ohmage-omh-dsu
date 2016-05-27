@@ -45,7 +45,7 @@
                 }, onSuccess, onError);
             }
             function sort() {
-                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
+                var result = [vm.predicate + ',' + (vm.reverse ? 'desc' : 'asc')];
                 if (vm.predicate !== 'id') {
                     result.push('id');
                 }

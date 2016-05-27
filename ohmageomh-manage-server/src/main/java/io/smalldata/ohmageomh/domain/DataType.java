@@ -45,6 +45,10 @@ public class DataType extends AbstractAuditingEntity implements Serializable {
     @Column(name = "schema_version", length = 255)
     private String schemaVersion;
 
+    @Size(max = 255)
+    @Column(name = "date_field", length = 255)
+    private String dateField;
+
     @Column(name = "csv_mapper")
     private String csvMapper;
 
@@ -100,6 +104,14 @@ public class DataType extends AbstractAuditingEntity implements Serializable {
         this.schemaVersion = schemaVersion;
     }
 
+    public String getDateField() {
+        return dateField;
+    }
+
+    public void setDateField(String dateField) {
+        this.dateField = dateField;
+    }
+
     public String getCsvMapper() {
         return csvMapper;
     }
@@ -145,6 +157,7 @@ public class DataType extends AbstractAuditingEntity implements Serializable {
             ", schemaNamespace='" + schemaNamespace + "'" +
             ", schemaName='" + schemaName + "'" +
             ", schemaVersion='" + schemaVersion + "'" +
+            ", dateField='" + dateField + "'" +
             ", csvMapper='" + csvMapper + "'" +
             '}';
     }

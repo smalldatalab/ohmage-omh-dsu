@@ -41,6 +41,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="date_field" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
             <column name="csv_mapper" type="text">
                 <constraints nullable="true" />
             </column>
