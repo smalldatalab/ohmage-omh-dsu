@@ -48,28 +48,37 @@
         </div>
     </div>
     <div class="col-md-4">
-        <h4>Apps and Data Types</h4>
-        <ul ng-repeat="integration in vm.study.integrations">
-            <li>{{integration.name}}</li>
-            <ul ng-repeat="type in integration.dataTypes">
-                <li>{{type.name}} (<a class="event event-{{type.color}}" style="display: inline-block;"></a>)</li>
-            </ul>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Apps and Data Types</h4>
+            </div>
+            <div class="panel-body">
+                <div ng-repeat="integration in vm.study.integrations">
+                    <h5>{{integration.name}}</h5>
+                    <ul ng-repeat="type in integration.dataTypes">
+                        <li>{{type.name}} (<a class="event event-{{type.color}}" style="display: inline-block;"></a>)</li>
+                    </ul>
 
-        </ul>
-        <div ng-show="!vm.study.integrations.length">
-            <div class="alert alert-info">No apps are active for this study.</div>
+                </div>
+                <div ng-show="!vm.study.integrations.length">
+                    <div class="alert alert-info">No apps are active for this study.</div>
+                </div>
+            </div>
         </div>
 
-        <br/>
-        <h4>Surveys</h4>
-        <ul ng-repeat="survey in vm.study.surveys">
-            <li>{{survey.name}}</li>
-        </ul>
-        <div ng-show="!vm.study.surveys.length">
-            <div class="alert alert-info">No surveys are active for this study.</div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Surveys</h4>
+            </div>
+            <div class="panel-body">
+                <ul ng-repeat="survey in vm.study.surveys">
+                    <li>{{survey.name}}</li>
+
+                </ul>
+                <div ng-show="!vm.study.surveys.length">
+                    <div class="alert alert-info">No surveys are active for this study.</div>
+                </div>
+            </div>
         </div>
-
-
-
     </div>
 </div>

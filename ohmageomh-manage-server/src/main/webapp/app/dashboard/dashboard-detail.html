@@ -85,14 +85,25 @@
 
     </div>
     <div class="col-md-3">
-
-        <h4 class="green">Data Types</h4>
-        <div ng-repeat="dataType in vm.study.dataTypes">
-            <h5>{{dataType.name}}</h5>
-            <ul>
-                <li>{{dataType.summary}} (<a class="event event-{{dataType.color}}" style="display: inline-block;"></a>)</li>
-                <li ng-hide="!dataType.lastDataPointDate">Latest on {{dataType.lastDataPointDate | date}}</li>
-            </ul>
+        <br/>
+        <br/>
+        <br/>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Data Types</h4>
+            </div>
+            <div class="panel-body">
+                <div ng-repeat="dataType in vm.study.dataTypes">
+                    <h5>{{dataType.name}}</h5>
+                    <ul>
+                        <li>{{dataType.summary}} (<a class="event event-{{dataType.color}}" style="display: inline-block;"></a>)</li>
+                        <li ng-hide="!dataType.lastDataPointDate">Latest on {{dataType.lastDataPointDate | date}}</li>
+                    </ul>
+                </div>
+                <div ng-show="!vm.study.dataTypes.length">
+                    <div class="alert alert-info">No data types are active for this study.</div>
+                </div>
+            </div>
         </div>
 
     </div>

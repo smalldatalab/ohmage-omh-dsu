@@ -54,9 +54,10 @@ public class DataPointSearchCriteria {
         checkNotNull(schemaName);
         checkNotNull(schemaVersion);
 
-        checkArgument(isValidNamespace(schemaNamespace));
-        checkArgument(isValidName(schemaName));
-        checkArgument(isValidVersion(schemaVersion));
+        // TODO Commented out because there currently are some invalid survey schema names
+//        checkArgument(isValidNamespace(schemaNamespace));
+//        checkArgument(isValidName(schemaName));
+//        checkArgument(isValidVersion(schemaVersion));
 
         this.userId = userId;
         this.schemaNamespace = schemaNamespace;
