@@ -42,6 +42,8 @@
                 AlertService.warning("You must select a data type.");
             } else if(vm.participant == null) {
                 AlertService.warning("You must select a participant.");
+            } else if(vm.dataType.schemaNamespace == "ohmageomh" && vm.dataType.schemaName == "survey-response") {
+                AlertService.info('Use the "Survey Responses" tab above to view surveys.');
             } else {
                 var params = {
                     participant: vm.participant.id,

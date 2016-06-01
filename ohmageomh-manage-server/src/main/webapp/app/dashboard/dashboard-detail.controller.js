@@ -21,13 +21,19 @@
         vm.study = Study.get({id: $stateParams.study},
             function(study){
                 _.each(study.dataTypes, function(dataType, index) {
-                    Data.query({
-                        participant: $stateParams.participant,
-                        schema_namespace: dataType.schemaNamespace,
-                        schema_name: dataType.schemaName,
-                        schema_version: dataType.schemaVersion,
-                        limit: 5000
-                    }, function(data){vm.handleDataResponse(data, dataType);});
+                    // Skip the survey response data type
+                    if(dataType.schemaNamespace == "ohmageomh" && dataType.schemaName == "survey-response") {
+                        dataType.summary = "Not displayed";
+                        return;
+                    } else {
+                        Data.query({
+                            participant: $stateParams.participant,
+                            schema_namespace: dataType.schemaNamespace,
+                            schema_name: dataType.schemaName,
+                            schema_version: dataType.schemaVersion,
+                            limit: 5000
+                        }, function(data){vm.handleDataResponse(data, dataType);});
+                    }
                 });
             });
         vm.participant = Study.getParticipant({id: $stateParams.study, participant: $stateParams.participant});
@@ -66,10 +72,6 @@
         vm.viewDate = new Date();
         vm.isCellOpen = true;
         vm.events = [];
-
-        vm.modifyCell = function(cell) {
-            console.log(cell);
-        };
 
         vm.toggle = function($event, field, event) {
             $event.preventDefault();

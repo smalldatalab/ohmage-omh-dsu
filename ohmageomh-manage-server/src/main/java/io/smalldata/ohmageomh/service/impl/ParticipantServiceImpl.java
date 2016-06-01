@@ -1,10 +1,13 @@
 package io.smalldata.ohmageomh.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
 import io.smalldata.ohmageomh.data.domain.LastDataPointDate;
 import io.smalldata.ohmageomh.data.service.DataPointService;
 import io.smalldata.ohmageomh.domain.DataType;
 import io.smalldata.ohmageomh.domain.Study;
+import io.smalldata.ohmageomh.domain.Survey;
 import io.smalldata.ohmageomh.service.ParticipantService;
 import io.smalldata.ohmageomh.domain.Participant;
 import io.smalldata.ohmageomh.repository.ParticipantRepository;
@@ -109,17 +112,53 @@ public class ParticipantServiceImpl implements ParticipantService{
 
         // Update summaries for each data type response
         for(DataType dataType : dataTypes){
-            DataPointSearchCriteria searchCriteria =
-                new DataPointSearchCriteria("dummy", dataType.getSchemaNamespace(), dataType.getSchemaName(),
-                    dataType.getSchemaVersion()); // We use a dummy userId, for now
+            // If the data type is survey responses, handle it specially
+            if(dataType.getSchemaNamespace().equals("ohmageomh") && dataType.getSchemaName().equals("survey-response")) {
+                // Handle surveys
+                for(Survey survey : study.getSurveys()) {
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode definition = mapper.readTree(survey.getDefinition());
 
-            List<LastDataPointDate> dates = dataPointService.findLastDataPointDate(userIds, searchCriteria, dataType.getDateField());
+                        DataPointSearchCriteria searchCriteria =
+                            new DataPointSearchCriteria("dummy", definition.get("schema_id").get("namespace").asText(), definition.get("schema_id").get("name").asText(),
+                                definition.get("schema_id").get("version").asText()); // We use a dummy userId, for now
 
-            for(LastDataPointDate date : dates){
-                for(ParticipantSummaryDTO dto : dtos) {
-                    if(date.getUserId().equals(dto.getDsuId())) {
-                        dto.addLatestDataPointDate(dataType.getId().toString(), date.getDate());
+                        List<LastDataPointDate> dates = dataPointService.findLastDataPointDate(userIds, searchCriteria, dataType.getDateField());
+
+                        for(LastDataPointDate date : dates){
+                            for(ParticipantSummaryDTO dto : dtos) {
+                                if(date.getUserId().equals(dto.getDsuId())) {
+                                    if(!dto.getLatestDataPointDates().containsKey(dataType.getId().toString())) {
+                                        dto.addLatestDataPointDate(dataType.getId().toString(), date.getDate());
+                                    } else {
+                                        if(dto.getLatestDataPointDates().get(dataType.getId().toString()).compareTo(date.getDate()) <= 0) {
+                                            dto.getLatestDataPointDates().replace(dataType.getId().toString(), date.getDate());
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                    } catch (Exception ex) {
                         break;
+                    }
+                }
+            } else {
+                // Handle normal data points
+                DataPointSearchCriteria searchCriteria =
+                    new DataPointSearchCriteria("dummy", dataType.getSchemaNamespace(), dataType.getSchemaName(),
+                        dataType.getSchemaVersion()); // We use a dummy userId, for now
+
+                List<LastDataPointDate> dates = dataPointService.findLastDataPointDate(userIds, searchCriteria, dataType.getDateField());
+
+                for(LastDataPointDate date : dates){
+                    for(ParticipantSummaryDTO dto : dtos) {
+                        if(date.getUserId().equals(dto.getDsuId())) {
+                            dto.addLatestDataPointDate(dataType.getId().toString(), date.getDate());
+                            break;
+                        }
                     }
                 }
             }
