@@ -1,18 +1,22 @@
 package io.smalldata.ohmageomh.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import io.smalldata.ohmageomh.data.domain.EndUserRegistrationData;
+import io.smalldata.ohmageomh.data.service.EndUserService;
 import io.smalldata.ohmageomh.domain.*;
 import io.smalldata.ohmageomh.security.AuthoritiesConstants;
 import io.smalldata.ohmageomh.service.IntegrationService;
 import io.smalldata.ohmageomh.service.ParticipantService;
 import io.smalldata.ohmageomh.service.StudyService;
 import io.smalldata.ohmageomh.service.UserService;
+import io.smalldata.ohmageomh.web.rest.dto.ParticipantCreationDTO;
 import io.smalldata.ohmageomh.web.rest.dto.ParticipantDetailDTO;
 import io.smalldata.ohmageomh.web.rest.dto.ParticipantSummaryDTO;
 import io.smalldata.ohmageomh.web.rest.util.HeaderUtil;
 import io.smalldata.ohmageomh.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -23,15 +27,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 
 /**
  * REST controller for managing Study.
@@ -49,7 +58,10 @@ public class StudyResource {
     @Inject
     private ParticipantService participantService;
     @Inject
-    private IntegrationService integrationService;
+    private EndUserService endUserService;
+    @Autowired
+    private Validator validator;
+
 
     /**
      * POST  /studies : Create a new study.
@@ -181,6 +193,46 @@ public class StudyResource {
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/studies/" + study.getId() + "/participants");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * POST  /studies/:id/participants : Create a new participant.
+     *
+     * @param participantDto the participant to create
+     * @param id the id of the study to add participant to
+     * @return the ResponseEntity with status 201 (Created) and with body the new participant, or with status 400 (Bad Request) if the participant has already an ID
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @RequestMapping(value = "/studies/{id}/participants",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Participant> createParticipant(@PathVariable Long id, @Valid @RequestBody ParticipantCreationDTO participantDto) throws URISyntaxException {
+        Study study = studyService.findOne(id);
+
+        // Create a user account with the DSU
+        EndUserRegistrationData registrationData = participantDto.getEndUserRegistrationData();
+
+        Set<ConstraintViolation<EndUserRegistrationData>> constraintViolations = validator.validate(registrationData);
+
+        if (!constraintViolations.isEmpty()) {
+            return new ResponseEntity<>(BAD_REQUEST);
+        }
+
+        if (endUserService.doesUserExist(registrationData.getUsername())) {
+            return new ResponseEntity<>(CONFLICT);
+        }
+        endUserService.registerUser(registrationData);
+
+
+        // Create participant
+        Participant participant = participantDto.getParticipant();
+        participant.getStudies().add(study);
+        Participant result = participantService.save(participant);
+
+        return ResponseEntity.created(new URI("/api/participants/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert("participant", result.getId().toString()))
+            .body(result);
     }
 
     /**

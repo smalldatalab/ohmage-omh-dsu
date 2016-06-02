@@ -48,7 +48,7 @@
             })
             .state('dashboard-detail', {
                 parent: 'dashboard',
-                url: '/dashboard/detail?participant',
+                url: '/detail?participant',
                 data: {
                     authorities: ['ROLE_ADMIN', 'ROLE_USER'],
                     pageTitle: 'Dashboard'
@@ -60,6 +60,35 @@
                         controllerAs: 'vm'
                     },
                 }
+            })
+            .state('dashboard.newParticipant', {
+                parent: 'dashboard',
+                url: '/newParticipant',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'app/dashboard/dashboard-participant-dialog.html',
+                        controller: 'DashboardParticipantDialogController',
+                        controllerAs: 'vm',
+                        backdrop: 'static',
+                        size: 'lg',
+                        resolve: {
+                            entity: function () {
+                                return {
+                                    dsuId: null,
+                                    label: null,
+                                    id: null
+                                };
+                            }
+                        }
+                    }).result.then(function() {
+                            $state.go('dashboard', null, { reload: true });
+                        }, function() {
+                            $state.go('dashboard');
+                        });
+                }]
             })
     }
 })();

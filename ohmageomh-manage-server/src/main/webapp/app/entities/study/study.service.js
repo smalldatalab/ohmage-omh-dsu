@@ -60,6 +60,14 @@
                 url: resourceUrl + '/participantSummaries',
                 params: {id: '@id', size: 5000},
                 isArray: true
+            },
+            'saveParticipant': {
+                method: 'POST',
+                url: resourceUrl + '/participants',
+                params: {id: '@id'},
+                transformRequest: function(data) {
+                    return angular.toJson(data.participant);
+                }
             }
 
         });

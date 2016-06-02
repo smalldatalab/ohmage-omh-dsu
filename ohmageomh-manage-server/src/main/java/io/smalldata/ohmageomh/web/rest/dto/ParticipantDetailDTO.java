@@ -22,8 +22,6 @@ public class ParticipantDetailDTO {
         this.dsuId = participant.getDsuId();
         this.label = participant.getLabel();
         this.latestDataPoints = new HashMap<String, String>();
-        latestDataPoints.put("Step Count", "2016-01-04");
-        latestDataPoints.put("Physical Activity", "2016-03-05");
     }
 
     public Long getId() {
