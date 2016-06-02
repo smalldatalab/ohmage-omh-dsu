@@ -51,7 +51,7 @@ Navbar styling
 .navbar-alt .navbar-nav > .open > a, .navbar-alt .navbar-nav > .open > a:hover, .navbar-alt .navbar-nav > .open > a:focus {
     background-color: #5b94c5;
 }
-.nav > li > a:hover, .nav > li > a:focus {
+.navbar-alt .nav > li > a:hover, .nav > li > a:focus {
     background-color: #5b94c5;
 }
 
