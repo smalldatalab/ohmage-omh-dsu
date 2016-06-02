@@ -37,6 +37,25 @@ Version number in navbar
 }
 
 /* ==========================================================================
+Navbar styling
+========================================================================== */
+.navbar-alt {
+    background-color: #337ab7;
+}
+.navbar-alt .navbar-brand {
+    color: white;
+}
+.navbar-alt .navbar-nav > li > a {
+    color: white;
+}
+.navbar-alt .navbar-nav > .open > a, .navbar-alt .navbar-nav > .open > a:hover, .navbar-alt .navbar-nav > .open > a:focus {
+    background-color: #5b94c5;
+}
+.nav > li > a:hover, .nav > li > a:focus {
+    background-color: #5b94c5;
+}
+
+/* ==========================================================================
 Browser Upgrade Prompt
 ========================================================================== */
 .browserupgrade {
