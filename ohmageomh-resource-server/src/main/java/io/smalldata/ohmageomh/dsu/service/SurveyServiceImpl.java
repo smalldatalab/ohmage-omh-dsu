@@ -32,25 +32,16 @@ public class SurveyServiceImpl implements SurveyService {
 
     private static final Logger log = LoggerFactory.getLogger(SurveyServiceImpl.class);
 
-    /**
-     * A user should see two kinds of surveys:
-     * 1. The surveys belongs to the studies the user belongs to
-     * 2. The public surveys that are visible to everyone
-     */
     final static String querySurveysByUsername =
             "SELECT definition " +
-                    "FROM   surveys " +
-                    "       INNER JOIN s_surveys " +
-                    "               ON survey_id = surveys.id " +
-                    "       INNER JOIN study_participants " +
-                    "               ON study_participants.study_id = s_surveys.study_id " +
-                    "       INNER JOIN users " +
-                    "               ON users.id = study_participants.user_id " +
-                    "WHERE  users.username = ? " +
-                    "UNION " +
-                    "SELECT definition " +
-                    "FROM   surveys " +
-                    "WHERE  public_to_all_users = true; ";
+                    "FROM   survey " +
+                    "       INNER JOIN study_survey " +
+                    "               ON study_survey.surveys_id = survey.id " +
+                    "       INNER JOIN participant_study " +
+                    "               ON participant_study.studies_id = study_survey.studies_id " +
+                    "       INNER JOIN participant " +
+                    "               ON participant.id = participant_study.participants_id " +
+                    "WHERE  participant.dsu_id = ?;";
 
 
     @Override
