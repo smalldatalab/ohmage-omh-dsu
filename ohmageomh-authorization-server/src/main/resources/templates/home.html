@@ -45,7 +45,6 @@
             <ul>
                 <li><a href="#apps" id="portfolio-link" class="skel-layers-ignoreHref"><span class="icon fa-th">Apps &amp; Devices</span></a></li>
                 <li><a href="#studies" id="about-link" class="skel-layers-ignoreHref"><span class="icon fa-users">Studies</span></a></li>
-                <li><a href="#tools" id="contact-link" class="skel-layers-ignoreHref"><span class="icon fa-bar-chart">Viz Tools</span></a></li>
             </ul>
         </nav>
 
@@ -87,16 +86,16 @@
             <p>Below is the list of mobile apps and devices that you can use with the Ohmage-omh platform.</p>
 
             <div class="row instruments">
-                <div class="4u 12u$(mobile)">
+                <div class="3u 12u$(mobile)">
                     <article class="item">
                         <a class="image fit">
-                            <img class="left" th:src="@{/images/ohmage.png}" />
+                            <img class="left" th:src="@{/images/ohmage.png}" src="../static/images/ohmage.png" alt=""/>
                         </a>
                         <header>
                             <h3>Ohmage-omh App</h3>
                             <span class="store-links">
-                                <a class="store_link android_link" target="_blank" href="https://play.google.com/store/apps/details?id=io.smalldatalab.android.ohmage">
-                                    <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>
+                                <a class="store_link play" target="_blank" href="https://play.google.com/store/apps/details?id=io.smalldatalab.android.ohmage">
+                                    <img alt="Get it on Google Play" src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
                                 </a>
                                 <a class="store_link play" target="_blank" href="https://appsto.re/us/Dpvn5.i">
                                     <img src="https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" height='43'/>
@@ -105,25 +104,8 @@
                         </header>
                     </article>
                 </div>
-                <div class="4u 12u$(mobile)">
-                    <article class="item">
-                        <a class="image fit">
-                            <img th:src="@{/images/mobility.png}" alt="" />
-                        </a>
-                        <header>
-                            <h3>Mobility-omh App</h3>
-                            <span class="store-links">
-                                <a class="store_link android_link" target="_blank" href="https://play.google.com/store/apps/details?id=io.smalldatalab.android.mobility">
-                                    <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>
-                                </a>
-                                <a class="store_link play" target="_blank" href="https://appsto.re/us/Dcft5.i">
-                                    <img src="https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" height='43'/>
-                                </a>
-                            </span>
-                        </header>
-                    </article>
-                </div>
-                <div class="4u$ 12u$(mobile)">
+
+                <div class="3u 12u$(mobile)">
                     <article class="item">
                         <a class="image fit">
                             <img th:src="@{/images/pam.jpg}" src="../static/images/pam.jpg" alt="" />
@@ -131,10 +113,48 @@
                         <header>
                             <h3>PAM-omh App</h3>
                             <span class="store-links">
-                                <a class="store_link android_link" target="_blank" href="https://play.google.com/store/apps/details?id=io.smalldatalab.android.pam">
-                                    <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>
+                                <a class="store_link play" target="_blank" href="https://play.google.com/store/apps/details?id=io.smalldatalab.android.pam">
+                                    <img alt="Get it on Google Play" src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
                                 </a>
                                 <a class="store_link play" target="_blank" href="https://appsto.re/us/pQun5.i">
+                                    <img src="https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" height='43'/>
+                                </a>
+                            </span>
+                        </header>
+                    </article>
+                </div>
+
+                <div class="3u 12u$(mobile)">
+                    <article class="item">
+                        <a class="image fit">
+                            <img th:src="@{/images/moves-logo.png}" src="../static/images/moves-logo.png" alt="" />
+                        </a>
+                        <header>
+                            <h3>Moves App</h3>
+                            <span class="store-links">
+                                <a class="store_link play" target="_blank" href="https://play.google.com/store/apps/details?id=com.protogeo.moves">
+                                    <img alt="Get it on Google Play" src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
+                                </a>
+                                <a class="store_link play" target="_blank" href="https://itunes.apple.com/us/app/moves/id509204969?mt=8">
+                                    <img src="https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" height='43'/>
+                                </a>
+                            </span>
+                        </header>
+                    </article>
+                </div>
+
+                <div class="3u 12u$(mobile)">
+                    <article class="item">
+                        <a class="image fit">
+                            <img th:src="@{/images/fitbit-logo.png}" src="../static/images/fitbit-logo.png" alt="" />
+                        </a>
+                        <header>
+                            <h3>Fitbit</h3>
+                            <span class="store-links">
+                                <a class="store_link play" target="_blank" href="https://play.google.com/store/apps/details?id=com.fitbit.FitbitMobile">
+                                    <img alt="Get it on Google Play" src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
+                                </a>
+                                <a class="store_link play" target="_blank" href="https://itunes.apple.com/us/app/fitbit/id462638897?mt=8">
                                     <img src="https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" height='43'/>
                                 </a>
                             </span>
@@ -160,31 +180,6 @@
                     <td><h3 data-th-text="${study.name}" style="color: #138871;"></h3></td>
                 </tr>
             </table>
-        </div>
-    </section>
-
-    <!-- Viz Tools -->
-    <section id="tools" class="two">
-        <div class="container">
-
-            <header>
-                <h2>Viz Tools</h2>
-            </header>
-
-            <p>These are the visualization tools that you have access to.  Click on a tool to open it.</p>
-
-            <div class="row instruments">
-                <div class="6u 12u$(mobile)">
-                    <article class="item">
-                        <a href="/mobility-ui/#" class="image fit"><img th:src="@{/images/mobility-ui.png}"
-                                                           src="../static/images/mobility-ui.png" alt="" /></a>
-                        <header>
-                            <h3>Mobility Dashboard</h3>
-                        </header>
-                    </article>
-                </div>
-            </div>
-
         </div>
     </section>
 
