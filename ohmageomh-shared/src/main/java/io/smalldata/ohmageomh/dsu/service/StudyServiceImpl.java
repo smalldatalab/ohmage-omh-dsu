@@ -36,26 +36,26 @@ public class StudyServiceImpl implements StudyService {
     ObjectMapper objectMapper;
 
     final static String queryUserIdByUsername =
-            "SELECT id FROM users WHERE username = ? LIMIT 1;";
+            "SELECT id FROM participant WHERE dsu_id = ? LIMIT 1;";
     final static String queryStudyByName =
-            "SELECT id, name from studies WHERE name = ? LIMIT 1";
+            "SELECT id, name FROM study WHERE name = ? LIMIT 1";
     final static String queryStudiesByUsername =
-            "SELECT studies.id AS id, studies.name AS name " +
-                    "FROM studies " +
-                    "   JOIN study_participants ON study_participants.study_id = studies.id " +
-                    "   JOIN users ON users.id = study_participants.user_id " +
-                    "WHERE users.username = ?; ";
+            "SELECT study.id AS id, study.name AS name " +
+                    "FROM study " +
+                    "   JOIN participant_study ON participant_study.studies_id = study.id " +
+                    "   JOIN participant ON participant.id = participant_study.participants_id " +
+                    "WHERE participant.dsu_id = ?; ";
     final static String queryParticipantMembershipByUsernameAndStudyId =
             "SELECT COUNT(*) " +
-                    "FROM   users " +
-                    "       INNER JOIN study_participants " +
-                    "               ON users.id = study_participants.user_id " +
-                    "WHERE  users.username = ? " +
-                    "       AND study_id = ?; ";
+                    "FROM   participant " +
+                    "       INNER JOIN participant_study " +
+                    "               ON participant_study.participants_id = participant.id " +
+                    "WHERE  participant.dsu_id = ? " +
+                    "       AND studies_id = ?; ";
     final static String insertNewStudyParticipant =
-            "INSERT INTO study_participants (study_id, user_id, created_at, updated_at) VALUES (?, ?, ?, ?);";
+            "INSERT INTO participant_study (studies_id, participants_id) VALUES (?, ?);";
     final static String insertNewUser =
-            "INSERT INTO users (username, gmail, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?);";
+            "INSERT INTO participant (dsu_id, created_date, created_by) VALUES (?, ?, ?);";
 
 
     @Override
@@ -112,12 +112,11 @@ public class StudyServiceImpl implements StudyService {
             try {
                 userId = getUserId(user);
             }catch (Exception e) {
-                userId = createNewUser(user);
+                userId = createNewParticipant(user);
 
             }
             // insert a new "Study-Participant" entry.
-            Timestamp timestamp = new Timestamp(new Date().getTime());
-            Object[] args = new Object[]{study.getId(), userId, timestamp, timestamp};
+            Object[] args = new Object[]{study.getId(), userId};
             log.info("Create a new study-participant entry for " + user + " " + study);
             int numInsert = select.update(insertNewStudyParticipant, args);
             if(numInsert != 1){
@@ -142,17 +141,15 @@ public class StudyServiceImpl implements StudyService {
         }
     }
 
-    private Long createNewUser(EndUser user){
+    private Long createNewParticipant(EndUser user){
         log.info("User:"+user + "does not exist. Create one.");
         // create the user if it does not exist
         Timestamp timestamp = new Timestamp(new Date().getTime());
         JdbcTemplate select = new JdbcTemplate(dataSource);
         select.update(insertNewUser,
                 user.getUsername(),
-                user.getEmailAddress().isPresent() ?
-                        user.getEmailAddress().get().getAddress() : null,
                 timestamp,
-                timestamp);
+                "auth-server");
         // query the user id again
         try {
             return getUserId(user);
