@@ -5,4 +5,18 @@ dependencies {
     compile "org.openmhealth.schema:omh-schema-sdk:${omhSchemaSdkVersion}"
 
     testCompile 'com.jayway.jsonpath:json-path'
+
+    // io.smalldata.ohmageomh dependencies
+    compile project(':ohmageomh-surveys')
+
+    compile 'org.springframework.data:spring-data-commons'
+    compile 'org.springframework.data:spring-data-mongodb'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+repositories {
+    flatDir {
+        dirs '../libs'
+    }
 }

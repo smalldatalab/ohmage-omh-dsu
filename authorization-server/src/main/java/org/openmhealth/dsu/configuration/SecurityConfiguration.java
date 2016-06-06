@@ -16,16 +16,20 @@
 
 package org.openmhealth.dsu.configuration;
 
+import io.smalldata.ohmageomh.dsu.configuration.AuthenticationProcessingFilterEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 
 /**
@@ -33,6 +37,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * Spring Boot's security configuration.
  *
  * @author Emerson Farrugia
+ * @author Jared Sieling
  */
 @Configuration
 @EnableWebSecurity
@@ -56,7 +61,62 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/css/**", "/images/**", "/js/**", "/fonts/**", "/favicon.ico");
+    }
+
+    /**
+     *
+     * @return a signin successHandler that redirect to the originally requested page
+     */
+    @Bean
+    public SavedRequestAwareAuthenticationSuccessHandler successHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        successHandler.setUseReferer(true);
+        return successHandler;
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.formLogin()
+                // redirect all unauthenticated request to google sign-in
+                .loginPage("/signin")
+                .successHandler(successHandler())
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .permitAll()
+
+                .and()
+
+                        // permit unauthenticated access to favicon, signin page and auth pages for different social services
+                .authorizeRequests()
+                .antMatchers(
+                        "/signin",
+                        "/auth/**", // web social signin endpoints
+                        "/social-signin/**", // mobile social signin endpoints
+                        "/google-signin**" // mobile google social signin endpoint (FIXME: deprecated)
+                ).permitAll()
+                // oauth token endpoints
+                // (oauth/authorize should only be accessed by users who have signin, so is excluded from here)
+                .antMatchers("/oauth/token", "/oauth/check_token")
+                .permitAll()
+                .antMatchers("/internal/**")
+                .hasIpAddress("127.0.0.1")// internal endpoints.
+                .antMatchers("/**")
+                .authenticated()
+                        // enable cookie
+                .and()
+                .rememberMe()
+                        // apply Spring Social config that add Spring Social to be an AuthenticationProvider
+                .and()
+                .apply(new SpringSocialConfigurer())
+                .and()
+                        // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
+                .csrf().disable()
+                // use a custom authentication entry point to preserve query parameter
+                .exceptionHandling().authenticationEntryPoint(new AuthenticationProcessingFilterEntryPoint("/signin"));
+
     }
 }

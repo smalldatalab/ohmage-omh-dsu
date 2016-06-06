@@ -19,9 +19,13 @@ package org.openmhealth.dsu.service;
 import org.openmhealth.dsu.domain.EndUser;
 import org.openmhealth.dsu.domain.EndUserUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.social.security.SocialUser;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -31,9 +35,10 @@ import java.util.Optional;
  * A user details service that loads user details from an end user service.
  *
  * @author Emerson Farrugia
+ * @author Jared Sieling
  */
 @Service
-public class EndUserUserDetailsServiceImpl implements UserDetailsService {
+public class EndUserUserDetailsServiceImpl implements UserDetailsService, SocialUserDetailsService {
 
     @Autowired
     private EndUserService endUserService;
@@ -48,5 +53,11 @@ public class EndUserUserDetailsServiceImpl implements UserDetailsService {
         }
 
         return new EndUserUserDetails(user.get().getUsername(), user.get().getPasswordHash());
+    }
+
+    @Override
+    public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException, DataAccessException {
+        UserDetails userDetails = loadUserByUsername(userId);
+        return new SocialUser(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
     }
 }
