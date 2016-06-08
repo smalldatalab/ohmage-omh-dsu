@@ -3,7 +3,7 @@ dataStore: mongo
 application:
   url: http://192.168.99.101:8082/dsu/
 internalShimServer:
-  url: http://192.168.99.101:8084/
+  url: http://192.168.99.101:8083/
 
 google:
   clientId: FROM_ENV
