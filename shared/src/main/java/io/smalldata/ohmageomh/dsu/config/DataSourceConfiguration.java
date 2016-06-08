@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 
@@ -12,7 +13,15 @@ import javax.sql.DataSource;
  *
  */
 @Configuration
-public class OhmageomhDataSource {
+public class DataSourceConfiguration {
+
+    @Bean
+    @Primary
+    @ConfigurationProperties(prefix = "spring.datasource")
+    public DataSource primaryDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
     @Bean(name="manageDataSource")
     @ConfigurationProperties(prefix="ohmageomh.datasource")
     public DataSource secondaryDataSource() {
