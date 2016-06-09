@@ -2,7 +2,7 @@ dataStore: mongo
 
 
 server:
-  port: 8083
+  port: 8084
 
 application:
   url: http://192.168.99.101:8082/dsu/
