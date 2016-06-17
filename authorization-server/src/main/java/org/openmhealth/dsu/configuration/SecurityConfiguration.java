@@ -102,8 +102,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // (oauth/authorize should only be accessed by users who have signin, so is excluded from here)
                 .antMatchers("/oauth/token", "/oauth/check_token")
                 .permitAll()
-                .antMatchers("/internal/**")
-                .hasIpAddress("127.0.0.1")// internal endpoints.
+                .antMatchers("/users")
+                .hasIpAddress("127.0.0.1")// only allow users to be created from local request
                 .antMatchers("/**")
                 .authenticated()
                         // enable cookie
