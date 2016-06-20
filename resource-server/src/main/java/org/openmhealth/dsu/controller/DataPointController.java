@@ -24,6 +24,8 @@ import org.openmhealth.dsu.domain.EndUserUserDetails;
 import org.openmhealth.dsu.service.DataPointService;
 import org.openmhealth.schema.domain.omh.DataPoint;
 import org.openmhealth.schema.domain.omh.DataPointHeader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.mongodb.core.query.Query;
@@ -61,6 +63,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @ApiController
 public class DataPointController {
+
+    private final Logger log = LoggerFactory.getLogger(DataPointController.class);
 
     /*
      * These filtering parameters are temporary. They will likely change when a more generic filtering approach is
@@ -205,9 +209,10 @@ public class DataPointController {
                 mediaList.add(media);
                 gridFsOperations.store(media.getStream(), media.getId(), media.getContentType(), media);
             }
+
             dataPoint.getHeader().setAdditionalProperty(MEDIA_DATA_POINT_HEADER_PROPERTY, mediaList);
         }
-        // save data points
+        // save data point
         dataPointService.save(dataPoint);
         return new ResponseEntity<>(CREATED);
     }
