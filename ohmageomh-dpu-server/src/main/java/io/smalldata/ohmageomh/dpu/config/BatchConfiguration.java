@@ -1,8 +1,8 @@
 package io.smalldata.ohmageomh.dpu.config;
 
+import io.smalldata.ohmageomh.data.domain.DataPoint;
+import io.smalldata.ohmageomh.data.domain.EndUser;
 import io.smalldata.ohmageomh.dpu.reader.EndUserReader;
-import org.openmhealth.dsu.domain.EndUser;
-import org.openmhealth.schema.domain.omh.DataPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;

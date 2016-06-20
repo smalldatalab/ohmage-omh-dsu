@@ -1,6 +1,6 @@
 package io.smalldata.ohmageomh.dpu.reader;
 
-import org.openmhealth.dsu.domain.EndUser;
+import io.smalldata.ohmageomh.data.domain.EndUser;
 import org.springframework.batch.item.ItemReader;
 
 import javax.annotation.PostConstruct;

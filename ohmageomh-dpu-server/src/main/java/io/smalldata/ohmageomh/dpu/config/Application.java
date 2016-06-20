@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @Configuration
 @ComponentScan(
-        basePackages = "org.openmhealth, io.smalldata.ohmageomh",
+        basePackages = "io.smalldata.ohmageomh",
         excludeFilters = {
                 @ComponentScan.Filter(value = EnableAutoConfiguration.class),
         })
