@@ -97,7 +97,7 @@
                                 <span>Password</span>
                             </a>
                         </li>
-                        <li ui-sref-active="active" ng-switch-when="true">
+                        <li ui-sref-active="active" ng-switch-when="true" has-authority="ROLE_ADMIN">
                             <a ui-sref="sessions" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-cloud"></span>&nbsp;
                                 <span>Sessions</span>
