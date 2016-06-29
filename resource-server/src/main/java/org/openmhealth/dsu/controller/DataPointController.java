@@ -37,6 +37,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -151,7 +152,7 @@ public class DataPointController {
 
     public String getEndUserId(Authentication authentication) {
 
-        return ((EndUserUserDetails) authentication.getPrincipal()).getUsername();
+        return ((User) authentication.getPrincipal()).getUsername();
     }
 
     /**
