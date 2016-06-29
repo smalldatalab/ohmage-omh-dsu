@@ -5,5 +5,5 @@ target
 
 */build
 
-*.jar
+*/docker/*.jar
 !gradle/wrapper/gradle-wrapper.jar
