@@ -1,0 +1,101 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myParticipantLabel">Create a Participant</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.participant.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.participant.id" readonly />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="field_label">Label</label>
+            <input type="text" class="form-control" name="label" id="field_label"
+                    ng-model="vm.participant.label"
+                    ng-maxlength="255" />
+            <p>This is an optional field to help you correlate the participant with other records. The participant will not see it. It should not contain personally identifiable information.</p>
+            <div ng-show="editForm.label.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.label.$error.maxlength">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="alert alert-info">The following fields are used to create a user account for the participant.
+            Once the participant account has been created, you will not have further access to it.
+            They will use this information to login to the mobile apps and website.
+            Be sure to record this information separately, and you are responsible for communicating it to the participant.
+        </div>
+        <div class="alert alert-warning">If the participant already has a user account or is using their Google account, do not create one here.  Instead, instruct them to go to the URL to "Enroll in a Study", and they will then appear in your participant list.</div>
+
+        <div class="form-group">
+            <label class="control-label" for="field_dsuId">Login*</label>
+            <input type="text" class="form-control" name="dsuId" id="field_dsuId"
+                   ng-model="vm.participant.dsuId"
+                   required ng-maxlength="255" />
+            <div ng-show="editForm.dsuId.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.dsuId.$error.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                   ng-show="editForm.dsuId.$error.maxlength">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="field_dsuId">Password*</label>
+            <input type="text" class="form-control" name="password" id="field_password"
+                   ng-model="vm.participant.password"
+                   required ng-maxlength="255" />
+            <div ng-show="editForm.password.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.password.$error.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                   ng-show="editForm.password.$error.maxlength">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Email</label>
+            <input type="email" class="form-control" name="email"
+                   ng-model="vm.participant.email" ng-maxlength="100">
+
+            <div ng-show="editForm.email.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.email.$error.maxlength"
+                    >
+                    This field cannot be longer than 100 characters.
+                </p>
+                <p class="help-block"
+                   ng-show="editForm.email.$error.email">
+                    Your e-mail is invalid.
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

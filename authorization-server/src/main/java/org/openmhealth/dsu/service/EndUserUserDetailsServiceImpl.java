@@ -35,6 +35,7 @@ import java.util.Optional;
  * A user details service that loads user details from an end user service.
  *
  * @author Emerson Farrugia
+ * @author Jared Sieling
  */
 @Service
 public class EndUserUserDetailsServiceImpl implements UserDetailsService, SocialUserDetailsService {

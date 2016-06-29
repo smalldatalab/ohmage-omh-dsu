@@ -1,0 +1,40 @@
+dataStore: mongo
+
+application:
+  url: http://192.168.99.101:8082/dsu/
+internalShimServer:
+  url: http://192.168.99.101:8084/
+
+omh:
+  shim:
+    url: http://192.168.99.101:8084
+    fakedata: true # set to true to use data in the /sample-data directory`
+
+spring:
+    data:
+        mongodb:
+            host: 192.168.99.101
+            port: 27017
+            database: omh
+    datasource:
+        driverClassName: org.postgresql.Driver
+        url: jdbc:postgresql://192.168.99.101:5432/omh
+        username: postgres
+        password: postgres
+
+    ohmageomh:
+      datasource:
+        driverClassName: org.postgresql.Driver
+        url: jdbc:postgresql://192.168.99.101:5432/admindashboard
+        username: postgres
+        password: postgres
+    batch:
+        job:
+            enabled: false
+
+server:
+  port: 8085
+logging:
+  level:
+    org.springframework: INFO
+  path: /var/log/metis/dpu

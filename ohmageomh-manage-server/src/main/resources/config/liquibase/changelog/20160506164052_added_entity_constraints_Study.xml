@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity Study.
+    -->
+    <changeSet id="20160506164052-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="studies_id"
+                                 baseTableName="study_manager"
+                                 constraintName="fk_study_manager_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="study"/>
+        <addForeignKeyConstraint baseColumnNames="managers_id"
+                                 baseTableName="study_manager"
+                                 constraintName="fk_study_manager_study_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+        
+        <addForeignKeyConstraint baseColumnNames="studies_id"
+                                 baseTableName="study_survey"
+                                 constraintName="fk_study_survey_survey_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="study"/>
+        <addForeignKeyConstraint baseColumnNames="surveys_id"
+                                 baseTableName="study_survey"
+                                 constraintName="fk_study_survey_study_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="survey"/>
+        
+        <addForeignKeyConstraint baseColumnNames="studies_id"
+                                 baseTableName="study_integration"
+                                 constraintName="fk_study_integration_integration_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="study"/>
+        <addForeignKeyConstraint baseColumnNames="integrations_id"
+                                 baseTableName="study_integration"
+                                 constraintName="fk_study_integration_study_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="integration"/>
+        
+    </changeSet>
+</databaseChangeLog>

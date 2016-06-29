@@ -16,10 +16,9 @@
 
 package org.openmhealth.dsu.service;
 
-import org.openmhealth.dsu.domain.ChronologicalOrder;
-import org.openmhealth.dsu.domain.DataPoint;
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
 import org.openmhealth.dsu.repository.DataPointRepository;
+import org.openmhealth.schema.domain.omh.DataPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,14 +61,14 @@ public class DataPointServiceImpl implements DataPointService {
 
     @Override
     @Transactional(readOnly = true)
-    public Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria, ChronologicalOrder chronological, @Nullable Integer offset,
-                                                    @Nullable Integer limit) {
+    public Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria, @Nullable Integer offset,
+            @Nullable Integer limit) {
 
         checkNotNull(searchCriteria);
         checkArgument(offset == null || offset >= 0);
         checkArgument(limit == null || limit >= 0);
 
-        return repository.findBySearchCriteria(searchCriteria, chronological, offset, limit);
+        return repository.findBySearchCriteria(searchCriteria, offset, limit);
     }
 
     @Override
@@ -109,6 +108,6 @@ public class DataPointServiceImpl implements DataPointService {
         checkNotNull(userId);
         checkArgument(!userId.isEmpty());
 
-        return repository.deleteByIdAndUserId(id, userId);
+        return repository.deleteByIdAndHeaderUserId(id, userId);
     }
 }

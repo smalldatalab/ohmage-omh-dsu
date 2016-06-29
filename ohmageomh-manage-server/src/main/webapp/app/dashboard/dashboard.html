@@ -1,0 +1,103 @@
+<h3>
+    <span style="color: #7e7e7e;">Study:</span> {{vm.study.name}}
+    <div class="pull-right">
+        <div class="col-xs-4 no-padding-left">
+            <button class="btn btn-primary" ui-sref="data({study: vm.study.id})" >
+                <span class="glyphicon glyphicon-th-list"></span>
+                    <span class="hidden-xs" >
+                        Browse Study Data
+                    </span>
+            </button>
+        </div>
+    </div>
+</h3>
+
+
+<hr>
+<jhi-alert></jhi-alert>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>
+                    Participants
+
+                    <div class="pull-right">
+                        <div class="no-padding-left">
+                            <button class="btn btn-success btn-sm" ui-sref="dashboard.newParticipant" >
+                                <span class="glyphicon glyphicon-plus"></span>
+                        <span class="hidden-xs" >
+                            New Participant
+                        </span>
+                            </button>
+                        </div>
+                    </div>
+                </h4>
+                <hr/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="jh-table table table-striped">
+                        <thead>
+                        <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                            <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="label"><span>Label</span> <span class="glyphicon glyphicon-sort"></span></th>
+                            <th ng-repeat="dataType in vm.study.dataTypes">Latest <a class="event event-{{dataType.color}}" style="display: inline-block;"></a></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="participant in vm.participants track by participant.id">
+                            <td><a ui-sref="dashboard-detail({participant: participant.id})">{{participant.id}}</a></td>
+                            <td>{{participant.label}}</td>
+                            <td ng-repeat="dataType in vm.study.dataTypes">
+                                {{participant.latestDataPointDates[dataType.id] | date}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <jhi-item-count page="vm.page" total="vm.queryCount"></jhi-item-count>
+                    <uib-pagination class="pagination-sm" total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Apps and Data Types</h4>
+            </div>
+            <div class="panel-body">
+                <div ng-repeat="integration in vm.study.integrations">
+                    <h5>{{integration.name}}</h5>
+                    <ul ng-repeat="type in integration.dataTypes">
+                        <li>{{type.name}} (<a class="event event-{{type.color}}" style="display: inline-block;"></a>)</li>
+                    </ul>
+
+                </div>
+                <div ng-show="!vm.study.integrations.length">
+                    <div class="alert alert-info">No apps are active for this study.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Surveys</h4>
+            </div>
+            <div class="panel-body">
+                <ul ng-repeat="survey in vm.study.surveys">
+                    <li>{{survey.name}}</li>
+
+                </ul>
+                <div ng-show="!vm.study.surveys.length">
+                    <div class="alert alert-info">No surveys are active for this study.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

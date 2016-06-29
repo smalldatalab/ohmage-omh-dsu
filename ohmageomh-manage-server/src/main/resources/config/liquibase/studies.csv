@@ -1,0 +1,3 @@
+id;name;remove_gps;start_date;end_date;created_by;created_date;last_modified_by;last_modified_date
+101;Example Study 1;f;2015-01-01 12:00:00.123;2016-07-01 12:00:00.123;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123
+102;Example Study 2;f;2014-01-01 12:00:00.123;2015-07-01 12:00:00.123;system;2016-05-01 12:00:00.123;system;2016-05-01 12:00:00.123

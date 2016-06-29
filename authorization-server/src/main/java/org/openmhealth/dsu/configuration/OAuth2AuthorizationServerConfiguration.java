@@ -64,5 +64,4 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
     {
         oauthServer.checkTokenAccess("permitAll()");
     }
-
 }
