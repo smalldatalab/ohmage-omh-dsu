@@ -43,5 +43,5 @@ http:
 
 logging:
   level:
-    org.springframework: DEBUG
+    org.springframework: INFO
   path: /var/log/ohmage-auth/
