@@ -16,18 +16,13 @@
 
 package org.openmhealth.dsu.factory;
 
+import com.mongodb.util.JSON;
 import org.openmhealth.dsu.domain.DataPointBuilder;
 import org.openmhealth.dsu.domain.DataPointSearchCriteriaBuilder;
-import org.openmhealth.schema.domain.omh.CaloriesBurned;
-import org.openmhealth.schema.domain.omh.KcalUnitValue;
-import org.openmhealth.schema.domain.omh.SchemaVersion;
-import org.openmhealth.schema.domain.omh.TimeInterval;
+import org.openmhealth.schema.domain.SchemaVersion;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
-
-import static java.time.ZoneOffset.UTC;
-import static org.openmhealth.schema.domain.omh.KcalUnit.KILOCALORIE;
+import java.util.Map;
 
 
 /**
@@ -62,16 +57,20 @@ public class DataPointFactory {
                 .setSchemaVersion(TEST_SCHEMA_VERSION);
     }
 
-    public static CaloriesBurned newKcalBurnedBody() {
+    public static Map<?, ?> newKcalBurnedBody() {
 
-        TimeInterval effectiveTimeInterval = TimeInterval.ofStartDateTimeAndEndDateTime(
-                OffsetDateTime.of(2013, 2, 5, 6, 25, 0, 0, UTC),
-                OffsetDateTime.of(2013, 2, 5, 7, 25, 0, 0, UTC)
-        );
-
-        return new CaloriesBurned.Builder(new KcalUnitValue(KILOCALORIE, 160))
-                .setActivityName("walking")
-                .setEffectiveTimeFrame(effectiveTimeInterval)
-                .build();
+        return (Map<?, ?>) JSON.parse("{" +
+                "    'kcal_burned': {" +
+                "        'value': 160," +
+                "        'unit': 'kcal'" +
+                "    }," +
+                "    'effective_time_frame': {" +
+                "        'time_interval': {" +
+                "            'start_time': '2013-02-05T06:25:00Z'," +
+                "            'end_time': '2013-02-05T07:25:00Z'" +
+                "        }" +
+                "    }," +
+                "    'activity_name': 'walking'" +
+                "}");
     }
 }

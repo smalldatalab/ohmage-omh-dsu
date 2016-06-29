@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan(
-        basePackages = "org.openmhealth, io.smalldata.ohmageomh",
+        basePackages = "org.openmhealth",
         excludeFilters = {
                 @ComponentScan.Filter(value = EnableAutoConfiguration.class)
         })

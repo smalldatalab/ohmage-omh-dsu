@@ -1,3 +1,8 @@
+// disable trying to make this project's JAR file executable
+bootRepackage {
+    enabled = false
+}
+
 dependencies {
 
     compile 'com.github.fge:json-schema-validator:2.2.5'
@@ -8,6 +13,7 @@ dependencies {
     compile 'org.springframework.data:spring-data-commons'
     compile 'org.springframework.data:spring-data-mongodb'
     compile 'org.springframework:spring-jdbc'
+    compile 'org.springframework.security.oauth:spring-security-oauth2'
     compile 'org.springframework:spring-tx'
     compile 'org.aspectj:aspectjweaver:1.8.5'
     compile 'com.google.guava:guava:18.0'
@@ -18,16 +24,6 @@ dependencies {
 
     testCompile 'org.mongodb:mongo-java-driver'
     // if you're using MySQL instead of PostgreSQL, pull in the mysql-connector-java dependency
-    // testCompile 'mysql:mysql-connector-java'
-    testCompile "org.postgresql:postgresql"
-
-    // io.smalldata.ohmageomh dependencies
-    compile 'org.apache.httpcomponents:httpclient'
-    compile "org.springframework.boot:spring-boot-starter-jetty"
-    compile("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: "spring-boot-starter-tomcat"
-    }
-    compile 'org.springframework.mobile:spring-mobile-device:1.1.3.RELEASE'
-
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    // test 'mysql:mysql-connector-java'
+    testCompile 'org.postgresql:postgresql:9.3-1102-jdbc41'
 }

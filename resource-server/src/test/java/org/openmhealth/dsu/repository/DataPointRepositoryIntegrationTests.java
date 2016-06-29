@@ -16,11 +16,12 @@
 
 package org.openmhealth.dsu.repository;
 
+import com.mongodb.util.JSON;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmhealth.dsu.domain.DataPoint;
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
-import org.openmhealth.schema.domain.omh.DataPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public abstract class DataPointRepositoryIntegrationTests {
     public void deleteFixture() {
 
         for (DataPoint dataPoint : testDataPoints) {
-            repository.delete(dataPoint.getHeader().getId());
+            repository.delete(dataPoint.getId());
         }
     }
 
@@ -77,7 +78,7 @@ public abstract class DataPointRepositoryIntegrationTests {
     @Test
     public void existsShouldReturnTrueOnMatchingId() {
 
-        assertThat(repository.exists(testDataPoint.getHeader().getId()), equalTo(true));
+        assertThat(repository.exists(testDataPoint.getId()), equalTo(true));
     }
 
     @Test
@@ -91,14 +92,19 @@ public abstract class DataPointRepositoryIntegrationTests {
     @Test
     public void findOneShouldReturnDataPointMatchingId() {
 
-        Optional<DataPoint> result = repository.findOne(testDataPoint.getHeader().getId());
+        Optional<DataPoint> result = repository.findOne(testDataPoint.getId());
 
         assertThat(result.isPresent(), equalTo(true));
         assertThatDataPointsAreEqual(result.get(), testDataPoint);
     }
 
     public void assertThatDataPointsAreEqual(DataPoint actual, DataPoint expected) {
-        assertThat(actual, equalTo(expected));
+
+        assertThat(actual.getUserId(), equalTo(expected.getUserId()));
+        assertThat(actual.getHeader(), equalTo(expected.getHeader()));
+
+        // although this uses Mongo libraries to check deep equality, it should work with other data stores
+        assertThat(JSON.serialize(actual.getBody()), equalTo(JSON.serialize(expected.getBody())));
     }
 
     @Test(expected = NullPointerException.class)
@@ -235,28 +241,26 @@ public abstract class DataPointRepositoryIntegrationTests {
     @Test
     public void deleteShouldDeleteDataPointMatchingId() {
 
-        repository.delete(testDataPoint.getHeader().getId());
-
-        assertThat(repository.exists(testDataPoint.getHeader().getId()), equalTo(false));
+        repository.delete(testDataPoint.getId());
+        assertThat(repository.exists(testDataPoint.getId()), equalTo(false));
     }
 
     @Test
-    public void deleteByIdAndUserIdShouldReturnZeroOnUnrecognizedId() {
+    public void deleteByIdAndUserIdShouldReturn0OnUnrecognizedId() {
 
-        assertThat(repository.deleteByIdAndHeaderUserId(UNRECOGNIZED_ID, TEST_USER_ID), equalTo(0l));
+        assertThat(repository.deleteByIdAndUserId(UNRECOGNIZED_ID, TEST_USER_ID), equalTo(0l));
     }
 
     @Test
-    public void deleteByIdAndUserIdShouldReturnZeroOnUnrecognizedUserId() {
+    public void deleteByIdAndUserIdShouldReturn0OnUnrecognizedUserId() {
 
-        assertThat(repository.deleteByIdAndHeaderUserId(testDataPoint.getHeader().getId(), UNRECOGNIZED_ID),
-                equalTo(0l));
+        assertThat(repository.deleteByIdAndUserId(testDataPoint.getId(), UNRECOGNIZED_ID), equalTo(0l));
     }
 
     @Test
-    public void deleteByIdAndUserIdShouldReturnOneOnMatchingIdAndUserId() {
+    public void deleteByIdAndUserIdShouldReturn1OnMatchingIdAndUserId() {
 
-        assertThat(repository.deleteByIdAndHeaderUserId(testDataPoint.getHeader().getId(), TEST_USER_ID), equalTo(1l));
-        assertThat(repository.exists(testDataPoint.getHeader().getId()), equalTo(false));
+        assertThat(repository.deleteByIdAndUserId(testDataPoint.getId(), TEST_USER_ID), equalTo(1l));
+        assertThat(repository.exists(testDataPoint.getId()), equalTo(false));
     }
 }

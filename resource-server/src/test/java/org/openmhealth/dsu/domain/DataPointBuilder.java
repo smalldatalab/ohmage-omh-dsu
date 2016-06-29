@@ -16,17 +16,19 @@
 
 package org.openmhealth.dsu.domain;
 
-
-import org.openmhealth.schema.domain.omh.*;
+import org.openmhealth.schema.domain.SchemaId;
+import org.openmhealth.schema.domain.SchemaVersion;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
-import static org.openmhealth.schema.domain.omh.DataPointModality.SELF_REPORTED;
+import static org.openmhealth.dsu.domain.DataPointModality.SELF_REPORTED;
 
 
 /**
- * A builder that simplifies the construction of data points for testing purposes.
+ * A builder that simplifies the construction of data points.
  *
  * @author Emerson Farrugia
  */
@@ -40,7 +42,7 @@ public class DataPointBuilder {
     private Integer schemaVersionMinor;
     private String schemaVersionQualifier;
     private OffsetDateTime creationDateTime = OffsetDateTime.now();
-    private Measure body = null;
+    private Map<?, ?> body = new HashMap<>();
 
     public DataPointBuilder() {
 
@@ -102,8 +104,8 @@ public class DataPointBuilder {
         return this;
     }
 
-    public DataPointBuilder setBody(Measure measure) {
-        this.body = measure;
+    public DataPointBuilder setBody(Map<?, ?> body) {
+        this.body = body;
         return this;
     }
 
@@ -112,16 +114,16 @@ public class DataPointBuilder {
         SchemaVersion schemaVersion = new SchemaVersion(schemaVersionMajor, schemaVersionMinor, schemaVersionQualifier);
         SchemaId schemaId = new SchemaId(schemaNamespace, schemaName, schemaVersion);
 
-        DataPointAcquisitionProvenance acquisitionProvenance = new DataPointAcquisitionProvenance.Builder("source")
-                .setModality(SELF_REPORTED)
-                .setSourceCreationDateTime(creationDateTime.minusMinutes(1))
-                .build();
+        DataPointAcquisitionProvenance acquisitionProvenance = new DataPointAcquisitionProvenance("source");
+        acquisitionProvenance.setModality(SELF_REPORTED);
+        acquisitionProvenance.setSourceCreationDateTime(creationDateTime.minusMinutes(1));
 
-        DataPointHeader header = new DataPointHeader.Builder(id, schemaId, creationDateTime)
-                .setAcquisitionProvenance(acquisitionProvenance)
-                .setUserId(userId)
-                .build();
+        DataPointHeader header = new DataPointHeader(id, schemaId, creationDateTime);
+        header.setAcquisitionProvenance(acquisitionProvenance);
 
-        return new DataPoint(header, body);
+        DataPoint dataPoint = new DataPoint(header, body);
+        dataPoint.setUserId(userId);
+
+        return dataPoint;
     }
 }

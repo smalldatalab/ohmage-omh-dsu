@@ -1,14 +1,5 @@
 description = 'A simple OAuth2 authorisation server backed by a user data store.'
 
-// io.smalldata.ohmageomh dependencies
 dependencies {
 
-    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
-
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-}
-
-bootRun {
-    addResources = true
-    jvmArgs = ["-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"]
 }

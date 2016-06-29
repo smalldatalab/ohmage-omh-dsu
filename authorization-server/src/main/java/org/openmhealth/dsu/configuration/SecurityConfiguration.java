@@ -16,7 +16,6 @@
 
 package org.openmhealth.dsu.configuration;
 
-import io.smalldata.ohmageomh.dsu.configuration.AuthenticationProcessingFilterEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +36,6 @@ import org.springframework.social.security.SpringSocialConfigurer;
  * Spring Boot's security configuration.
  *
  * @author Emerson Farrugia
- * @author Jared Sieling
  */
 @Configuration
 @EnableWebSecurity
@@ -56,9 +54,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean(name = "authenticationManager")
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-
         return super.authenticationManagerBean();
     }
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -83,14 +81,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 // redirect all unauthenticated request to google sign-in
                 .loginPage("/signin")
-                .successHandler(successHandler())
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .permitAll()
+                    .successHandler(successHandler())
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .permitAll()
 
                 .and()
 
-                        // permit unauthenticated access to favicon, signin page and auth pages for different social services
+                // permit unauthenticated access to favicon, signin page and auth pages for different social services
                 .authorizeRequests()
                 .antMatchers(
                         "/signin",
@@ -101,22 +99,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // oauth token endpoints
                 // (oauth/authorize should only be accessed by users who have signin, so is excluded from here)
                 .antMatchers("/oauth/token", "/oauth/check_token")
-                .permitAll()
-                .antMatchers("/users")
-                .hasIpAddress("127.0.0.1")// only allow users to be created from local request
+                    .permitAll()
+                .antMatchers("/internal/**")
+                    .hasIpAddress("127.0.0.1")// internal endpoints.
                 .antMatchers("/**")
-                .authenticated()
-                        // enable cookie
+                    .authenticated()
+                // enable cookie
                 .and()
                 .rememberMe()
                         // apply Spring Social config that add Spring Social to be an AuthenticationProvider
                 .and()
                 .apply(new SpringSocialConfigurer())
                 .and()
-                        // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
+                // Disable CSRF protection FIXME: apply stricter access control to auth pages and oauth/authorize
                 .csrf().disable()
                 // use a custom authentication entry point to preserve query parameter
                 .exceptionHandling().authenticationEntryPoint(new AuthenticationProcessingFilterEntryPoint("/signin"));
 
     }
+
 }

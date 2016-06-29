@@ -2,10 +2,4 @@
 */build
 *.iml
 .idea
-.gradle
 target
-
-*/build
-
-*.jar
-!gradle/wrapper/gradle-wrapper.jar
