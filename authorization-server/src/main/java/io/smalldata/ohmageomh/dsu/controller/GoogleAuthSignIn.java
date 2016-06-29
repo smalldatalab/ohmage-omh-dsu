@@ -33,10 +33,10 @@ import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
-import org.springframework.social.security.SocialAuthenticationServiceRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -74,10 +74,8 @@ public class GoogleAuthSignIn {
     static class InsufficientScopeException extends Exception {
     }
 
-//    @Autowired
-//    SocialAuthenticationServiceRegistry socialAuthService;
-
-
+    @Autowired
+    ConnectionFactoryLocator connectionFactoryLocator;
 
     /**
      * This endpoint is used to facilitate the mobile sign-in process using the access token return
@@ -87,75 +85,75 @@ public class GoogleAuthSignIn {
      * 2) Create the user, where username is "providerId:providerUserId" (if it does not exist)
      * 3) Generate a DSU access token for the requesting client
      */
-//    @RequestMapping(value = "/social-signin/{providerId}", method = RequestMethod.POST, produces = "application/json")
-//    public ResponseEntity<OAuth2AccessToken>
-//    socialAccessTokenSignIn
-//    (@PathVariable String providerId,
-//     @RequestParam String client_id,
-//     @RequestParam String client_secret,
-//     @RequestParam String access_token) throws InvalidSocialSigninAccessTokenException, InsufficientScopeException {
-//
-//        // Make sure the client id/secret are correct
-//        // Throw NoSuchClientException
-//        ClientDetails client = clientService.loadClientByClientId(client_id);
-//        if (!client.getClientSecret().equals(client_secret)) {
-//            throw new NoSuchClientException("");
-//        }
-//        OAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientService);
-//        // Get google connection using the access token
-//        // Throw org.springframework.web.client.HttpClientErrorException: 401 Unauthorized
-//        Connection conn;
-//        try {
-//            OAuth2ConnectionFactory googleConnFactory = (OAuth2ConnectionFactory) socialAuthService.getConnectionFactory(providerId);
-//            conn = googleConnFactory.createConnection(new AccessGrant(access_token));
-//        } catch (HttpClientErrorException ex) {
-//            if (ex.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
-//                throw new InvalidSocialSigninAccessTokenException();
-//            } else {
-//                throw ex;
-//            }
-//        }
-//        if (conn.getKey().getProviderUserId() == null || conn.fetchUserProfile().getEmail() == null) {
-//            throw new InsufficientScopeException();
-//        }
-//        if (!endUserService.doesUserExist(conn.getKey().toString())) {
-//            EndUserRegistrationData registrationData = new EndUserRegistrationData();
-//            registrationData.setUsername(conn.getKey().toString());
-//            registrationData.setPassword(new RandomValueStringGenerator(50).generate());
-//
-//            UserProfile profile = conn.fetchUserProfile();
-//            registrationData.setEmailAddress(profile.getEmail());
-//            log.info("Register user from social connection " + conn.getKey().toString());
-//
-//            endUserService.registerUser(registrationData);
-//        }
-//        String username = endUserService.findUser(conn.getKey().toString()).get().getUsername();
-//        HashMap<String, String> authorizationParameters = new HashMap<String, String>();
-//        authorizationParameters.put("username", username);
-//        authorizationParameters.put("client_id", client_id);
-//        AuthorizationRequest authorizationRequest = requestFactory.createAuthorizationRequest(authorizationParameters);
-//        authorizationRequest.setApproved(true);
-//
-//        UserDetails user = userDetailsService.loadUserByUsername(username);
-//        Authentication authToken = new UsernamePasswordAuthenticationToken(user, "", Collections.singleton(new SimpleGrantedAuthority(END_USER_ROLE)));
-//        OAuth2Authentication authenticationRequest = new OAuth2Authentication(requestFactory.createOAuth2Request(authorizationRequest), authToken);
-//        OAuth2AccessToken accessToken = tokenService.createAccessToken(authenticationRequest);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("Cache-Control", "no-store");
-//        headers.set("Pragma", "no-cache");
-//
-//        return new ResponseEntity<OAuth2AccessToken>(accessToken, headers, HttpStatus.OK);
-//    }
-//
-//    @RequestMapping(value = "/google-signin", method = RequestMethod.POST, produces = "application/json")
-//    @Deprecated
-//    public ResponseEntity<OAuth2AccessToken>
-//    googleAccessTokenSignIn
-//            (@RequestParam String client_id,
-//             @RequestParam String client_secret,
-//             @RequestParam String google_access_token) throws InsufficientScopeException, InvalidSocialSigninAccessTokenException {
-//        return socialAccessTokenSignIn("google", client_id, client_secret, google_access_token);
-//    }
+    @RequestMapping(value = "/social-signin/{providerId}", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<OAuth2AccessToken>
+    socialAccessTokenSignIn
+    (@PathVariable String providerId,
+     @RequestParam String client_id,
+     @RequestParam String client_secret,
+     @RequestParam String access_token) throws InvalidSocialSigninAccessTokenException, InsufficientScopeException {
+
+        // Make sure the client id/secret are correct
+        // Throw NoSuchClientException
+        ClientDetails client = clientService.loadClientByClientId(client_id);
+        if (!client.getClientSecret().equals(client_secret)) {
+            throw new NoSuchClientException("");
+        }
+        OAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientService);
+        // Get google connection using the access token
+        // Throw org.springframework.web.client.HttpClientErrorException: 401 Unauthorized
+        Connection conn;
+        try {
+            OAuth2ConnectionFactory googleConnFactory = (OAuth2ConnectionFactory) connectionFactoryLocator.getConnectionFactory(providerId);
+            conn = googleConnFactory.createConnection(new AccessGrant(access_token));
+        } catch (HttpClientErrorException ex) {
+            if (ex.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
+                throw new InvalidSocialSigninAccessTokenException();
+            } else {
+                throw ex;
+            }
+        }
+        if (conn.getKey().getProviderUserId() == null || conn.fetchUserProfile().getEmail() == null) {
+            throw new InsufficientScopeException();
+        }
+        if (!endUserService.doesUserExist(conn.getKey().toString())) {
+            EndUserRegistrationData registrationData = new EndUserRegistrationData();
+            registrationData.setUsername(conn.getKey().toString());
+            registrationData.setPassword(new RandomValueStringGenerator(50).generate());
+
+            UserProfile profile = conn.fetchUserProfile();
+            registrationData.setEmailAddress(profile.getEmail());
+            log.info("Register user from social connection " + conn.getKey().toString());
+
+            endUserService.registerUser(registrationData);
+        }
+        String username = endUserService.findUser(conn.getKey().toString()).get().getUsername();
+        HashMap<String, String> authorizationParameters = new HashMap<String, String>();
+        authorizationParameters.put("username", username);
+        authorizationParameters.put("client_id", client_id);
+        AuthorizationRequest authorizationRequest = requestFactory.createAuthorizationRequest(authorizationParameters);
+        authorizationRequest.setApproved(true);
+
+        UserDetails user = userDetailsService.loadUserByUsername(username);
+        Authentication authToken = new UsernamePasswordAuthenticationToken(user, "", Collections.singleton(new SimpleGrantedAuthority(END_USER_ROLE)));
+        OAuth2Authentication authenticationRequest = new OAuth2Authentication(requestFactory.createOAuth2Request(authorizationRequest), authToken);
+        OAuth2AccessToken accessToken = tokenService.createAccessToken(authenticationRequest);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cache-Control", "no-store");
+        headers.set("Pragma", "no-cache");
+
+        return new ResponseEntity<OAuth2AccessToken>(accessToken, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/google-signin", method = RequestMethod.POST, produces = "application/json")
+    @Deprecated
+    public ResponseEntity<OAuth2AccessToken>
+    googleAccessTokenSignIn
+            (@RequestParam String client_id,
+             @RequestParam String client_secret,
+             @RequestParam String google_access_token) throws InsufficientScopeException, InvalidSocialSigninAccessTokenException {
+        return socialAccessTokenSignIn("google", client_id, client_secret, google_access_token);
+    }
 
     /**
      * This endpoint is used to facilitate the sign-in process using One-Time Auth Code obtained from
