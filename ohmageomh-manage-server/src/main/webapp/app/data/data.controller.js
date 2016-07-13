@@ -125,7 +125,8 @@
                     {field: "header.creation_date_time", displayName: "Date", cellFilter: 'date: "yyyy-MM-dd HH:mm"', minWidth: 130},
                     {field: "header.schema_id.namespace", displayName: "Schema Namespace",visible: false},
                     {field: "header.schema_id.name", displayName: "Schema Name", minWidth: 100},
-                    {field: "header.schema_id.version", displayName: "Schema Version", visible: false}
+                    {field: "header.schema_id.version", displayName: "Schema Version", visible: false},
+                    {field: "header.media", displayName: "Media Files", minWidth: 60, cellTemplate: '<div class="ui-grid-cell-contents"><a ng-if="grid.getCellValue(row, col).length > 0" ui-sref="data.media({mediaArray: grid.getCellValue(row, col)})">View</a></div>'}
                 ];
 
             // Derive the rest of the columns from the responses

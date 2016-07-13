@@ -3,6 +3,7 @@ package io.smalldata.ohmageomh.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Range;
+import com.mongodb.gridfs.GridFSDBFile;
 import io.smalldata.ohmageomh.data.domain.DataPoint;
 import io.smalldata.ohmageomh.data.domain.DataPointSearchCriteria;
 import io.smalldata.ohmageomh.data.service.DataPointService;
@@ -11,13 +12,19 @@ import io.smalldata.ohmageomh.service.ParticipantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -52,6 +59,8 @@ public class DataResource {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private GridFsOperations gridFsOperations;
 
     /**
      * Reads data points.
@@ -115,6 +124,31 @@ public class DataResource {
         // headers.set("Previous");
 
         return new ResponseEntity<>(dataPoints, headers, OK);
+    }
+
+    @RequestMapping(value = "/dataPoints/{id}/media/{mId}", method = GET,
+        produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE,MediaType.ALL_VALUE})
+    @Timed
+    public
+    @ResponseBody
+    ResponseEntity<InputStreamResource> readMedia(@PathVariable String id, @PathVariable String mId) {
+        Query query = new Query();
+
+        query.addCriteria(where("metadata.data_point_id").is(id));
+//        query.addCriteria(where("metadata.user_id").is(userId));
+        query.addCriteria(where("metadata.media_id").is(mId));
+
+        GridFSDBFile gridFsFile = gridFsOperations.findOne(query);
+
+        if(gridFsFile != null){
+            HttpHeaders respHeaders = new HttpHeaders();
+            respHeaders.setContentType(MediaType.parseMediaType(gridFsFile.getContentType()));
+            respHeaders.setContentLength(gridFsFile.getLength());
+            respHeaders.setContentDispositionFormData("attachment", mId);
+            InputStreamResource inputStreamResource = new InputStreamResource(gridFsFile.getInputStream());
+            return new ResponseEntity<>(inputStreamResource, respHeaders, OK);
+        }
+        return new ResponseEntity<>(NOT_FOUND);
     }
 
 }

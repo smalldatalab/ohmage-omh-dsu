@@ -24,5 +24,28 @@
                     },
                 }
             })
+            .state('data.media', {
+                parent: 'data',
+                url: '/media',
+                params: {
+                    mediaArray: []
+                },
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'app/data/data-media.html',
+                        controller: 'DataMediaController',
+                        controllerAs: 'vm',
+                        backdrop: 'static',
+                        size: 'lg',
+                    }).result.then(function() {
+                            $state.go('data', null, { reload: true });
+                        }, function() {
+                            $state.go('^');
+                        });
+                }]
+            })
     }
 })();
