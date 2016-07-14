@@ -17,7 +17,8 @@
             var newWidth = 600 + slides.length + 1;
             slides.push({
                 image: 'api/dataPoints/' + dataPoint + '/media/' + mediaId + '/',
-                id: currIndex++
+                id: currIndex++,
+                mediaId: mediaId
             });
         };
 

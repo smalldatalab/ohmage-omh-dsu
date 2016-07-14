@@ -1,13 +1,14 @@
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
             ng-click="vm.clear()">&times;</button>
-    <h4 class="modal-title">View Survey Response Media</h4>
+    <h4 class="modal-title">Survey Response Photos</h4>
 </div>
 <div class="modal-body">
     <jhi-alert-error></jhi-alert-error>
     <uib-carousel active="active" no-wrap="noWrapSlides">
         <uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
             <img ng-src="{{slide.image}}" style="margin:auto;">
+            <p>{{slide.mediaId}}</p>
         </uib-slide>
     </uib-carousel>
 
