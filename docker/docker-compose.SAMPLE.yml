@@ -1,0 +1,126 @@
+# IMPORTANT!
+#  This configuration requires two data volume containers, which you must
+#  create prior to running this docker-compose config. You can create these
+#  containers with the commands below.  You only need to create them once.
+#
+# docker create --name mongodata -v mongo-volume:/data/db busybox
+# docker create --name postgresdata -v postgres-volume:/var/lib/postgresql/data busybox
+#
+# If you are using callbacks, you'll need to update the base URLs for the following
+#  params below:
+#
+#  auth:environment -> application.url
+#  shim:envrionment -> openmhealth.shim.server.callbackUrlBase
+#
+# You can run the containers with `docker-compose up -d`.
+#
+mongo:
+    image: mongo:3.2.1
+    ports:
+        - "27017:27017"
+    volumes_from:
+        - mongodata
+postgres:
+    image: postgres:9.4
+    ports:
+        - "5432:5432"
+    volumes_from:
+        - postgresdata
+auth:
+    image: smalldatalab/ohmage-auth-server:2.0
+    links:
+        - postgres:omh-postgres
+        - mongo:omh-mongo
+        - shim:ohmage-shim
+    ports:
+        - "8082:8082"
+    environment:
+        - application.url=http://{BASE URL}/dsu/
+        - spring.datasource.url=jdbc:postgresql://omh-postgres:5432/omh
+        - ohmageomh.datasource.url=jdbc:postgresql://omh-postgres:5432/ohmage
+        - spring.data.mongodb.host=omh-mongo
+        - google.clientId={GOOGLE CLIENT ID}
+        - google.clientSecret={GOOGLE CLIENT SECRET}
+        - server.port=8082
+    # volumes:
+        # Uncomment and update /path/to/logs' if you want local log files
+        # - /path/to/logs/auth:/var/log/ohmage-auth
+resource:
+    image: smalldatalab/ohmage-resource-server:2.0
+    links:
+        - postgres:omh-postgres
+        - mongo:omh-mongo
+    ports:
+        - "8084:8084"
+    environment:
+        - spring.datasource.url=jdbc:postgresql://omh-postgres:5432/omh
+        - ohmageomh.datasource.url=jdbc:postgresql://omh-postgres:5432/ohmage
+        - spring.data.mongodb.host=omh-mongo
+        - server.port=8084
+    # volumes:
+        # Uncomment and update /path/to/logs' if you want local log files
+        # - /path/to/logs/resource:/var/log/ohmage-resource
+manage:
+    restart: always
+    image: smalldatalab/ohmage-manage-server:2.0.2
+    links:
+        - mongo:omh-mongo
+        - shim:omh-shim
+        - postgres:ohmage-postgres
+    environment:
+      - spring.data.mongodb.host=omh-mongo
+      - spring.data.mongodb.database=omh
+      - shim.endpoint=http://ohmage-shim:8084
+      - spring.datasource.url=jdbc:postgresql://ohmage-postgres:5432/ohmage
+      - server.port=8080
+      - application.url=https://{BASE URL}/manage/
+    #volumes:
+    #  - /var/log/ohmage/manage:/var/log/ohmage-manage
+shim:
+    image: smalldatalab/ohmage-shim-server:qa
+    links:
+        - mongo:mongo
+    ports:
+        - "8083:8083"
+    environment:
+        - logging.path=/var/log/ohmage-shim
+        - spring.data.mongodb.uri=mongodb://mongo:27017/omh
+        - openmhealth.shim.server.callbackUrlBase=http://{BASE URL}/shims
+        - openmhealth.shim.fitbit.clientId={FITBIT CLIENT ID}
+        - openmhealth.shim.fitbit.clientSecret={FITBIT CLIENT SECRET}
+        - openmhealth.shim.moves.clientId={MOVES CLIENT ID}
+        - openmhealth.shim.moves.clientSecret={MOVES CLIENT SECRET}
+        - server.port=8083
+    # volumes:
+        # Uncomment and update '/path/to/logs' if you want local log files
+        # - /path/to/logs/shim:/var/log/ohmage-shim
+# dpu:
+#     image: smalldatalab/ohmage-dpu-server:latest
+#     links:
+#         - mongo:omh-mongo
+#         - postgres:omh-postgres
+#         - shim:ohmage-shim
+#     environment:
+#         - mongodb.uri=mongodb://omh-mongo/omh
+#         - shim.endpoint=http://ohmage-shim:8084
+#         - log.file=/var/log/ohmage-dpu/clojure.log
+#         - gmap.geo.coding.server.key=AIzaSyAZ4G_3oRtixvSizVat-cEr5TcLyLnN80w
+#         - sync.tasks=fitbit:STEPS,fitbit:ACTIVITY
+#         - admin.dashboard.jdbc.uri=jdbc:postgresql://omh-postgres/admindashboard?user=postgres&password=postgres
+#         - _JAVA_OPTIONS= -Xms256m -Xmx512m
+#     # volumes:
+#         # Uncomment and update '/path/to/logs' if you want local log files
+#         # - /path/to/logs/dpu:/var/log/ohmage-dpu
+nginx:
+    image: nginx:1.10
+    links:
+        - auth:ohmage-auth
+        - resource:ohmage-resource
+        - shim:ohmage-shim
+        - manage:ohmage-manage
+        # - dpu:ohmage-dpu
+    ports:
+        - "80:80"
+        - "8081:8081"
+    volumes:
+        - ~/workspaces/smalldatalabs/ohmage-omh-configs/local/nginx.conf:/etc/nginx/nginx.conf:ro

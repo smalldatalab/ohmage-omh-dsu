@@ -1,270 +1,182 @@
-# Open mHealth Storage Endpoint [![Build Status](https://travis-ci.org/openmhealth/omh-dsu-ri.svg?branch=master)](https://travis-ci.org/openmhealth/omh-dsu-ri)
+# Ohmage-omh Platform - From the Small Data Lab @ CornellTech
 
-This repository contains the Java reference implementation of an [Open mHealth](http://www.openmhealth.org/)
-[Data Point API](docs/raml/API.yml) storage endpoint.
+This repository holds the majority of the code base for the Ohmage-omh platform, along with instructions for setting up your own instance of it.  For more information about what the Ohmage-omh platform is, view the [main website here](http://smalldata.io/ohmage-omh-website/), and you can learn more about the Small Data Lab [here](http://smalldata.io).
 
-> This code is in its early stages and requires further work and testing. Please do not use it in production without proper testing.
+This project builds on [Open mHealth's](http://www.openmhealth.org/) Java implementation of their Data Point API, and you can view that project and documenation [here](https://github.com/openmhealth/omh-dsu-ri).  
 
-### tl;dr
+In addition to their "Authorization API" and "Resource API", the Ohmage-omh platform adds:
 
-* this repository contains a secure endpoint that offers an API for storing and retrieving data points
-* data points conform to the Open mHealth [data point schema](http://www.openmhealth.org/documentation/#/schema-docs/schema-library/schemas/omh_data-point)
-* the code consists of an [OAuth 2.0](http://oauth.net/2/) authorization server and resource server
-* the authorization server manages access tokens
-* the resource server implements the data point API documented [here](docs/raml/API.yml)
-* the servers are written in Java using the [Spring Framework](http://projects.spring.io/spring-framework/), [Spring Security OAuth 2.0](http://projects.spring.io/spring-security-oauth/) and [Spring Boot](http://projects.spring.io/spring-boot/)
-* the authorization server needs [PostgreSQL](http://www.postgresql.org/) to store client credentials and access tokens, and [MongoDB](http://www.mongodb.org/) to store user accounts
-* the resource server needs PostgreSQL to read access tokens and MongoDB to store data points
-* you can get everything up and running in a few commands using Docker Compose
-* you can pull Docker containers for both servers from our [Docker Hub page](https://registry.hub.docker.com/repos/openmhealth/)
-* you can use a Postman [collection](https://www.getpostman.com/collections/18e6065476d59772c748) to easily issue API requests
-  
-### Overview
+ - a "Study Manager Portal" to view and manage participants, apps, and data for each study, and
+ - a "Data Processing Unit", which is a server that process raw data in the background to compute higher level metrics.
 
-A *data point* is a JSON document that represents a piece of data and conforms to
-the [data-point](http://www.openmhealth.org/documentation/#/schema-docs/schema-library/schemas/omh_data-point) schema. The header of a data point conforms to
-  the [header](http://www.openmhealth.org/documentation/#/schema-docs/schema-library/schemas/omh_header) schema, and the body can conform to any schema you like.
-The header is designed to contain operational metadata, such as identifiers and provenance, whereas the body contains
-the data being acquired or computed.
+## Installation
 
-The *data point API* is a simple RESTful API that supports the creation, retrieval, and deletion of data points. The
-API authorizes access using OAuth 2.0.
+To run your own instance of the Ohmage-omh platform on a physical or virtual machine, we provide a simplified deployment configuration that uses [Docker containers](https://www.docker.com/whatisdocker).  We chose Docker because the Ohmage-omh platform includes several interdependent servers, and Docker provides an easy way to deploy and interface those components without requiring knowledge of the underlying technologies used to build them.
 
-This implementation uses two components that reflect the [OAuth 2.0 specification](http://tools.ietf.org/html/rfc6749).
-A *resource server* manages data point resources and implements the data point API. The resource server authorizes
-requests using OAuth 2.0 access tokens. An *authorization server* manages the granting of access tokens.
+Below is a list of all the components that you will install for the platform, along with a link if the component is not in this repository.
 
-### Installation
+- [MongoDB](https://www.mongodb.org/)
+- [PostgreSQL](http://www.postgresql.org/)
+- Ohmage Authorization Server (`authorization-server` directory)
+- Ohmage Resource Server (`resource-server` directory)
+- [Ohmage Shim Server](https://github.com/smalldatalab/omh-shims)
+- Ohmage Manager Portal (`ohmageomh-manage-server` direcotyr)
+- Ohmage Data Processing Unit (`ohmageomh-dpu-server` directory)
 
-There are two ways to get up and running.
+At a high level, the setup process will be:
 
-1. You can use Docker.
-  * This is the fastest way to get up and running and isolates the install from your system.
-1. You can build all the code from source and run it natively.
-
-### Option 1. Using Docker containers
-
-If you don't have Docker, Docker Compose, and Docker Machine installed, download [Docker Toolbox](https://www.docker.com/toolbox)
-and follow the installation instructions for your platform. If you don't have a running Docker machine, follow these instructions
-to [deploy one locally](https://docs.docker.com/machine/get-started/), or these instructions to
-[deploy to the cloud](https://docs.docker.com/machine/get-started-cloud/) on any of these
-[cloud platforms](https://docs.docker.com/machine/drivers/).
-
-Once you have a running Docker host, in a terminal
-
-1. Clone this Git repository.
-1. Run `docker-machine ls` to find the name and IP address of your active Docker host.
-1. Run `eval "$(docker-machine env host)"` to prepare environment variables, *replacing `host` with the name of your Docker host*.
-
-Now, if you want to use pre-built Docker containers,
-
-1. Run `docker-compose -f docker-compose-init-postgres.yml up -d` to download and run the containers.
-  * If you want to keep the containers in the foreground and see logs, omit the `-d`.
-  * If you want to just want to see logs, run `docker-compose -f docker-compose-init-postgres.yml logs`.
-
-Otherwise, if you prefer to build and run your own containers, e.g. to customize them,
-
-1. Run `./gradlew build -x test` to compile the code while skipping tests.
-  * If you want to run the tests, you'll need to bring up a MongoDB instance with hostname `omh-mongo`.
-1. Run `docker-compose -f docker-compose-build.yml up -d` to build and run the containers.
-  * If you want to keep the containers in the foreground and see logs, omit the `-d`.
-  * If you want to just want to see logs, run `docker-compose -f docker-compose-build.yml logs`.
-
-The authorization and resource servers will start running on ports 8082 and 8083, respectively.
-It can take up to a minute for the containers to start up.
-
-#### Option 2. Building from source and running natively
-
-We will add documentation on running the servers natively [on request](https://github.com/openmhealth/omh-dsu-ri/issues).
-
-The Docker commands in option 1 automatically initialize the Spring Security OAuth schema in the PostgreSQL database.
-To initialize the schema manually, you will need to source the
- [OAuth 2.0 DDL script](resources/rdbms/postgresql/oauth2-ddl.sql).
-
-> Please note that the remainder of this document assumes you are using Docker. It should be straightforward to translate
-any commands over to running the servers natively, but feel free to ask for help if something isn't clear.
-
-### Configuring the servers
-
-The [authorization server configuration file](authorization-server/src/main/resources/application.yml) and [resource
-server configuration file](resource-server/src/main/resources/application.yml) are written in YAML using
-[Spring Boot conventions](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config).
-
-If you want to override the default configuration, you can either
-
-* Add [environment variables](https://docs.docker.com/compose/compose-file/#environment) to the Docker Compose file.
-    * e.g. setting `logging.level.org.springframework: DEBUG` will change the logging level
-    * e.g. setting `spring.data.mongodb.host: foo` will change the MongoDB host
-* Create an `application.yml` file in the `/opt/omh-dsu-ri/*-server` directory with the overriding YAML properties.
-
-It is possible to use multiple resource servers with the same authorization server.
-
-#### Adding clients
-
-The authorization server manages the granting of access tokens to clients according to the OAuth 2.0 specification. Since it is
-good practice to not roll your own security infrastructure, we leverage [Spring Security OAuth 2.0](http://projects.spring.io/spring-security-oauth/)
-in this implementation. You can find the Spring Security OAuth 2.0 developer guide [here](http://projects.spring.io/spring-security-oauth/docs/oauth2.html).
-
-> It is beyond the scope of this document to explain the workings of OAuth 2.0, Spring Security and Spring Security OAuth.
-> The configuration information in this document is meant to help you get started, but is in no way a replacement
-> for reading the documentation of the respective standards and projects.
-
-The authorization server uses Spring Security OAuth 2.0's `JdbcClientDetailsService` to store OAuth 2.0 client credentials.
-This necessitates access to a PostgreSQL database, although we intend to release a MongoDB service down the road to
-require either MongoDB or PostgreSQL, but not both.
-
-The client details in the `oauth_client_details` table controls the identity and authentication of clients, the grant
-types they can use to show they have been granted authorization, and the resources they can access and actions they
-can take once they have an access token. Specifically, the client details table contains
-
-* the identity of the client (column `client_id`)
-* the resource identifiers (column `resource_ids`) the client can access , `dataPoints` in our case
-* the client secret, if any (column `client_secret`)
-* the scope (column `scope`) to which the client is limited, in our case some comma-separated combination of
-    * `read_data_points` if the client is allowed to read data points
-    * `write_data_points` if the client is allowed to write data points
-    * `delete_data_points` if the client is allowed to delete data points
-* the authorization grant types (column `authorized_grant_types`) the client is limited to, some comma-separated combination of
-    * `authorization_code`, documented in the [Authorization Code](http://tools.ietf.org/html/rfc6749#section-1.3.1) section of the OAuth 2.0 spec
-    * `implicit`, documented in the [Implicit](http://tools.ietf.org/html/rfc6749#section-1.3.2) section
-    * `password`, documented in the [Resource Owner Password Credentials](http://tools.ietf.org/html/rfc6749#section-1.3.3) section of the OAuth 2.0 spec
-    * `refresh_token`, documented in the [Refresh Token](http://tools.ietf.org/html/rfc6749#section-1.5) section
-    * N.B. the `client_credentials` grant type in the [Client Credentials](http://tools.ietf.org/html/rfc6749#section-1.3.4) section is not yet supported, but slated to be
-* the Spring Security authorities (column `authorities`) the token bearer has, in our case `ROLE_CLIENT`
-
-To create a client,
-
-1. Connect to the `omh` PostgreSQL database.
-1. Add a row to the `oauth_client_details` table, as shown in this [sample script](resources/rdbms/common/oauth2-sample-data.sql).
+1. (Optional) Create "client" accounts with 3rd party services that you'll use (e.g. Google, Fitbit, Moves)
+1. Edit the `docker-compose.yml` file for your environment.
+1. Setup your machine and install Docker.
+1. Transfer the `docker-compose.yml` file to the machine and run it.
+1. Initialize the databases, and restart.
 
 
-#### Adding end-users
+## Step 1: Create client accounts with 3rd party services
 
-The data points accessible over the data point API belong to a user. In OAuth 2.0, this user is called the *resource owner* or *end-user*.
-A client requests authorization from the authorization server to access the data points of one or more users.
+`NOTE:` It is possible to setup and run the Ohmage suite without creating any of the 3rd party accounts listed below, and you can always come back later and add integration with these services. If you want to run Ohmage without these 3rd party services, skip to Step 2.
 
-The authorization server includes a simple RESTful endpoint to create users. To create a user, either execute the following command
+#### 3rd Party - Google Client ID
 
-```bash
-curl -H "Content-Type:application/json" --data '{"username": "testUser", "password": "testUserPassword"}' http://host:8082/users
+Currently, the Ohmage suite allows users to login using their Google account.  To enable this, you will register your instance of the suite with Google, so they can provide the authorization between the user and your system.  When you have done this, Google will assign your system a 'clientId' and 'clientSecret' which you will use for credentials.
+
+To start you will need to have a project on the Google APIs Console (you can create a new one or add to an existing one).  You can find more information about that [here](https://developers.google.com/console/help/)  To add a Client ID within the project, navigate to the project console, and on the left-hand menu select APIs & auth > Credentials.  Select "Create a new Client ID".  Enter the information and create the ID.  NOTE: You must have a domain name for your server, because Google APIs does not accept raw IP addresses as redirects.
+
+Record your `clientId` and `clientSecret` for later.   
+
+
+#### 3rd Party - Fitbit API
+
+If you wish to use Fitbit data, you will need to create a developer account with them and register your instance of the suite to get a 'clientId' and 'clientSecret'.  If you do not wish to use Fitbit data, you can skip this, and additionally exclude those parameters when starting the shim Docker container, below.  (i.e. remove '-e openmhealth.shim.fitbit.clientId=...' and '-e openmhealth.shim.fitbit.clientSecret=...' when starting the container).
+
+To get started, go [here](https://dev.fitbit.com) and create a developer account.  Once you logged into the developer account, select "Register an App", which takes you [here](https://dev.fitbit.com/apps/new).  Enter the information for your instance of the suite.  Use the following settings:
+
+```
+Application Type = Browser
+Callback URL = {YOUR BASE DOMAIN URL}/shim/authorize/fitbit/callback
+Default Access Type = Read-Only
 ```
 
-or use the *create an end-user/success or conflict* request in the Postman collection discussed [below](#issuing-requests-with-postman).
+Once created, record the `OAuth 2.0 Client ID` and `Client Secret` for later.
 
-The user creation endpoint is primitive by design; it is only meant as a way to bootstrap a couple users
-when first starting out. In general, the creation of users is typically the concern of a user management component,
-not the authorization server. And it's quite common
- for integrators to already have a user management system complete with its own user account database before introducing the
- authorization server.
+## Step 2: Edit the 'docker-compose' file
+Docker Compose is a tool for configuring multiple Docker containers with a single script.  When creating and starting all the containers, you will specify a single 'docker-compose.yml' file to automate the setup.
 
-To integrate a user management system with the authorization server, you would
+The main template for the `docker-compose.yml` file is in this repository in the /docker directory, named `docker-compose.SAMPLE.yml`.  You can make a copy of this file, and name it `docker-compose.yml`.
 
-1. Disable the `org.openmhealth.dsu.controller.EndUserController`, usually by commenting out the `@Controller` annotation.
-1. Provide your own implementation of either the `org.openmhealth.dsu.service.EndUserService` or the
- `org.openmhealth.dsu.repository.EndUserRepository`, populating `org.openmhealth.dsu.domain.EndUser` instances with data read from your own data stores or APIs.
+If you are setting up the a local version of Ohmage, you can use the file as is.  If you are running on a remote server, you will want to update the variable values that are in the file, indicated with "{}" brackets. For the `{BASE URL}`, include the "http://" at the beginning.  For any of the services you are not using (including Google Signin and Mandrill), you can just leave the variables as is, without editing them.
 
-### Issuing requests with Postman
+## Step 3: Setup the machine and install Docker
 
-Your code interacts with the authorization and resource servers by sending them HTTP
-requests. To make learning about those requests easier, we've created a [Postman](http://www.getpostman.com/) collection
-that contains a predefined set of requests for different actions and outcomes. Postman is a Chrome
-packaged application whose UI lets you craft and send HTTP requests.
+Our testing was done on an AWS instance, with their Ubuntu 14.04.2 distro. However, the suite should run fine on any OS that is supported by Docker.  The rest of the instructions assume you are able to access a terminal on your host machine (ssh).
 
-> These instructions are written for Postman 1.0.1. If you're using a newer version and they don't work,
-> [let us know](https://github.com/openmhealth/omh-dsu-ri/issues) and we'll fix them.
+NOTE: On VM hosts such as AWS, port 80 is not open, by default.  Through the AWS Console, you can open port 80 by following the steps [here](http://stackoverflow.com/questions/5004159/opening-port-80-ec2-amazon-web-services).
 
-To set up the collection,
+Once your machine is setup, you can find instructions to install Docker Compose for your OS [here](https://docs.docker.com/compose/install/) (This includes instructions for installing Docker Engine, too).
 
-1. [Download Postman](https://chrome.google.com/webstore/detail/postman-rest-client-packa/fhbjgbiflinjbdggehcddcbncdddomop).
-1. [Start it](http://www.getpostman.com/docs/launch).
-1. Click the *Import* button, choose the *Download from link* tab and paste `https://www.getpostman.com/collections/18e6065476d59772c748`
-1. The collection should now be available. The folder names describe the requests, and the request names describe the expected outcome.
-1. Create an [environment](https://www.getpostman.com/docs/environments). Environments provide values for the `{{...}}` placeholders in the collection.
-   Add the following environment keys and values, possibly changing the values if you've customised the installation.
-    * `authorizationServer.host` - IP address of your Docker host (on Mac OS X and Windows, `docker-machine ip <host>` will print this IP to the console)
-    * `authorizationServer.port` -  `8082`
-    * `resourceServer.host` -  IP address of your Docker host
-    * `resourceServer.port` -  `8083`
-    * `accessToken` - issue the *get access token using RO password grant/success* request and copy the `access_token` value from the response here, without quotes
-    * `apiVersion` -  `1.0.M1`
+NOTE: If you get a `Permission denied` error when trying to install via curl, run `sudo -i` first.
 
-To send a request, pick the request and click its *Send* button. The different requests should be self-explanatory,
-and correspond to the verbs and resources in the [data point API](docs/raml/API.yml).
+## Step 4: Transfer your docker-compose.yml and nginx.conf file
 
-The folders also have descriptions,
-which you can currently only see by clicking the corresponding *Edit folder* button (but Postman are
-[working on that](https://github.com/a85/POSTMan-Chrome-Extension/issues/816)). You can see the request descriptions by
-selecting the request.
+Somehow, you need to get your modified `docker-compose.yml` and the `nginx.conf` files to the server.
 
-### Using the authorization server
-
-We may add documentation here if we find that the Postman collection isn't sufficient.
-
-### Using the resource server
-
-The data point API is documented in a [RAML file](docs/raml/API.yml) to avoid ambiguity.
-
-A data point looks something like this
-
-```json
-{
-    "header": {
-        "id": "123e4567-e89b-12d3-a456-426655440000",
-        "creation_date_time": "2013-02-05T07:25:00Z",
-        "schema_id": {
-            "namespace": "omh",
-            "name": "physical-activity",
-            "version": "1.0"
-        },
-        "acquisition_provenance": {
-            "source_name": "RunKeeper",
-            "modality": "sensed"
-        },
-        "user_id": "joe"
-    },
-    "body": {
-        "activity_name": "walking",
-        "distance": {
-            "value": 1.5,
-            "unit": "mi"
-        },
-        "reported_activity_intensity": "moderate",
-        "effective_time_frame": {
-            "time_interval": {
-                "date": "2013-02-05",
-                "part_of_day": "morning"
-            }
-        }
-    }
-}
+If you are using Linux, cd to this directory, and you can transfer the file with something like:
+```
+scp docker/docker-compose.yml ubuntu@{BASE URL}:~
+scp nginx/nginx.conf ubuntu@{BASE URL}:~
 ```
 
-We may add documentation here if we find that the Postman collection isn't sufficient.
+Once the files are transferred, ssh into the machine, and you can move it to a sub-directory with:
+```
+cd ~
+mkdir omh
+mv docker-compose.yml omh
+cd omh
+```
+NOTE: We move the file to the `omh` directory to give each Docker container a consistent naming prefix, because it by default includes the current directory name.
 
 
-### Roadmap
+## Step 5: Initialize the databases and restart
 
-The following features are scheduled for future milestones
+We use Docker volume containers to store the database data. To initialize these, run the commands specified in the top comments of the sample `docker-compose.yml` file, to create the `mongodata` and `postgresdata` containers.
 
-* support the client credentials grant type
-* improve test coverage
-* support refresh tokens
-* make it easier to customise the authorization code and implicit grant forms
-* support SSL out of the box
-* filter data points based on effective time frames
-* filter data points based on their bodies
+Once the volumes are created, the Mongo database is ready to go, but the Postgres database needs to be initialized by adding a few tables.  To add those tables, complete the following steps:
 
-If you have other feature requests, [create an issue for each](https://github.com/openmhealth/omh-dsu-ri/issues)
-and we'll figure out how to prioritise them.
+1. Start the Postgres container with `sudo docker-compose up -d postgres`.
+1. Run `sudo docker exec -it omh_postgres_1 bash` to start a shell on the `postgres` container
+1. Run `psql -U postgres` in the resulting shell to start `psql`
+1. Run `CREATE DATABASE omh`
+1. Copy and paste the contents of the [database setup script](https://github.com/smalldatalab/omh-dsu/blob/master/resources/rdbms/postgresql/oauth2-ddl.sql) to create the tables.
+1. Copy and paste the contents of the [client initialization script](https://github.com/smalldatalab/omh-dsu/blob/master/resources/rdbms/postgresql/initialize-oauth-clients.sql) to add the client details for the various apps and 3rd party integrations.
+1. `\q` to exit `psql`
+1. `exit` to exit the shell
+
+Once the databases are ready, you can simply start all the containers and they will be ready to go.  Start all containers with:
+```
+sudo docker-compose up -d
+
+# Stop all containers with
+sudo docker-compose stop
+```
+
+At this point, you should be ready to go.  You can login as sample users with the info below, or follow the "Getting Started" instructions in the section below.
+
+Role | URL | Username | password
+--- | --- | --- | ---
+Study Manager | {BASE URL}/manage | manager1 | manager1
+System Admin | {BASE URL}/manage | admin | admin
+
+# Getting Started
+
+Once you have installed the platform, you can follow these instructions to login as the various user roles.
+
+## Sign in as a Study Manager
+
+1. In a browser, navigate to `{BASE URL}/manage`, and login with the sample Study Manager account info in the table above.
+1. The first page shows a list of studies this manager has access to. Click on "Example Study 1".
+1. This page shows a list of participants who are enrolled in the study. You'll notice two sample participants have been automatically created.
+1. On the right side is a list of the "Apps" that are enabled for the study, along with the data types that are collected for each.  For the example study, all possible Apps have been enabled.  Under that list, you'll see a list of the Surveys that are enabled for this study.  These are the surveys a participant will see if they install and login to the Ohmage-omh mobile survey app.
+1. Click on a participant in the table. If there was data for that participant, you will see points on the calendar for each day that user has data.
+1. Click on the "Browse Study Data" button in the upper right. Here you can view data in tablular format by selecting a data type and a participant.  To view Survey Responses collected from the Ohmage-omh mobile survey app, select the "Survey Responses" tab.
+1. Go back the study page, and click the green "New Participant" button.  You'll see that a study manager can create a new participant account.  Take note that once you create the username and password for the participant to use when they login, you cannot retrieve that information, so make sure to write it down.
+1. Create a new participant with
+  - Label: Test 1
+  - Login: test1
+  - Password: test1  (or whatever you want)
+1. You've now seen most of the Study Manager features. You'll now switch over to acting as a participant, to see how they would interact with the platform.
+
+## Sign in as a participant
+
+Participants can login to a homepage to view available apps and the studies they are enrolled in.
+
+1. In a browser, navigate to the `{BASE URL}` and login with the sample participant info that you just created.
+1. Scroll down, and notice the participant is already enrolled in the "Example Study 1".
+1. On a mobile device, you can install any of the apps listed, and login with that same info. All data collected will be associated with this sample participant.
+1. This is how any study participant would login to the apps, once a Study Manager has created login information for them.
+
+## Sign in as the System Admin
+
+The System Admin user is the top level user for the platform. They are responsible for creating and managing studies, study managers, and study configurations such as which Apps and Data Types are enabled, and which surveys are enabled.
+
+1. In a browser, navigate to `{BASE URL}/manage` and login with System Admin account info in the table above.
+1. View a list of all Study Manager accounts by clicking on Administration > User Management in the top menu bar.
+1. View a list of other objects by selecting one under the Entities menu in the top menu bar.
 
 
-### Contributing
+# Logs
+All of the containers will create log files for their server or database.  These files will reside within the containers (not on the host machine's fiel system), unless you update the docker-compose.yml configuration.
 
-If you'd like to contribute any code
+In the docker-compose-EXAMPLE.yml file provided, each service has a commented out `volumes` section.  You can uncomment these two lines for each, to write the log files to the host machine using a volume mount. The first part of the parameter (before the :) specifies the location on your host machine you want the parent log directory to be. Each container will create a sub-directory inside this location. The second part of the parameter (after the :) is the location inside the container that the log file is written to.  Edit the first part for your system, but leave the second part as is.
 
-1. [Open an issue](https://github.com/openmhealth/omh-dsu-ri/issues) to let us know what you're going to work on.
-  1. This lets us give you feedback early and lets us put you in touch with people who can help.
-2. Fork this repository.
-3. Create your feature branch `feature/do-x-y-z` from the `develop` branch.
-4. Commit and push your changes to your fork.
-5. Create a pull request.
+# Updating a Docker container
+Once installation is completed, your Docker host will have copies of all the images from Docker Hub, and start and stop the containers as you wish.  However, if an updated release of one or multiple images is published to Docker Hub by SmallDataLab, your installation will not automatically update it's local images.
+
+To update a local image to the latest build, you can follow these steps. This is an example for the `ohmage-auth-server` image, but you can substitute any other image and run the same steps.
+
+IMPORTANT: This requires you to temporarily stop the application, so your users will experience downtime.
+
+1. Connect to server in a terminal.
+1. Navigate to the Docker Compose directory with `cd ~/omh`.
+1. Stop ohmage-omh by running `sudo docker-compose stop`.
+1. Fetch the latest build by running `sudo docker pull smalldatalab/ohmage-auth-server:latest`.
+1. Restart the containers by running `sudo docker-compose up -d`.
