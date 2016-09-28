@@ -15,7 +15,16 @@
 
         var vm = this;
         vm.study = Study.get({id: $stateParams.study});
-        vm.participants = Study.getParticipants({id: $stateParams.study});
+        Study.getParticipants({id: $stateParams.study}, function(result) {
+            vm.participants = _.sortBy(result, function(obj) {
+                if(obj.label){
+                    obj.searchField = obj.id + " - " + obj.label;
+                } else {
+                    obj.searchField = obj.id + " - ";
+                }
+                return -obj.id;
+            });
+        });
         vm.participant = null;
         vm.dataType = null;
         vm.survey = null;
