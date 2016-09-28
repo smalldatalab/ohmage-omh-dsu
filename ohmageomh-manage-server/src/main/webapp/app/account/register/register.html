@@ -1,26 +1,26 @@
 <div>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <h1>Registration</h1>
+            <h1>Manager Registration</h1>
 
             <div class="alert alert-success" ng-show="vm.success">
-                <strong>Registration saved!</strong> Please check your email for confirmation.
+                <strong>Registration saved.</strong> Please contact the System Administrator to activate your account.
             </div>
 
             <div class="alert alert-danger" ng-show="vm.error">
-                <strong>Registration failed!</strong> Please try again later.
+                <strong>Registration failed.</strong> Please try again later.
             </div>
 
             <div class="alert alert-danger" ng-show="vm.errorUserExists">
-                <strong>Login name already registered!</strong> Please choose another one.
+                <strong>Login name already registered.</strong> Please choose another one.
             </div>
 
             <div class="alert alert-danger" ng-show="vm.errorEmailExists">
-                <strong>E-mail is already in use!</strong> Please choose another one.
+                <strong>E-mail is already in use.</strong> Please choose another one.
             </div>
 
             <div class="alert alert-danger" ng-show="vm.doNotMatch">
-                The password and its confirmation do not match!
+                The password and its confirmation do not match.
             </div>
         </div>
         <div class="col-md-8 col-md-offset-2">
@@ -116,7 +116,7 @@
             </form>
             <p></p>
             <div class="alert alert-warning">
-                If you want to <a class="alert-link" href="" ng-click="vm.login()">sign in</a>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").
+                If you have an account, <a class="alert-link" href="" ng-click="vm.login()">sign in</a>.
             </div>
         </div>
     </div>

@@ -1,4 +1,6 @@
-# Ohmage-omh Platform - From the Small Data Lab @ CornellTech
+# Ohmage-omh Platform
+
+From the Small Data Lab @ CornellTech
 
 This repository holds the majority of the code base for the Ohmage-omh platform, along with instructions for setting up your own instance of it.  For more information about what the Ohmage-omh platform is, view the [main website here](http://smalldata.io/ohmage-omh-website/), and you can learn more about the Small Data Lab [here](http://smalldata.io).
 

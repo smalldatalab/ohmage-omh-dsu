@@ -23,7 +23,7 @@ spring:
         livereload:
             enabled: false # we use gulp + BrowserSync for livereload
     datasource:
-        url: jdbc:postgresql://192.168.99.101:5432/ohmage
+        url: jdbc:postgresql://192.168.99.103:5432/ohmage
         name:
         username: postgres
         password:
@@ -44,7 +44,7 @@ spring:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
         mongodb:
-              host: 192.168.99.101
+              host: 192.168.99.103
               database: omh
               #port: 27017
     mail:

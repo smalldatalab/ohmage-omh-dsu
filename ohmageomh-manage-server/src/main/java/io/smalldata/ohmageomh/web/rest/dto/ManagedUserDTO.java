@@ -24,6 +24,8 @@ public class ManagedUserDTO extends UserDTO {
 
     private ZonedDateTime lastModifiedDate;
 
+    private String resetKey;
+
     @NotNull
     @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
     private String password;
@@ -38,6 +40,7 @@ public class ManagedUserDTO extends UserDTO {
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
         this.password = null;
+        this.resetKey = user.getResetKey();
     }
 
     public ManagedUserDTO(Long id, String login, String password, String firstName, String lastName,
@@ -84,6 +87,14 @@ public class ManagedUserDTO extends UserDTO {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getResetKey() {
+        return resetKey;
+    }
+
+    public void setResetKey(String resetKey) {
+        this.resetKey = resetKey;
     }
 
     @Override

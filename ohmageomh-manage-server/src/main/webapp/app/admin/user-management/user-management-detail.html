@@ -1,5 +1,12 @@
 <div>
-    <h2><span>User</span> "{{vm.user.login}}"</h2>
+    <h2><span>User: </span> {{vm.user.login}}</h2>
+
+    <div class="alert alert-warning" ng-if="vm.user.resetKey">
+        The user has requested a password reset.  Send them the following link to set a new password:
+        <br/><br/>
+        {{vm.rootUrl}}/manage/#/reset/finish?key={{vm.user.resetKey}}
+    </div>
+    
     <dl class="dl-horizontal">
         <dt><span>Login</span></dt>
         <dd><span>{{vm.user.login}}<span></dd>
@@ -26,6 +33,7 @@
             </ul>
         </dd>
     </dl>
+
     <button type="submit"
             ui-sref="user-management"
             class="btn btn-info">
