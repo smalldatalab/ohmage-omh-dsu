@@ -13,11 +13,9 @@
     </button> &nbsp <span style="color: #7e7e7e;">Study:</span>  {{vm.study.name}}
 </h3>
 <hr/>
-<uib-tabset type="tabs">
-    <uib-tab index="0" heading="Data Points">
-        <br/>
+
         <div class="container-fluid">
-            <form name="searchForm" role="form" novalidate ng-submit="vm.loadData()">
+            <form name="searchForm" role="form" novalidate ng-submit="vm.executeLoad()">
                 <div class="row">
                     <div class="col-xs-4 no-padding-left">
                         <div class="form-group">
@@ -27,66 +25,37 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <div class="form-group">
-                            <label>Participant</label>
+                            <label>Participant &nbsp; &nbsp;
+                                <span
+                                    uib-tooltip="Type to filter participants. To list all participants, delete all the text."
+                                        class="glyphicon glyphicon-info-sign text-info"></span></label>
                             <input type="text" ng-model="vm.participant" class="form-control"
                                    uib-typeahead="participant as participant.searchField for participant in vm.participants | filter:$viewValue"
                                    typeahead-min-length="0">
 
                         </div>
                     </div>
-                    <div class="col-xs-4 no-padding-right" style="padding-top: 25px;">
-                        <button type="submit" class="btn btn-primary">
+                    <div class="col-xs-2 no-padding-right" style="padding-top: 25px;">
+                        <button type="submit" class="btn btn-primary" ng-disabled="vm.loadingStatus.active">
                             <span class="glyphicon glyphicon-refresh"></span>
                         <span class="hidden-xs" >
                             Load Data
                         </span>
                         </button>
                     </div>
-                </div>
-                <jhi-alert></jhi-alert>
-
-            </form>
-        </div>
-
-    </uib-tab>
-    <uib-tab index="1" heading="Survey Responses">
-        <br/>
-        <div class="container-fluid">
-            <form name="surveyForm" role="form" novalidate ng-submit="vm.loadSurveyData()">
-                <div class="row">
-                    <div class="col-xs-4 no-padding-left">
-                        <div class="form-group">
-                            <label>Survey</label>
-                            <select class="form-control" name="survey" ng-model="vm.survey" ng-options="survey as survey.name for survey in vm.study.surveys track by survey.id">
-                                <option value="">All surveys</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-xs-4">
-                        <div class="form-group">
-                            <label>Participant</label>
-                            <input type="text" ng-model="vm.participant" class="form-control"
-                                   uib-typeahead="participant as participant.searchField for participant in vm.participants | filter:$viewValue"
-                                   typeahead-min-length="0">
-                        </div>
-                    </div>
-                    <div class="col-xs-4 no-padding-right" style="padding-top: 25px;">
-                        <button type="submit" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-refresh"></span>
-                        <span class="hidden-xs" >
-                            Load Survey Responses
-                        </span>
-                        </button>
+                    <div class="col-xs-3" ng-if="vm.loadingStatus.active">
+                        <label>Loading...</label>
+                        <uib-progressbar class="progress-striped active"
+                                         max="vm.loadingStatus.totalCount"
+                                         value="vm.loadingStatus.loadedCount" type="warning"><i></i></uib-progressbar>
                     </div>
                 </div>
                 <jhi-alert></jhi-alert>
 
             </form>
         </div>
-    </uib-tab>
 
-</uib-tabset>
 <div ui-grid="vm.gridOptions" ui-grid-exporter ui-grid-resize-columns ui-grid-pagination style="min-height: 600px;"></div>
 
