@@ -46,6 +46,7 @@
                             <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                             <th jh-sort-by="label"><span>Label</span> <span class="glyphicon glyphicon-sort"></span></th>
                             <th ng-repeat="dataType in vm.study.dataTypes">Latest <a class="event event-{{dataType.color}}" style="display: inline-block;"></a></th>
+                            <th style="width: 35px;"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -54,6 +55,10 @@
                             <td>{{participant.label}}</td>
                             <td ng-repeat="dataType in vm.study.dataTypes">
                                 {{participant.latestDataPointDates[dataType.id] | date}}
+                            </td>
+                            <td style="width: 35px;">
+                                <a ui-sref="dashboard.editParticipant({participant: {{participant.id}}})"><i
+                                class="glyphicon glyphicon-pencil text-info"></i></a>
                             </td>
                         </tr>
                         </tbody>

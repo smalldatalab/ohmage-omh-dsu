@@ -90,5 +90,30 @@
                         });
                 }]
             })
+            .state('dashboard.editParticipant', {
+                parent: 'dashboard',
+                url: '/editParticipant?participant',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'app/dashboard/dashboard-participant-dialog.html',
+                        controller: 'DashboardParticipantDialogController',
+                        controllerAs: 'vm',
+                        backdrop: 'static',
+                        size: 'lg',
+                        resolve: {
+                            entity: ['Participant', function(Participant) {
+                                return Participant.get({id : $stateParams.participant});
+                            }]
+                        }
+                    }).result.then(function() {
+                            $state.go('dashboard', null, { reload: true });
+                        }, function() {
+                            $state.go('dashboard');
+                        });
+                }]
+            })
     }
 })();

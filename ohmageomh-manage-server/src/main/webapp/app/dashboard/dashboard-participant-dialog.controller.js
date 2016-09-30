@@ -14,7 +14,7 @@
         }
 
         var vm = this;
-        vm.participant = {};
+        vm.participant = entity;
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -32,10 +32,15 @@
 
         vm.save = function () {
             vm.isSaving = true;
-            Study.saveParticipant({
-                id: $stateParams.study,
-                participant: vm.participant
-            }, onSaveSuccess, onSaveError);
+            if (vm.participant.id !== null) {
+                Participant.update(vm.participant, onSaveSuccess, onSaveError);
+            } else {
+                Study.saveParticipant({
+                    id: $stateParams.study,
+                    participant: vm.participant
+                }, onSaveSuccess, onSaveError);
+            }
+
         };
 
         vm.clear = function() {
