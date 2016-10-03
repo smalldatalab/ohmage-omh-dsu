@@ -7,4 +7,4 @@ RUN mkdir -p $SERVER_PREFIX
 ADD ohmageomh-manage-server.war $SERVER_PREFIX/
 EXPOSE 8080
 
-CMD /usr/bin/java -jar $SERVER_PREFIX/ohmageomh-manage-server.war --spring.config.location=file:$SERVER_PREFIX/
+CMD /usr/bin/java -jar $SERVER_PREFIX/ohmageomh-manage-server.war
