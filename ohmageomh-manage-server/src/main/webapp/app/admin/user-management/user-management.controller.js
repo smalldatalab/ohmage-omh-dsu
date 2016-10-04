@@ -25,7 +25,7 @@
 
         vm.loadAll();
 
-        
+
 
         Principal.identity().then(function(account) {
             vm.currentAccount = account;
@@ -33,10 +33,13 @@
 
 
         function loadAll () {
-            User.query({page: vm.page - 1, size: paginationConstants.itemsPerPage}, function (result, headers) {
+            // Disabled pagination
+            User.query({page: 0, size: 10000}, function (result, headers) {
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
-                vm.users = result;
+                vm.users = _.sortBy(result, function(obj) {
+                    return obj.login;
+                });
             });
         }
 

@@ -21,20 +21,13 @@
         vm.loadAll();
 
         function loadAll () {
-            if (pagingParams.search) {
-                StudySearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: paginationConstants.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                Study.query({
-                    page: pagingParams.page - 1,
-                    size: paginationConstants.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+
+            Study.query({
+                page: 0,
+                size: 10000,
+                sort: sort()
+            }, onSuccess, onError);
+
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {

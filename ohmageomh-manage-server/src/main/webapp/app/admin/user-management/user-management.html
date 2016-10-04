@@ -7,6 +7,11 @@
               <span class="glyphicon glyphicon-flash"></span> <span>Create a new User</span>
           </button>
       </div>
+        <div class="col-md-8">
+            <div class="pull-right">
+                Showing {{vm.totalItems}} of {{vm.totalItems}} items
+            </div>
+        </div>
     </div>
     <div class="table-responsive">
         <table class="table table-striped">
@@ -16,10 +21,9 @@
                 <th>Login</th>
                 <th>Email</th>
                 <th></th>
-                
+
                 <th>Profiles</th>
                 <th>Created Date</th>
-                <th>Last Modified By</th>
                 <th>Last Modified Date</th>
                 <th></th>
             </tr>
@@ -31,19 +35,18 @@
                 <td>{{user.email}}</td>
                 <td>
                     <span class="label label-danger" ng-click="vm.setActive(user, true)" ng-show="!user.activated"
-                          style="cursor: pointer;">Desactivated</span>
+                          style="cursor: pointer;">Deactivated</span>
                     <span class="label label-success" ng-click="vm.setActive(user, false)" ng-show="user.activated"
                           style="cursor: pointer;">Activated</span>
                 </td>
-                
+
                 <td>
                     <div ng-repeat="authority in user.authorities">
                         <span class="label label-info">{{ authority }}</span>
                     </div>
                 </td>
-                <td>{{user.createdDate | date:'dd/MM/yy HH:mm'}}</td>
-                <td>{{user.lastModifiedBy}}</td>
-                <td>{{user.lastModifiedDate | date:'dd/MM/yy HH:mm'}}</td>
+                <td>{{user.createdDate | date:'MM/dd/yy'}}</td>
+                <td>{{user.lastModifiedDate | date:'MM/dd/yy'}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
@@ -69,8 +72,5 @@
             </tr>
             </tbody>
         </table>
-    </div>
-    <div class="text-center">
-        <uib-pagination class="pagination-sm" total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.loadAll()"></uib-pagination>
     </div>
 </div>
