@@ -20,6 +20,8 @@
             'ui.grid.pagination',
             // jhipster-needle-angularjs-add-module JHipster will add new module here
             'angular-loading-bar',
+            'ui.select',
+            'ngSanitize',
             'mwl.calendar'])
         .run(run);
 

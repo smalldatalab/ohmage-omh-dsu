@@ -49,7 +49,7 @@
                 if(obj.label){
                     obj.searchField = obj.id + " - " + obj.label;
                 } else {
-                    obj.searchField = obj.id + " - ";
+                    obj.searchField = obj.id;
                 }
                 return -obj.id;
             });

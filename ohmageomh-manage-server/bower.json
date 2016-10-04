@@ -25,6 +25,7 @@
         "swagger-ui": "2.1.4",
         "angular-object-diff": "1.0.3",
         "angular-ui-grid": "3.1.1",
+        "angular-ui-select": "0.19.4",
         "underscore": "1.8.3",
         "angular-bootstrap-calendar": "0.20.0"
     },
