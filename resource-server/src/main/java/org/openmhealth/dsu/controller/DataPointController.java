@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.http.HttpHeaders;
@@ -80,6 +81,8 @@ public class DataPointController {
     public static final String RESULT_OFFSET_PARAMETER = "skip";
     public static final String RESULT_LIMIT_PARAMETER = "limit";
     public static final String DEFAULT_RESULT_LIMIT = "100";
+    public static final String CHRONOLOGICAL = "chronological";
+    public static final String DEFAULT_CHRONOLOGICAL = "asc";
     public static final String MEDIA_DATA_POINT_HEADER_PROPERTY = "media";
 
     @Autowired
@@ -119,6 +122,7 @@ public class DataPointController {
             @RequestParam(value = CREATED_BEFORE_PARAMETER, required = false) final OffsetDateTime createdBefore,
             @RequestParam(value = RESULT_OFFSET_PARAMETER, defaultValue = "0") final Integer offset,
             @RequestParam(value = RESULT_LIMIT_PARAMETER, defaultValue = DEFAULT_RESULT_LIMIT) final Integer limit,
+            @RequestParam(value = CHRONOLOGICAL, defaultValue = DEFAULT_CHRONOLOGICAL) final String chronological,
             Authentication authentication) {
 
         // TODO add validation or explicitly comment that this is handled using exception translators
@@ -139,7 +143,8 @@ public class DataPointController {
             searchCriteria.setCreationTimestampRange(Range.lessThan(createdBefore));
         }
 
-        Iterable<DataPoint> dataPoints = dataPointService.findBySearchCriteria(searchCriteria, offset, limit);
+        Iterable<DataPoint> dataPoints = dataPointService.findBySearchCriteria(searchCriteria,
+                Sort.Direction.fromString(chronological), offset, limit);
 
         HttpHeaders headers = new HttpHeaders();
 

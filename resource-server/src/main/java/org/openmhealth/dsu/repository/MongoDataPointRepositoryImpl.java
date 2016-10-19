@@ -20,6 +20,7 @@ import com.google.common.collect.Range;
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
 import org.openmhealth.schema.domain.omh.DataPoint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -44,14 +45,16 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
     // if a data point is filtered by its data and not just its header, these queries will need to be written using
     // the MongoDB Java driver instead of Spring Data MongoDB, since there is no mapping information to work against
     @Override
-    public Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria, @Nullable Integer offset,
-            @Nullable Integer limit) {
+    public Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria,
+                                                    Sort.Direction order,
+                                                    @Nullable Integer offset,
+                                                    @Nullable Integer limit) {
 
         checkNotNull(searchCriteria);
         checkArgument(offset == null || offset >= 0);
         checkArgument(limit == null || limit >= 0);
 
-        Query query = newQuery(searchCriteria);
+        Query query = newQuery(searchCriteria, order);
 
         if (offset != null) {
             query.skip(offset);
@@ -64,7 +67,7 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
         return mongoOperations.find(query, DataPoint.class);
     }
 
-    private Query newQuery(DataPointSearchCriteria searchCriteria) {
+    private Query newQuery(DataPointSearchCriteria searchCriteria, Sort.Direction order) {
 
         Query query = new Query();
 
@@ -85,6 +88,8 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
         if (searchCriteria.getCreationTimestampRange().isPresent()) {
             addCreationTimestampCriteria(query, searchCriteria.getCreationTimestampRange().get());
         }
+        query.with(new Sort(order == Sort.Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
+                "header.creation_date_time_epoch_milli"));
 
         return query;
     }

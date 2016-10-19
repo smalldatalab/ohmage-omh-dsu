@@ -18,6 +18,7 @@ package org.openmhealth.dsu.repository;
 
 import org.openmhealth.dsu.domain.DataPointSearchCriteria;
 import org.openmhealth.schema.domain.omh.DataPoint;
+import org.springframework.data.domain.Sort;
 
 import javax.annotation.Nullable;
 
@@ -29,6 +30,8 @@ import javax.annotation.Nullable;
  */
 public interface CustomDataPointRepository {
 
-    Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria, @Nullable Integer offset,
-            @Nullable Integer limit);
+    Iterable<DataPoint> findBySearchCriteria(DataPointSearchCriteria searchCriteria,
+                                             Sort.Direction order,
+                                             @Nullable Integer offset,
+                                                @Nullable Integer limit);
 }
