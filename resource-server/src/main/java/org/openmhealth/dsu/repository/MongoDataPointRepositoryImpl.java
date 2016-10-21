@@ -89,7 +89,7 @@ public class MongoDataPointRepositoryImpl implements CustomDataPointRepository {
             addCreationTimestampCriteria(query, searchCriteria.getCreationTimestampRange().get());
         }
         query.with(new Sort(order == Sort.Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
-                "header.creation_date_time_epoch_milli"));
+                "header.creation_date_time"));
 
         return query;
     }
