@@ -35,12 +35,12 @@ auth:
     ports:
         - "8082:8082"
     environment:
-        - application.url=http://{BASE URL}/dsu/
+        - application.url=http://www.apifit.com/dsu/
         - spring.datasource.url=jdbc:postgresql://omh-postgres:5432/omh
         - ohmageomh.datasource.url=jdbc:postgresql://omh-postgres:5432/ohmage
         - spring.data.mongodb.host=omh-mongo
-        - google.clientId={GOOGLE CLIENT ID}
-        - google.clientSecret={GOOGLE CLIENT SECRET}
+        - google.clientId=346754742548-0pjcmk56p6i1e7bp72bqc9lolju3lc00.apps.googleusercontent.com
+        - google.clientSecret=8Nyeif4vEKUcWEB8mCDTnIvy
         - server.port=8082
     # volumes:
         # Uncomment and update /path/to/logs' if you want local log files
@@ -73,7 +73,7 @@ manage:
       - shim.endpoint=http://ohmage-shim:8084
       - spring.datasource.url=jdbc:postgresql://ohmage-postgres:5432/ohmage
       - server.port=8080
-      - application.url=https://{BASE URL}/manage/
+      - application.url=https://www.apifit.com/manage/
     #volumes:
     #  - /var/log/ohmage/manage:/var/log/ohmage-manage
 shim:
@@ -94,20 +94,20 @@ shim:
     # volumes:
         # Uncomment and update '/path/to/logs' if you want local log files
         # - /path/to/logs/shim:/var/log/ohmage-shim
-# dpu:
-#     image: smalldatalab/ohmage-dpu-server:latest
-#     links:
-#         - mongo:omh-mongo
-#         - postgres:omh-postgres
-#         - shim:ohmage-shim
-#     environment:
-#         - mongodb.uri=mongodb://omh-mongo/omh
-#         - shim.endpoint=http://ohmage-shim:8084
-#         - log.file=/var/log/ohmage-dpu/clojure.log
-#         - gmap.geo.coding.server.key=AIzaSyAZ4G_3oRtixvSizVat-cEr5TcLyLnN80w
-#         - sync.tasks=fitbit:STEPS,fitbit:ACTIVITY
-#         - admin.dashboard.jdbc.uri=jdbc:postgresql://omh-postgres/admindashboard?user=postgres&password=postgres
-#         - _JAVA_OPTIONS= -Xms256m -Xmx512m
+ dpu:
+     image: smalldatalab/ohmage-dpu-server:latest
+     links:
+         - mongo:omh-mongo
+         - postgres:omh-postgres
+         - shim:ohmage-shim
+     environment:
+         - mongodb.uri=mongodb://omh-mongo/omh
+         - shim.endpoint=http://ohmage-shim:8084
+         - log.file=/var/log/ohmage-dpu/clojure.log
+         - gmap.geo.coding.server.key=AIzaSyAZ4G_3oRtixvSizVat-cEr5TcLyLnN80w
+         - sync.tasks=fitbit:STEPS,fitbit:ACTIVITY
+         - admin.dashboard.jdbc.uri=jdbc:postgresql://omh-postgres/admindashboard?user=postgres&password=postgres
+         - _JAVA_OPTIONS= -Xms256m -Xmx512m
 #     # volumes:
 #         # Uncomment and update '/path/to/logs' if you want local log files
 #         # - /path/to/logs/dpu:/var/log/ohmage-dpu
