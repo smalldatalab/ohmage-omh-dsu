@@ -49,7 +49,7 @@ import java.util.List;
  * @author Emerson Farrugia
  */
 @Configuration
-@EnableMongoRepositories(basePackages = "io.smalldata.ohmageomh.data.repository")
+@EnableMongoRepositories(basePackages = {"io.smalldata.ohmageomh.data.repository", "org.springframework.batch.mongodb"})
 public class MongoPersistenceConfiguration extends AbstractMongoConfiguration {
 
     @Autowired

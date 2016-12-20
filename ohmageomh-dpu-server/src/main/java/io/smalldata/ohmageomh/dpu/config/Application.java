@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @Configuration
 @ComponentScan(
-        basePackages = "io.smalldata.ohmageomh",
+        basePackages = {"io.smalldata.ohmageomh", "org.springframework.batch.mongodb"},
         excludeFilters = {
                 @ComponentScan.Filter(value = EnableAutoConfiguration.class),
         })
