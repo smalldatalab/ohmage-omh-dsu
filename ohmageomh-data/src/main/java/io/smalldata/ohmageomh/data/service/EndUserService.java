@@ -19,8 +19,8 @@ package io.smalldata.ohmageomh.data.service;
 import io.smalldata.ohmageomh.data.domain.EndUser;
 import io.smalldata.ohmageomh.data.domain.EndUserRegistrationData;
 
+import java.util.List;
 import java.util.Optional;
-
 
 /**
  * A service that manages user accounts.
@@ -32,6 +32,8 @@ public interface EndUserService {
     boolean doesUserExist(String username);
 
     void registerUser(EndUserRegistrationData registrationData);
+
+    List<EndUser> findAuthorizedUsers(String shimKey);
 
     Optional<EndUser> findUser(String username);
 }

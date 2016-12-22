@@ -6,6 +6,7 @@ import io.smalldata.ohmageomh.data.domain.EndUser;
 import io.smalldata.ohmageomh.data.service.DataPointService;
 import io.smalldata.ohmageomh.dpu.service.OmhShimService;
 import io.smalldata.ohmageomh.data.domain.DataPoint;
+import io.smalldata.ohmageomh.dpu.util.ItemDTO;
 import org.openmhealth.schema.domain.omh.DataPointHeader;
 import org.openmhealth.schema.domain.omh.StepCount;
 import org.slf4j.Logger;
@@ -18,9 +19,10 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-@Component("syncFitbitProcessor")
-public class SyncFitbitProcessor implements ItemProcessor<EndUser, List<DataPoint<StepCount>>> {
+@Component
+public class SyncFitbitProcessor implements ItemProcessor<ItemDTO, List<DataPoint<StepCount>>> {
 
     private static final Logger log = LoggerFactory.getLogger(SyncFitbitProcessor.class);
 
@@ -34,21 +36,13 @@ public class SyncFitbitProcessor implements ItemProcessor<EndUser, List<DataPoin
     private ObjectMapper objectMapper;
 
     @Override
-    public List<DataPoint<StepCount>> process(EndUser user) throws Exception {
+    public List<DataPoint<StepCount>> process(ItemDTO item) throws Exception {
 
-        // Set date range for past calendar week, ending Sunday
-        LocalDate now = LocalDate.now();
-//        LocalDate now = LocalDate.parse('2016-02-03', DateTimeFormatter.ISO_LOCAL_DATE)
-        LocalDate endDate = now.minusDays(now.getDayOfWeek().getValue());
-        LocalDate startDate = endDate.minusDays(6);
-
-        // Fetch data
-        JsonNode responseRoot = omhShimService.getDataAsJsonNode(user, "fitbit", "steps", true, startDate, endDate);
-        JsonNode responseBody = responseRoot.get("body");
-
+        // Create the StepCount data points.
         List<DataPoint<StepCount>> dataPoints = new ArrayList<DataPoint<StepCount>>();
-        if(responseBody.isArray()) {
-            for(JsonNode dataPointJson : responseBody) {
+        JsonNode stepsNode = (JsonNode) item.getExtra("stepsNode");
+        if(stepsNode.isArray()) {
+            for(JsonNode dataPointJson : stepsNode) {
                 DataPoint<StepCount> dataPoint = new DataPoint<>(
                         objectMapper.readValue(dataPointJson.get("header").toString(), DataPointHeader.class),
                         objectMapper.readValue(dataPointJson.get("body").toString(), StepCount.class));
@@ -56,14 +50,14 @@ public class SyncFitbitProcessor implements ItemProcessor<EndUser, List<DataPoin
                 // TODO Check if the data points already exist, or just delete dataPoints in last 7 days
 
                 // set the owner of the data point to be the user associated with the access token
-                dataPointService.setUserId(dataPoint.getHeader(), user.getUsername());
+                dataPointService.setUserId(dataPoint.getHeader(), item.getUser().getUsername());
 
                 dataPointService.save(dataPoint);
                 dataPoints.add(dataPoint);
             }
         }
 
-        log.info("=== Syncing Fitbit data now for user: " + user.getUsername());
+        log.info("=== Syncing Fitbit data now for user: " + item.getUser().getUsername());
         return dataPoints;
     }
 }

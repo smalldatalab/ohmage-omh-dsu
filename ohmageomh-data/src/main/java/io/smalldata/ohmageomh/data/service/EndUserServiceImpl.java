@@ -21,6 +21,8 @@ import io.smalldata.ohmageomh.data.domain.EndUserRegistrationData;
 import io.smalldata.ohmageomh.data.domain.EndUserRegistrationException;
 import io.smalldata.ohmageomh.data.repository.EndUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 /**
@@ -40,6 +47,9 @@ public class EndUserServiceImpl implements EndUserService {
 
     @Autowired
     private EndUserRepository endUserRepository;
+
+    @Autowired
+    private MongoOperations mongoOperations;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -73,6 +83,25 @@ public class EndUserServiceImpl implements EndUserService {
         }
 
         endUserRepository.save(endUser);
+    }
+
+    @Override
+    public List<EndUser> findAuthorizedUsers(String shimKey) {
+        Query query = new Query();
+
+        query.addCriteria(where("shimKey").is(shimKey));
+        query.addCriteria(where("serializedToken").exists(true));
+        query.fields().include("username");
+
+        List<String> ids = mongoOperations.find(query, String.class, "accessParameters");
+
+        Set<EndUser> users = new HashSet<>();
+        for(String id : ids) {
+            EndUser user = new EndUser();
+            // How do I create a user with the given ID????
+        }
+
+        return null;
     }
 
     @Override

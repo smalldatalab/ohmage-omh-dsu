@@ -8,10 +8,13 @@ import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.configuration.JobLocator;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +34,7 @@ public class JobResource {
     private final Logger log = LoggerFactory.getLogger(JobResource.class);
 
     @Autowired
-    private JobLauncher jobLauncher;
+    private JobRepository jobRepository;
 
     @Autowired
     private JobLocator jobLocator;
@@ -51,7 +54,13 @@ public class JobResource {
 //         jpBuilder.addString("callbackUrl", manualJobTriggerInfo.getCallbackUrl());
 
          try {
+             // This runs the job asynchronously
+             final SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
+             jobLauncher.setJobRepository(jobRepository);
+             final SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
+             jobLauncher.setTaskExecutor(simpleAsyncTaskExecutor);
              jobLauncher.run(jobLocator.getJob(manualJobTriggerInfo.getJobName()), jpBuilder.toJobParameters());
+
              return new ResponseEntity<String>(HttpStatus.OK);
 //             return ResponseEntity.ok().body(null);
          }  catch (NoSuchJobException e) {

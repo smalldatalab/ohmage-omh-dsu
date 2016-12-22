@@ -27,6 +27,9 @@ public class EndUserReader implements ItemReader<EndUser> {
         EndUser user = new EndUser();
         user.setUsername("localguy");
         users.add(user);
+        EndUser user2 = new EndUser();
+        user2.setUsername("localguy2");
+        users.add(user2);
         iterator = users.iterator();
     }
 
