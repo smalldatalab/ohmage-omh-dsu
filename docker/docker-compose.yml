@@ -118,7 +118,7 @@ nginx:
         - resource:ohmage-resource
         - shim:ohmage-shim
         - manage:ohmage-manage
-        # - dpu:ohmage-dpu
+        - dpu:ohmage-dpu
     ports:
         - "80:80"
         - "8081:8081"
