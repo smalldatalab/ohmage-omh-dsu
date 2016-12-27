@@ -35,7 +35,7 @@ auth:
     ports:
         - "8082:8082"
     environment:
-        - application.url=http://www.apifit.com/dsu/
+        - application.url=http://169.53.0.36/dsu/
         - spring.datasource.url=jdbc:postgresql://omh-postgres:5432/omh
         - ohmageomh.datasource.url=jdbc:postgresql://omh-postgres:5432/ohmage
         - spring.data.mongodb.host=omh-mongo
@@ -44,7 +44,7 @@ auth:
         - server.port=8082
     # volumes:
         # Uncomment and update /path/to/logs' if you want local log files
-        - /path/to/logs/auth:/var/log/ohmage-auth
+        # - /path/to/logs/auth:/var/log/ohmage-auth
 resource:
     image: smalldatalab/ohmage-resource-server:2.0
     links:
@@ -59,7 +59,7 @@ resource:
         - server.port=8084
     # volumes:
         # Uncomment and update /path/to/logs' if you want local log files
-        - /path/to/logs/resource:/var/log/ohmage-resource
+        # - /path/to/logs/resource:/var/log/ohmage-resource
 manage:
     restart: always
     image: smalldatalab/ohmage-manage-server:2.0.2
@@ -73,9 +73,9 @@ manage:
       - shim.endpoint=http://ohmage-shim:8084
       - spring.datasource.url=jdbc:postgresql://ohmage-postgres:5432/ohmage
       - server.port=8080
-      - application.url=https://www.apifit.com/manage/
+      - application.url=http://169.53.0.36/manage/
     #volumes:
-    - /var/log/ohmage/manage:/var/log/ohmage-manage
+    # - /var/log/ohmage/manage:/var/log/ohmage-manage
 shim:
     image: smalldatalab/ohmage-shim-server:qa
     links:
@@ -85,7 +85,7 @@ shim:
     environment:
         - logging.path=/var/log/ohmage-shim
         - spring.data.mongodb.uri=mongodb://mongo:27017/omh
-        - openmhealth.shim.server.callbackUrlBase=http://www.apifit.com/shims
+        - openmhealth.shim.server.callbackUrlBase=http://169.53.0.36/shims
         - openmhealth.shim.fitbit.clientId={FITBIT CLIENT ID}
         - openmhealth.shim.fitbit.clientSecret={FITBIT CLIENT SECRET}
         - openmhealth.shim.moves.clientId={MOVES CLIENT ID}
