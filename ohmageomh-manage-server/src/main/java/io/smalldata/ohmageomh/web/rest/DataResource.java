@@ -131,7 +131,8 @@ public class DataResource {
     @Timed
     public
     @ResponseBody
-    ResponseEntity<InputStreamResource> readMedia(@PathVariable String id, @PathVariable String mId) {
+    ResponseEntity<InputStreamResource> readMedia(@PathVariable String id, @PathVariable String mId,
+                                                  @RequestParam(value = "download", required = false, defaultValue = "false") boolean download) {
         Query query = new Query();
 
         query.addCriteria(where("metadata.data_point_id").is(id));
@@ -144,7 +145,11 @@ public class DataResource {
             HttpHeaders respHeaders = new HttpHeaders();
             respHeaders.setContentType(MediaType.parseMediaType(gridFsFile.getContentType()));
             respHeaders.setContentLength(gridFsFile.getLength());
-            respHeaders.setContentDispositionFormData("attachment", mId);
+            if(download) {
+                respHeaders.setContentDispositionFormData("attachment", mId);
+            } else {
+                respHeaders.set("Content-Disposition", "inline; filename=" + mId);
+            }
             InputStreamResource inputStreamResource = new InputStreamResource(gridFsFile.getInputStream());
             return new ResponseEntity<>(inputStreamResource, respHeaders, OK);
         }

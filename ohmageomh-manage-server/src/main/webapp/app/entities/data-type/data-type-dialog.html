@@ -66,7 +66,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_schemaVersion">Schema Version</label>
+            <label class="control-label" for="field_schemaVersion">Schema Version <small>(Must be of format [major].[minor], such as 2.0)</small></label>
             <input type="text" class="form-control" name="schemaVersion" id="field_schemaVersion"
                     ng-model="vm.dataType.schemaVersion"
                     ng-maxlength="255" />
@@ -91,7 +91,8 @@
         </div>
         <div class="form-group">
             <label class="control-label" for="field_csvMapper">Csv Mapper</label>
-            <p>The mapping is done via AngularJS's ui-grid plugin, and this field must be a valid JSON array of JSON objects that define the CSV columns. For information on the object parameters, view the <a target="_blank" href="https://github.com/angular-ui/ui-grid/wiki/Defining-columns">documentation here</a>.</p>
+            <p>The mapping is done via AngularJS's ui-grid plugin, and this field must be a valid JSON array of JSON objects that define the CSV columns. An example is provided at the bottom of this page. For information on the object parameters, view the <a target="_blank" href="https://github.com/angular-ui/ui-grid/wiki/Defining-columns">documentation here</a>.</p>
+            <p>To add a column that provides links to the media files attached to a data point, copy and paste the JSON object from the bottom of this page, as one of the fields.</p>
             <textarea type="text" rows="20" class="form-control" name="csvMapper" id="field_csvMapper"
                     ng-model="vm.dataType.csvMapper"></textarea>
         </div>
@@ -106,3 +107,17 @@
         </button>
     </div>
 </form>
+
+<div style="padding: 15px;">
+    <pre><code ng-non-bindable>
+        <strong>Sample Csv Mapper</strong><br/>
+        [ {"field": "header.participant_id", "displayName": "Participant ID"}, {"field": "header.participant_label", "displayName": "Participant Label"}, {"field": "body.creation_date_time", "displayName": "Date", "cellFilter": "date:'yyyy-MM-dd'"}]
+    </code></pre>
+
+    <pre><code ng-non-bindable>
+        <strong>Sample field for links to media files in data point:</strong><br/>
+        {"field": "header.media", "displayName": "Media", "cellTemplate": "&lt;div class=\"ui-grid-cell-contents\"&gt;&lt;span ng-repeat=\"media in grid.getCellValue(row, col)\"&gt;| File {{$index + 1}}:  &lt;a class=\"glyphicon glyphicon-eye-open\" title=\"View in new tab\" href=\"/manage/api/dataPoints/{{media.data_point_id}}/media/{{media.media_id}}/\" target=\"_blank\"&gt; &lt;/a&gt; or &lt;a class=\"glyphicon glyphicon-download\" title=\"Download file\" href=\"/manage/api/dataPoints/{{media.data_point_id}}/media/{{media.media_id}}/?download=true\" target=\"_blank\"&gt; &lt;/a&gt; &lt;/span&gt;&lt;/div&gt;"}
+    </code></pre>
+</div>
+
+
