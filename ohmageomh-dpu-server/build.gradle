@@ -64,7 +64,7 @@ dependencies {
     compile(group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final')
 
     // mobility dpu clojure API
-    compile 'mobility-dpu:mobility-dpu:0.5'
+    compile 'mobility-dpu:mobility-dpu:0.5.2'
     testCompile("junit:junit")
 }
 

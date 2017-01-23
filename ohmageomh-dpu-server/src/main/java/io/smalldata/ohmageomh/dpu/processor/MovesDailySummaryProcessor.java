@@ -43,12 +43,13 @@ public class MovesDailySummaryProcessor implements ItemProcessor<EndUser, List<D
 
     @Override
     public List<DataPoint<MobilityDailySummary>> process(EndUser user) throws Exception {
-        JsonNode responseBody = objectMapper.readTree(mobility_dpu.api.movesDatapoints(user.toString()));
+        JsonNode responseBody = objectMapper.readTree(mobility_dpu.api.movesDatapoints(user.getUsername()));
 
 
-        List<DataPoint<MobilityDailySummary>> dataPoints = new ArrayList<DataPoint<MobilityDailySummary>>();
+        List<DataPoint<MobilityDailySummary>> dataPoints = new ArrayList<>();
         if(responseBody.isArray()) {
             for(JsonNode dataPointJson : responseBody) {
+
                 DataPoint<MobilityDailySummary> dataPoint = new DataPoint<>(
                         objectMapper.treeToValue(dataPointJson.get("header"), DataPointHeader.class),
                         objectMapper.treeToValue(dataPointJson.get("body"), MobilityDailySummary.class));

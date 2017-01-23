@@ -1,7 +1,9 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.smalldata.ohmageomh.data.domain.DataPoint;
+import io.smalldata.ohmageomh.data.domain.EndUser;
 import io.smalldata.ohmageomh.dpu.config.Application;
+import io.smalldata.ohmageomh.dpu.processor.MovesDailySummaryProcessor;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,10 +32,11 @@ import java.time.LocalDate;
 public class TestMovesAPI {
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private MovesDailySummaryProcessor processor;
 
     @Test
-    public void testDeserializeMobilitySummary() throws IOException {
-
+    public void testDeserializeMobilitySummary() throws Exception {
         // a sample mobility daily summary. Note that the deserialization ignores many fields that are not being used
         // at the moment.
         JsonNode responseRoot = objectMapper.readTree("{\n" +
@@ -256,7 +259,7 @@ public class TestMovesAPI {
                 "}");
 
         DataPoint<MobilityDailySummary> dataPoint = new DataPoint<>(
-                objectMapper.readValue(responseRoot.get("header").toString(), DataPointHeader.class),
+                objectMapper.treeToValue(responseRoot.get("header"), DataPointHeader.class),
                 objectMapper.treeToValue(responseRoot.get("body"), MobilityDailySummary.class));
 
 
@@ -270,6 +273,14 @@ public class TestMovesAPI {
         Assert.assertEquals(64, body.getActiveTime().getValue().intValue());
         Assert.assertEquals(0.032, body.getWalkingDistance().getValue().floatValue(), 0.00000001);
         Assert.assertEquals(54, body.getStepCount().intValue());
+        Assert.assertEquals(0, body.getHome().getTimeNotAtHome().getValue().intValue());
+        /*
+        *  Integration test (only test it when a shim endpoint is available)
+        *
+        * */
 
+//        EndUser testUser = new EndUser();
+//        testUser.setUsername("localguy");
+//        processor.process(testUser);
     }
 }
