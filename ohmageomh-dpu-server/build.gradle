@@ -2,6 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+
     }
     ext {
         springBootVersion = '1.3.1.RELEASE'
@@ -28,6 +29,10 @@ jar {
 repositories {
     mavenCentral()
     jcenter()
+    maven {
+        // for mobility-dpu
+        url "http://clojars.org/repo"
+    }
 }
 
 sourceCompatibility = 1.8
@@ -58,6 +63,8 @@ dependencies {
 
     compile(group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final')
 
+    // mobility dpu clojure API
+    compile 'mobility-dpu:mobility-dpu:0.5'
     testCompile("junit:junit")
 }
 
