@@ -1,7 +1,8 @@
 package io.smalldata.ohmageomh.dsu.domain;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.openmhealth.schema.domain.omh.DataPoint;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,8 +38,9 @@ public class DataPointMedia {
     /**
      * The {@link InputStream} that is connected to the data.
      */
-    @Transient
-    private final InputStream stream;
+    @Transient // do not store this field
+    @JsonIgnore // do not serialize this field
+    private InputStream stream;
     /**
      * The size, in bytes, of the data.
      */
@@ -49,6 +51,15 @@ public class DataPointMedia {
     private final String contentType;
     private final String userId;
 
+    @PersistenceConstructor
+    public DataPointMedia(String id, String mediaId, String dataPointId, long size, String contentType, String userId){
+        this.id = id;
+        this.mediaId = mediaId;
+        this.dataPointId = dataPointId;
+        this.size = size;
+        this.contentType = contentType;
+        this.userId = userId;
+    }
     /**
      * Creates a new Media object from a {@link org.springframework.web.multipart.MultipartFile} object.
      *
@@ -64,7 +75,7 @@ public class DataPointMedia {
      * @see #generateUuid()
      */
     public DataPointMedia(final DataPoint datapoint, final MultipartFile media)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
 
         // Validate the input.
         if(datapoint == null) {
@@ -83,9 +94,9 @@ public class DataPointMedia {
         }
         catch(IOException e) {
             throw
-                new IllegalArgumentException(
-                    "Could not connect to the media.",
-                    e);
+                    new IllegalArgumentException(
+                            "Could not connect to the media.",
+                            e);
         }
         mediaId = media.getOriginalFilename();
         size = media.getSize();
