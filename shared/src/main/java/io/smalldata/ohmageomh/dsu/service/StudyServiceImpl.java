@@ -55,7 +55,7 @@ public class StudyServiceImpl implements StudyService {
     final static String insertNewStudyParticipant =
             "INSERT INTO participant_study (studies_id, participants_id) VALUES (?, ?);";
     final static String insertNewUser =
-            "INSERT INTO participant (dsu_id, created_date, created_by) VALUES (?, ?, ?);";
+            "INSERT INTO participant (dsu_id, created_date, created_by) VALUES (?, ?, ?) ON CONFLICT DO NOTHING;";
 
 
     @Override
@@ -131,13 +131,13 @@ public class StudyServiceImpl implements StudyService {
             return new Study(rs.getLong("id"), rs.getString("name"));        }
     }
 
-    private Long getUserId(EndUser user) throws Exception {
+    private Long getUserId(EndUser user){
         Object[] args = {user.getUsername()};
         JdbcTemplate select = new JdbcTemplate(dataSource);
         try{
             return select.queryForObject(queryUserIdByUsername, args, Long.class);
         }catch (EmptyResultDataAccessException e) {
-            throw new Exception();
+            throw new RuntimeException("User " + user.getUsername() + " is not in the participant table");
         }
     }
 
@@ -146,17 +146,13 @@ public class StudyServiceImpl implements StudyService {
         // create the user if it does not exist
         Timestamp timestamp = new Timestamp(new Date().getTime());
         JdbcTemplate select = new JdbcTemplate(dataSource);
+        // create a new participant entry
         select.update(insertNewUser,
                 user.getUsername(),
                 timestamp,
                 "auth-server");
         // query the user id again
-        try {
-            return getUserId(user);
-        }catch (Exception e) {
-            String msg = "Can't not create admin dashboard user:" + user;
-            log.error(msg, e);
-            throw new RuntimeException(msg);
-        }
+        return getUserId(user);
+
     }
 }
