@@ -44,6 +44,8 @@ Currently, the Ohmage suite allows users to login using their Google account.  T
 
 To start you will need to have a project on the Google APIs Console (you can create a new one or add to an existing one).  You can find more information about that [here](https://developers.google.com/console/help/)  To add a Client ID within the project, navigate to the project console, and on the left-hand menu select APIs & auth > Credentials.  Select "Create a new Client ID".  Enter the information and create the ID.  NOTE: You must have a domain name for your server, because Google APIs does not accept raw IP addresses as redirects.
 
+NOTE: You MUST enable GOOGLE PLUS API!
+
 Record your `clientId` and `clientSecret` for later.   
 
 
